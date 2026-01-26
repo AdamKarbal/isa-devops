@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
-      <module fileurl="file://$PROJECT_DIR$/.idea/isa-devops-25-26-isa-25-26-team-k.iml" filepath="$PROJECT_DIR$/.idea/isa-devops-25-26-isa-25-26-team-k.iml" />
-=======
       <module fileurl="file://$PROJECT_DIR$/.idea/tcfprof.iml" filepath="$PROJECT_DIR$/.idea/tcfprof.iml" />
->>>>>>> 446fcca2e2164db88c1516e388f6bb6478ecc9ab
     </modules>
   </component>
 </project>
