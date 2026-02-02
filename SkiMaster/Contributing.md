@@ -45,8 +45,8 @@ T{NUMERO_US}.{NUMERO_TASK} {TITRE_DE_LA_TASK}
 - Une correction de fonctionnalité par branche
 
 ### main
-- Branche stable d’intégration
-- Pull Request obligatoire (interdit de push sur main)
+- Branche semi-stable d’intégration
+- Pull Request obligatoire (interdit de push sur main autre que des features)
 
 ### production
 - Versions stables uniquement
@@ -88,13 +88,14 @@ Pour le nommage du commit, réfléchir à :
 - Pour pouvoir merge de feature vers main :
     - Tester avant de push
     - Review par un membre du groupe effectuée
+    - Tous les tests unitaires doivent passer
 
 - Pour pouvoir merge de fix vers main :
-    - Tous les tests liés à la feature passent
+    - Tous les tests unitaires liés à la feature passent
     - Review par un membre du groupe effectuée
 
 - Pour pouvoir merge de main vers production :
-    - Tous les tests liés à la CI passent
+    - Tous les unitaires et d'intégration passent
     - La milestone est complétée
 
 
