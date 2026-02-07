@@ -1,0 +1,53 @@
+name: Release Manager
+on:
+  pull_request:
+    branches:
+      - main
+      - prod
+    types: [closed]
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+        - name: Setup Environment
+          uses: ./.github/actions/setup-env
+          with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Calculate Version Increment
+          id: vars
+          shell: bash
+          run: |
+            DEST_BRANCH="${{ github.base_ref }}"
+            SRC_BRANCH="${{ github.event.pull_request.head.ref }}"
+            
+            echo "Merging $SRC_BRANCH into $DEST_BRANCH"
+            
+            if [[ "$DEST_BRANCH" == "main" ]]; then
+              case "$SRC_BRANCH" in
+                feat/*|feature/*)
+                  echo "inc=minor" >> $GITHUB_OUTPUT
+                  ;;
+                fix/*)
+                  echo "inc=patch" >> $GITHUB_OUTPUT
+                  ;;
+                *)
+                  echo "inc=patch" >> $GITHUB_OUTPUT
+                  ;;
+              esac
+            elif [[ "$DEST_BRANCH" == "prod" && "$SRC_BRANCH" == "main" ]]; then
+              echo "inc=major" >> $GITHUB_OUTPUT
+            else
+              echo "inc=patch" >> $GITHUB_OUTPUT
+            fi
+        - name: Run Release-it
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run: npm run release -- ${{ steps.vars.outputs.inc }} --ci
+
+
+
