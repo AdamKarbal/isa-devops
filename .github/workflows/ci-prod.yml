@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name : Setup Environment
-        uses : ./.github/workflows/setup-env
+        uses : ./.github/actions/setup-env
 
-      - name : Run Unitary Tests & Integration Tests
+      - name : Run All Tests (Unit + Integration)
         run: mvn clean verify
 
 

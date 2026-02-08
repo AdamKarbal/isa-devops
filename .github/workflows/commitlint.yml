@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup Environment
-        uses: ./.github/workflows/setup-env
+        uses: ./.github/actions/setup-env/
 
       - name: Validate PR commits
         if: github.event_name == 'pull_request'
