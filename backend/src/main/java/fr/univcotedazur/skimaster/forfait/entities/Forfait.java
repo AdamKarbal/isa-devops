@@ -1,5 +1,7 @@
 package fr.univcotedazur.skimaster.forfait.entities;
 
+import fr.univcotedazur.skimaster.cart.entities.Item;
+import fr.univcotedazur.skimaster.customer.entities.Customer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -7,14 +9,23 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-public class Forfait{
-
+public class Forfait {
+    @Enumerated(EnumType.STRING)
     @NotNull
+    private AgeCategory ageCategory;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private PassType passType;
+
     private LocalDate validDate;
     @Id
     @GeneratedValue
     private Long id;
 
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
     @NotNull
     private Long userId;
     @NotNull
@@ -22,8 +33,8 @@ public class Forfait{
     @JoinColumn(name = "offer_id", nullable = false)
     private ForfaitOffer offer;
 
-    public Forfait(Long userId, LocalDate vDate, ForfaitOffer offer) {
-        this.userId = userId;
+    public Forfait(Customer customer, LocalDate vDate, ForfaitOffer offer){
+        this.customer = customer;
         this.validDate = vDate;
         this.offer = offer;
     }
@@ -31,13 +42,8 @@ public class Forfait{
     public Forfait(){
     }
 
-    public void setUserId(Long userId){
-        this.userId = userId;
-    }
-
-    public Long getUserId(){
-        return this.userId;
-    }
+    public Customer getCustomer() { return customer; }
+    public void setCustomer(Customer customer) { this.customer = customer; }
 
     public AgeCategory getAgeCategory(){
         return offer.getAgeCategory();
@@ -49,7 +55,7 @@ public class Forfait{
     @Override
     public String toString(){
         return "Forfait n°: " + this.id + ".\n"
-                + "id user : " + this.userId + "-" + this.getAgeCategory() + ".\n"
+                + "id user : " + this.customer.getId() + "-" + this.getAgeCategory() + ".\n"
                 + "Type de forfait : " + this.getPassType() + ".\n"
                 + "Date d'expiration : " + this.validDate + ".\n";
 

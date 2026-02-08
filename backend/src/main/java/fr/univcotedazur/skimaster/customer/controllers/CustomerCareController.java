@@ -72,16 +72,19 @@ public class CustomerCareController {
         return new CustomerDTO(customer.getId(), customer.getName(), customer.getCreditCard());
     }
 
+    @ExceptionHandler(CustomerIdNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorDTO handleCustomerNotFound(CustomerIdNotFoundException e) {
+        Long id = e.getId();
+        return new ErrorDTO("client introuvable", "customer_id=" + id);
+    }
+
     @GetMapping(path = "/{customerId}/forfaits")
     public ResponseEntity<List<ForfaitDTO>> getForfaits(@PathVariable("customerId") Long customerId)
             throws CustomerIdNotFoundException {
 
-        finder.retrieveCustomer(customerId);
+        finder.retrieveCustomer(customerId); // déclenche 404 si absent (via ton handler)
         return ResponseEntity.ok(forfaitFinder.findForfaitsByCustomerId(customerId));
     }
-
-    @GetMapping(path ="/{customerId}/forfaits/{forfaitId}")
-    public ResponseEntity<ForfaitDTO> getForfaitById(@PathVariable("customerId") Long customerId, @PathVariable("forfaitId") Long forfaitId) {
-        return ResponseEntity.ok(forfaitFinder.getForfait(customerId, forfaitId));
-    }
 }
+
