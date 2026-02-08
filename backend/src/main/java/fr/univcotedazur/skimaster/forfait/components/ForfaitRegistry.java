@@ -1,12 +1,14 @@
 package fr.univcotedazur.skimaster.forfait.components;
 
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
+import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
 import fr.univcotedazur.skimaster.forfait.interfaces.FRegister;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -44,4 +46,11 @@ public class ForfaitRegistry implements FFinder, FRegister {
         }
         this.repository.saveAll(forfaits);
     }
+
+    @Override
+    public List<PassType> getAvailablePassTypes(){
+        return Arrays.asList(PassType.values());
+    }
+
+
 }

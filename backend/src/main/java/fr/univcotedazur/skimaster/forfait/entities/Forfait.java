@@ -39,8 +39,8 @@ public class Forfait implements Item {
         this.userId = userId;
     }
 
-    public void getUserId(Long userId){
-        this.userId = userId;
+    public Long getUserId(){
+        return this.userId;
     }
 
     @Override
@@ -59,4 +59,15 @@ public class Forfait implements Item {
         return  "Forfait de type : " + this.passType + ".\n";
     }
 
+    public @NotNull Date getValidDate() {
+        return validDate;
+    }
+
+    public @NotNull AgeCategory getAgeCategory() {
+        return ageCategory;
+    }
+
+    public @NotNull PassType getPassType() {
+        return passType;
+    }
 }
