@@ -39,7 +39,7 @@ public class ForfaitController {
     public ResponseEntity<List<ForfaitDTO>>getAllForfaits(){
         List<Forfait> forfaits = finder.findAllForfaits();
         List<ForfaitDTO> dtos = forfaits.stream()
-                .map(ForfaitController::mapToDTO)
+                .map(ForfaitController::forfaitToDTO)
                 .toList();
         return ResponseEntity.ok(dtos);
     }
@@ -49,7 +49,7 @@ public class ForfaitController {
         return ResponseEntity.ok(finder.getAvailablePassTypes());
     }
 
-    private static ForfaitDTO mapToDTO(Forfait f){
+    private static ForfaitDTO forfaitToDTO(Forfait f){
         return new ForfaitDTO(
                 f.getId(),
                 f.getUserId(),
