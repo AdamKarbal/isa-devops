@@ -23,10 +23,10 @@ public class Forfait implements Item {
     @GeneratedValue
     private Long id;
 
-    private Long idUser;
+    private Long userId;
 
-    public Forfait(Long idUser, Date vDate, AgeCategory aCat, PassType pType){
-        this.idUser = idUser;
+    public Forfait(Long userId, Date vDate, AgeCategory aCat, PassType pType){
+        this.userId = userId;
         this.validDate = vDate;
         this.ageCategory = aCat;
         this.passType = pType;
@@ -35,8 +35,12 @@ public class Forfait implements Item {
     public Forfait(){
     }
 
-    private void setIdUser(Long idUser){
-        this.idUser = idUser;
+    public void setUserId(Long userId){
+        this.userId = userId;
+    }
+
+    public void getUserId(Long userId){
+        this.userId = userId;
     }
 
     @Override
@@ -45,7 +49,7 @@ public class Forfait implements Item {
     @Override
     public String toString(){
         return "Forfait n°: " + this.id + ".\n"
-                + "id user : " + this.idUser + "-" + this.ageCategory + ".\n"
+                + "id user : " + this.userId + "-" + this.ageCategory + ".\n"
                 + "Type de forfait : " + this.passType + ".\n"
                 + "Date d'expiration : " + this.validDate + ".\n";
 
