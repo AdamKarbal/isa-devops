@@ -39,4 +39,11 @@ public class OrderLine {
         this.quantity = quantity;
         this.unitPrice = unitPrice;
     }
+
+    public Order getOrder() { return order; }
+    public void setOrder(Order order) { this.order = order; }
+
+    public String getProductCode() { return productCode; }
+    public int getQuantity() { return quantity; }
+    public int getUnitPrice() { return unitPrice; }
 }
