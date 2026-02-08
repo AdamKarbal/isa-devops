@@ -1,13 +1,11 @@
 package fr.univcotedazur.skimaster.forfait.dto;
 
-import fr.univcotedazur.skimaster.customer.entities.Customer;
-
-import java.time.LocalDate;
+import java.util.Date;
 
 public record ForfaitDTO(
         Long id,
-        Customer customer,
+        Long userId,
         String passType,
         String ageCategory,
-        LocalDate validDate
+        Date validUntil
 ) {}
