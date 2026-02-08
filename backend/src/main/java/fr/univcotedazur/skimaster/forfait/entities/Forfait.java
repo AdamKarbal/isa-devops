@@ -1,87 +1,62 @@
 package fr.univcotedazur.skimaster.forfait.entities;
 
-import fr.univcotedazur.skimaster.customer.entities.Customer;
-import jakarta.persistence.*;
+import fr.univcotedazur.skimaster.cart.entities.Item;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
-
-import java.time.LocalDate;
-import java.util.Objects;
+import java.util.Date;
 
 @Entity
-public class Forfait{
+public class Forfait implements Item {
 
     @NotNull
-    private LocalDate validDate;
+    private Date validDate;
+
+    @NotNull
+    private AgeCategory ageCategory;
+
+    @NotNull
+    private PassType passType;
+
     @Id
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "offer_id", nullable = false)
-    private ForfaitOffer offer;
+    private Long userId;
 
-    public Forfait(Customer customer, LocalDate vDate, ForfaitOffer offer) {
-        this.customer = customer;
+    public Forfait(Long userId, Date vDate, AgeCategory aCat, PassType pType){
+        this.userId = userId;
         this.validDate = vDate;
-        this.offer = offer;
+        this.ageCategory = aCat;
+        this.passType = pType;
     }
 
     public Forfait(){
     }
 
-    public void setCustomerId(Customer customer){
-        this.customer = customer;
+    public void setUserId(Long userId){
+        this.userId = userId;
     }
 
-    public Customer getCustomerId(){
-        return this.customer;
+    public void getUserId(Long userId){
+        this.userId = userId;
     }
 
-    public AgeCategory getAgeCategory(){
-        return offer.getAgeCategory();
-    }
-
-
+    @Override
     public Long getId() { return id;}
 
     @Override
     public String toString(){
         return "Forfait n°: " + this.id + ".\n"
-                + "id user : " + this.customer.getId() + "-" + this.getAgeCategory() + ".\n"
-                + "Type de forfait : " + this.getPassType() + ".\n"
+                + "id user : " + this.userId + "-" + this.ageCategory + ".\n"
+                + "Type de forfait : " + this.passType + ".\n"
                 + "Date d'expiration : " + this.validDate + ".\n";
 
     }
 
     public String userDisplay(){
-        return  "Forfait de type : " + this.getPassType() + ".\n";
+        return  "Forfait de type : " + this.passType + ".\n";
     }
 
-    public @NotNull LocalDate getValidDate() {
-        return validDate;
-    }
-
-    public @NotNull PassType getPassType() {
-        return offer.getPassType();
-    }
-
-    @Override
-    public boolean equals(Object o){
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Forfait forfait = (Forfait) o;
-        System.out.println(this.id);
-        System.out.println(forfait.id);
-        return id != null && id.equals(forfait.id);
-    }
-
-    @Override public int hashCode(){
-        return Objects.hash(id);
-    }
 }
