@@ -7,6 +7,8 @@ import fr.univcotedazur.skimaster.customer.exceptions.AlreadyExistingCustomerExc
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerRegistration;
+import fr.univcotedazur.skimaster.forfait.components.ForfaitFinder;
+import fr.univcotedazur.skimaster.forfait.dto.ForfaitDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +28,12 @@ public class CustomerCareController {
     private final CustomerRegistration registry;
 
     private final CustomerFinder finder;
+    private final ForfaitFinder forfaitFinder;
 
-    public CustomerCareController(CustomerRegistration registry, CustomerFinder finder) {
+    public CustomerCareController(CustomerRegistration registry, CustomerFinder finder, ForfaitFinder forfaitFinder) {
         this.registry = registry;
         this.finder = finder;
+        this.forfaitFinder = forfaitFinder;
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -68,5 +72,19 @@ public class CustomerCareController {
         return new CustomerDTO(customer.getId(), customer.getName(), customer.getCreditCard());
     }
 
+    @ExceptionHandler(CustomerIdNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorDTO handleCustomerNotFound(CustomerIdNotFoundException e) {
+        Long id = e.getId();
+        return new ErrorDTO("client introuvable", "customer_id=" + id);
+    }
+
+    @GetMapping(path = "/{customerId}/forfaits")
+    public ResponseEntity<List<ForfaitDTO>> getForfaits(@PathVariable("customerId") Long customerId)
+            throws CustomerIdNotFoundException {
+
+        finder.retrieveCustomer(customerId); // déclenche 404 si absent (via ton handler)
+        return ResponseEntity.ok(forfaitFinder.findForfaitsByCustomerId(customerId));
+    }
 }
 

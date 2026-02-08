@@ -5,6 +5,7 @@ public class CustomerIdNotFoundException extends Exception {
     private Long id;
 
     public CustomerIdNotFoundException(Long id) {
+        super("Customer not found: " + id);
         this.id = id;
     }
 

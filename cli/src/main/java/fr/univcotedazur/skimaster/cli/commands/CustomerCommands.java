@@ -2,9 +2,12 @@ package fr.univcotedazur.skimaster.cli.commands;
 
 import fr.univcotedazur.skimaster.cli.CliContext;
 import fr.univcotedazur.skimaster.cli.model.CliCustomer;
+import fr.univcotedazur.skimaster.cli.model.CliForfait;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.web.client.RestClient;
+import org.springframework.shell.standard.ShellOption;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -57,4 +60,52 @@ public class CustomerCommands {
         return customerMap.toString();
     }
 
+    @ShellMethod(key = "customer show", value = "Display customer profile (customer show CUSTOMER_ID)")
+    public String show(@ShellOption long id) {
+        try {
+            CliCustomer customer = restClient.get()
+                    .uri(BASE_URI + "/{id}", id)
+                    .retrieve()
+                    .body(CliCustomer.class);
+
+            if (customer == null) {
+                return "client introuvable";
+            }
+
+            return "Customer #" + customer.getId() + System.lineSeparator()
+                    + "Name: " + customer.getName();
+        } catch (HttpClientErrorException.NotFound e) {
+            return "client introuvable";
+        }
+    }
+
+    @ShellMethod(key = "passes", value = "List passes for a customer (passes CUSTOMER_ID)")
+    public String passes(@ShellOption long customerId) {
+        try {
+            CliForfait[] passes = restClient.get()
+                    .uri("/customers/{id}/forfaits", customerId)
+                    .retrieve()
+                    .body(CliForfait[].class);
+
+            if (passes == null || passes.length == 0) {
+                return "Aucun forfait";
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("Passes for customer #").append(customerId).append(System.lineSeparator());
+            for (CliForfait p : passes) {
+                sb.append("- ")
+                        .append("P").append(p.getId()).append(" ")
+                        .append(p.getPassType()).append(" ")
+                        .append(p.getAgeCategory()).append(" ")
+                        .append(p.getValidDate()).append(" ")
+                        .append(p.getStatus())
+                        .append(System.lineSeparator());
+            }
+            return sb.toString().trim();
+
+        } catch (org.springframework.web.client.HttpClientErrorException.NotFound e) {
+            return "client introuvable";
+        }
+    }
 }
