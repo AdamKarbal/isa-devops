@@ -16,7 +16,9 @@ jobs:
         uses: ./.github/actions/setup-env
 
       - name : Run All Tests (Only Unit)
-        run: mvn clean test
+        run: |
+          cd backend
+          mvn clean test
 
 
 

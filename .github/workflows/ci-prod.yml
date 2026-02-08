@@ -16,7 +16,9 @@ jobs:
         uses : ./.github/actions/setup-env
 
       - name : Run All Tests (Unit + Integration)
-        run: mvn clean verify
+        run: |
+          cd backend
+          mvn clean verify
 
 
 
