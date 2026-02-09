@@ -7,6 +7,7 @@ import fr.univcotedazur.skimaster.forfait.interfaces.FRegister;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import fr.univcotedazur.skimaster.forfait.exceptions.AlreadyExistingForfaitException;
 
 import java.util.Arrays;
 import java.util.List;

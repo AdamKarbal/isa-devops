@@ -5,13 +5,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 public class Forfait implements Item {
 
     @NotNull
-    private Date validDate;
+    private LocalDate validDate;
 
     @NotNull
     private AgeCategory ageCategory;
@@ -23,9 +26,10 @@ public class Forfait implements Item {
     @GeneratedValue
     private Long id;
 
+    @NotNull
     private Long userId;
 
-    public Forfait(Long userId, Date vDate, AgeCategory aCat, PassType pType){
+    public Forfait(Long userId, LocalDate vDate, AgeCategory aCat, PassType pType){
         this.userId = userId;
         this.validDate = vDate;
         this.ageCategory = aCat;
@@ -59,7 +63,7 @@ public class Forfait implements Item {
         return  "Forfait de type : " + this.passType + ".\n";
     }
 
-    public @NotNull Date getValidDate() {
+    public @NotNull LocalDate getValidDate() {
         return validDate;
     }
 
@@ -69,5 +73,21 @@ public class Forfait implements Item {
 
     public @NotNull PassType getPassType() {
         return passType;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Forfait forfait = (Forfait) o;
+        System.out.println(this.id);
+        System.out.println(forfait.id);
+        return Objects.equals(id, forfait.id);
+    }
+
+    @Override public int hashCode(){
+        return Objects.hash(id);
     }
 }
