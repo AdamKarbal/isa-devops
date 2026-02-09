@@ -2,22 +2,19 @@ package fr.univcotedazur.skimaster.customer.entities;
 
 
 import fr.univcotedazur.skimaster.cart.entities.Cart;
-import fr.univcotedazur.skimaster.order.entities.Order;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import org.aspectj.weaver.ast.Or;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 public class Customer {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private Long id; // Whether Long/Int or UUID are better primary keys, exposable outside is a vast issue, keep it simple here
 
     @NotBlank
     @Column(unique = true)
@@ -26,11 +23,8 @@ public class Customer {
     @Pattern(regexp = "\\d{10}+", message = "Invalid creditCardNumber")
     private String creditCard;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
     private Cart cart = new Cart();
-
-    @OneToMany(cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "customer")
-    private Set<Order> orders = new HashSet<>();
 
     public Customer() {
     }
@@ -72,15 +66,6 @@ public class Customer {
         this.setCart(new Cart());
     }
 
-    public void addOrder(Order order){
-        this.orders.add(order);
-    }
-    public void setOrders(Set<Order> orders){
-        this.orders=orders;
-    }
-    public Set<Order> getOrders(){
-        return orders;
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
