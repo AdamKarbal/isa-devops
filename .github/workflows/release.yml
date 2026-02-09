@@ -60,10 +60,7 @@ jobs:
       - name: Run Release-it
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          curl -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" https://api.github.com/user
-          git remote set-url origin https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git
-          npm run release -- ${{ steps.vars.outputs.inc }} --ci
+        run: npm run release -- ${{ steps.vars.outputs.inc }} --ci
 
 
 
