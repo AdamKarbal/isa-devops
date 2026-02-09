@@ -17,8 +17,9 @@ jobs:
 
       - name : Run All Tests (Unit + Integration)
         run: |
-          cd backend
-          mvn clean verify
+          chmod +x ./mvnw
+          ./mvnw clean verify
+        working-directory: backend
 
 
 
