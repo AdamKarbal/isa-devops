@@ -17,8 +17,9 @@ jobs:
 
       - name : Run All Tests (Only Unit)
         run: |
-          cd backend
-          mvn clean test
+          chmod +x ./mvnw
+          ./mvnw clean test
+        working-directory: backend
 
 
 
