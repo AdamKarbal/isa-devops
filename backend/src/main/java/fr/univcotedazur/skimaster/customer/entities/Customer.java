@@ -1,13 +1,12 @@
 package fr.univcotedazur.skimaster.customer.entities;
 
 
+import fr.univcotedazur.skimaster.cart.entities.Cart;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 public class Customer {
@@ -22,6 +21,9 @@ public class Customer {
 
     @Pattern(regexp = "\\d{10}+", message = "Invalid creditCardNumber")
     private String creditCard;
+
+    @OneToOne
+    private Cart cart = new Cart();
 
     public Customer() {
     }
@@ -51,7 +53,17 @@ public class Customer {
         this.creditCard = creditCard;
     }
 
+    public Cart getCart(){
+        return cart;
+    }
 
+    public void setCart(Cart cart) {
+         this.cart=cart;
+    }
+
+    public void clearCart(){
+        this.setCart(new Cart());
+    }
 
     @Override
     public boolean equals(Object o) {
