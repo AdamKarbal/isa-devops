@@ -60,7 +60,11 @@ jobs:
       - name: Run Release-it
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: npm run release -- ${{ steps.vars.outputs.inc }} --ci
+        run: |
+          echo "=== IDENTITÉ GIT LOCALE ==="
+          echo "User Name  : $(git config user.name)"
+          echo "User Email : $(git config user.email)"
+          npm run release -- ${{ steps.vars.outputs.inc }} --ci
 
 
 
