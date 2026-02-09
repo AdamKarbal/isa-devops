@@ -1,0 +1,25 @@
+name: CI PR Main
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+
+      - name : Run All Tests (Only Unit)
+        run: |
+          cd backend
+          mvn clean test
+
+
+
+
