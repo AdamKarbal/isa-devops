@@ -1,6 +1,5 @@
 package fr.univcotedazur.skimaster.forfait.entities;
 
-import fr.univcotedazur.skimaster.cart.entities.Item;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -11,7 +10,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-public class Forfait implements Item {
+public class Forfait{
 
     @NotNull
     private LocalDate validDate;
@@ -47,7 +46,7 @@ public class Forfait implements Item {
         return this.userId;
     }
 
-    @Override
+
     public Long getId() { return id;}
 
     @Override
