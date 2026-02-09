@@ -1,0 +1,20 @@
+name: Debug Runner
+on: workflow_dispatch
+
+jobs:
+  debug:
+    runs-on: self-hosted
+    steps:
+      - name: Generate Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+
+      - name: Check Environment
+        run: |
+          echo "Runner ok !"
+          node -v
+          java -version
+          mvn -v
