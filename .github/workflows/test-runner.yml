@@ -26,4 +26,3 @@ jobs:
           echo "Runner ok !"
           node -v
           java -version
-          mvn -v
