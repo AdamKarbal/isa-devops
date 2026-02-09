@@ -9,7 +9,7 @@ on:
 jobs:
   release:
     if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       contents: write
     steps:
@@ -22,7 +22,7 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup-env
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Calculate Version Increment
         id: vars
@@ -52,7 +52,7 @@ jobs:
           fi
       - name: Run Release-it
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: npm run release -- ${{ steps.vars.outputs.inc }} --ci
 
 
