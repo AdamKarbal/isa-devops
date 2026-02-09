@@ -1,7 +1,5 @@
 name: Debug Runner
-on:
-  push:
-    branches:[docs/githubActions]
+on: workflow_dispatch
 
 jobs:
   debug:
