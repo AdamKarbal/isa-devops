@@ -9,7 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface ForfaitRepository extends JpaRepository<Forfait, Long> {
-    Optional<Forfait> findFirstByCustomerId(Long customerId);
+    List<Forfait> findFirstByCustomerId(Long customerId);
     List<Forfait> findAllByCustomerId(Long customerId);
+    Optional<Forfait> findByIdAndCustomerId(Long id, Long customerId);
 }
 
