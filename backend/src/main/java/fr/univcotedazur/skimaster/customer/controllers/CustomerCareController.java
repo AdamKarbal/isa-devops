@@ -9,6 +9,7 @@ import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerRegistration;
 import fr.univcotedazur.skimaster.forfait.components.ForfaitFinder;
 import fr.univcotedazur.skimaster.forfait.dto.ForfaitDTO;
+import fr.univcotedazur.skimaster.order.dto.OrderDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,8 +84,13 @@ public class CustomerCareController {
     public ResponseEntity<List<ForfaitDTO>> getForfaits(@PathVariable("customerId") Long customerId)
             throws CustomerIdNotFoundException {
 
-        finder.retrieveCustomer(customerId); // déclenche 404 si absent (via ton handler)
+        finder.retrieveCustomer(customerId); // déclenche 404 si absent
         return ResponseEntity.ok(forfaitFinder.findForfaitsByCustomerId(customerId));
+    }
+
+    @GetMapping(path ="/{customerId}/forfaits/{forfaitId}")
+    public ResponseEntity<ForfaitDTO> getOrderById(@PathVariable("customerId") Long customerId, @PathVariable("forfaitId") Long forfaitId) {
+        return ResponseEntity.ok(forfaitFinder.getForfait(customerId, forfaitId));
     }
 }
 

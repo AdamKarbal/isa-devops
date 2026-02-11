@@ -1,8 +1,8 @@
 package fr.univcotedazur.skimaster.customer.controllers;
 
 import fr.univcotedazur.skimaster.customer.components.OrderHistory;
-import fr.univcotedazur.skimaster.order.dtos.OrderCreatedDTO;
 import fr.univcotedazur.skimaster.order.exceptions.OrderIdNotFoundException;
+import fr.univcotedazur.skimaster.order.dto.OrderDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,12 +26,12 @@ public class CustomerOrdersController {
     }
 
     @GetMapping(path ="/{customerId}/orders")
-    public ResponseEntity<List<OrderCreatedDTO>> getOrders(@PathVariable("customerId") Long customerId) throws OrderIdNotFoundException {
+    public ResponseEntity<List<OrderDTO>> getOrders(@PathVariable("customerId") Long customerId) throws OrderIdNotFoundException {
         return ResponseEntity.ok(orderHistory.orderHistory(customerId));
     }
 
     @GetMapping(path ="/{customerId}/orders/{orderId}")
-    public ResponseEntity<OrderCreatedDTO> getOrderById(@PathVariable("customerId") Long customerId, @PathVariable("orderId") Long orderId) {
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable("customerId") Long customerId, @PathVariable("orderId") Long orderId) {
         return ResponseEntity.ok(orderHistory.getOrder(customerId, orderId));
     }
 }

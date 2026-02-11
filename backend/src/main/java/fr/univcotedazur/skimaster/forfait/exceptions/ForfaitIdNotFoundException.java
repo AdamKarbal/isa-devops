@@ -7,8 +7,4 @@ public class ForfaitIdNotFoundException extends RuntimeException {
         super("Forfait not found: " + id);
         this.id = id;
     }
-
-    public Long getId() {
-        return id;
-    }
 }
