@@ -8,10 +8,6 @@ import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import fr.univcotedazur.skimaster.forfait.exceptions.ForfaitIdNotFoundException;
 import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
-import fr.univcotedazur.skimaster.order.dto.OrderDTO;
-import fr.univcotedazur.skimaster.order.dto.OrderLineDTO;
-import fr.univcotedazur.skimaster.order.entities.Order;
-import fr.univcotedazur.skimaster.order.exceptions.OrderIdNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -52,7 +48,7 @@ public class ForfaitFinder implements FFinder {
             throw new CustomerIdNotFoundException(customerId);
         }
 
-        Forfait f = forfaitRepository.findByIdAndCustomerId(customerId, forfaitId)
+        Forfait f = forfaitRepository.findByIdAndCustomerId(forfaitId, customerId)
                 .orElseThrow(() -> new ForfaitIdNotFoundException(forfaitId));
 
         return toDto(f);

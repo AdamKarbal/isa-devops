@@ -44,6 +44,8 @@ CustomerRegistryTest {
         assertEquals(creditCard, john.getCreditCard());
     }
 
+
+
     @Test
     void cannotRegisterTwice() throws Exception {
         customerRegistration.register(name, creditCard);

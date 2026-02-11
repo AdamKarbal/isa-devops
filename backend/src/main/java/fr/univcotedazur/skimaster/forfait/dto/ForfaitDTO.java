@@ -1,9 +1,11 @@
 package fr.univcotedazur.skimaster.forfait.dto;
 
+import java.time.LocalDate;
+
 public record ForfaitDTO(
         Long id,
-        Long userId,
+        Long customerId,
         String passType,
         String ageCategory,
-        java.time.@jakarta.validation.constraints.NotNull LocalDate validUntil
+        LocalDate validDate
 ) {}
