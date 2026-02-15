@@ -20,10 +20,14 @@ public class Cart {
     public void addItem(Product p){
         items.add(p);
     }
+    public void removeItem(Product p){ items.remove(p);};
     public void setItems(Set<Product> items) {
         this.items = items;
     }
     public Set<Product> getItems(){
         return items;
+    }
+    public boolean isEmpty(){
+        return items.isEmpty();
     }
 }
