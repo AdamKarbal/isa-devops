@@ -1,6 +1,5 @@
 package fr.univcotedazur.skimaster.order.entities;
 
-import fr.univcotedazur.skimaster.cart.entities.Cart;
 import fr.univcotedazur.skimaster.cart.entities.Product;
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.order.enums.OrderStatus;
@@ -16,7 +15,7 @@ public class Order {
     @Id
     @GeneratedValue
     private Long orderId;
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     private Set<Product> items;
     @Positive
     private double price;
@@ -26,7 +25,6 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @NotNull
     private OrderStatus status;
-    private String paymentReceiptId;
     public Order(){
     }
 
