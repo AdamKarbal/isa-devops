@@ -1,6 +1,5 @@
 package fr.univcotedazur.skimaster.cart.entities;
 
-import fr.univcotedazur.skimaster.cart.interfaces.Item;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
 import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
 import jakarta.persistence.*;
@@ -15,7 +14,7 @@ public class Product {
     private List<ForfaitOffer> packageItems = new ArrayList<>();
     @Id
     @GeneratedValue
-    long productId;
+    private Long productId;
     @Min(1)
     @Max(100)
     int reduction=1;
