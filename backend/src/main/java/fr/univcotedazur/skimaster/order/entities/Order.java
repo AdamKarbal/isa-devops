@@ -15,7 +15,7 @@ import java.util.Set;
 public class Order {
     @Id
     @GeneratedValue
-    private long orderId;
+    private Long orderId;
     @ElementCollection
     private Set<Product> items;
     @Positive
@@ -37,8 +37,19 @@ public class Order {
         this.customer.addOrder(this);
     }
 
+    public Long getOrderId(){
+        return orderId;
+    }
+
     public Customer getCustomer() {
         return customer;
+    }
+
+    public Set<Product> getItems(){
+        return items;
+    }
+    public double getPrice(){
+        return price;
     }
 
     public void setCustomer(Customer customer) {
