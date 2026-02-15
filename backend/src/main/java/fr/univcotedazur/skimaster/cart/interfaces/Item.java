@@ -1,6 +1,9 @@
 package fr.univcotedazur.skimaster.cart.interfaces;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public interface Item {
-    int id;
-    int getId();
+    double getPrice();
+    long getId();
 }
