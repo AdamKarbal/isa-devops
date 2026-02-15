@@ -18,7 +18,7 @@ public class OrderFactory {
     public Order create(Customer customer) {
         Cart cart = customer.getCart();
         double price = cartHandler.computeCartPrice(cart);
-        Order order = new Order(customer,cart.getItems(),price);
+        Order order = new Order(customer,cart.getProducts(),price);
         return order;
     }
 }
