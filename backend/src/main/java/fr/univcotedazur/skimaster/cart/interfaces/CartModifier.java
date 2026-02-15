@@ -5,5 +5,5 @@ import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundExceptio
 
 public interface CartModifier { // penser à généraliser
     void addItem(Long customerId, Product p,int quantity) throws CustomerIdNotFoundException;
-    void removeItem(Long customerId,Product p,int quantity);
+    void removeItem(Long customerId,Product p,int quantity) throws CustomerIdNotFoundException;
 }
