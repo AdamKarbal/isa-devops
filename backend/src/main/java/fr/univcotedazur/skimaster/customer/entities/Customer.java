@@ -26,7 +26,7 @@ public class Customer {
     @Pattern(regexp = "\\d{10}+", message = "Invalid creditCardNumber")
     private String creditCard;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart = new Cart();
 
     @OneToMany(cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "customer")
