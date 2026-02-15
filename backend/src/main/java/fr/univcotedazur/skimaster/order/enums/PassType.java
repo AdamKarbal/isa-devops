@@ -1,6 +1,4 @@
-package fr.univcotedazur.skimaster.cart.enums;
-
-import java.time.DayOfWeek;
+package fr.univcotedazur.skimaster.order.enums;
 
 public enum PassType {
     FULL,
