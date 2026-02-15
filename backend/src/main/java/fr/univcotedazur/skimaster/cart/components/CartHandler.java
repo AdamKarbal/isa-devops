@@ -11,8 +11,6 @@ import fr.univcotedazur.skimaster.order.entities.Order;
 import fr.univcotedazur.skimaster.cart.entities.Product;
 import fr.univcotedazur.skimaster.cart.interfaces.CartModifier;
 import fr.univcotedazur.skimaster.cart.interfaces.CartProcessor;
-import fr.univcotedazur.skimaster.cart.interfaces.Item;
-import fr.univcotedazur.skimaster.order.interfaces.OrderCreator;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -33,28 +31,30 @@ public class CartHandler implements CartProcessor, CartModifier {
 
     public double computeCartPrice(Cart cart) {
         return cart.getItems().stream()
-                .mapToDouble(this::priceProduct)
+                .mapToDouble(e -> priceProduct(e.getProduct())* e.getQuantity())
                 .sum();
     }
+
 
     public Order validate(Long customerId) throws CustomerIdNotFoundException, EmptyCartException {
         Customer customer = customerFinder.retrieveCustomer(customerId);
         if(customer.getCart().isEmpty()){
             throw new EmptyCartException(customer.getName());
         }
-        Order newOrder = orderCreator.createOrder(customer);
-        return newOrder;
+        return orderCreator.createOrder(customer);
     }
 
     public void addItem(Long customerId,Product p,int quantity) throws CustomerIdNotFoundException {
         Customer current = customerFinder.retrieveCustomer(customerId);
         Cart cart = current.getCart();
-        cart.addItem(p);
+        if(quantity<0) throw new IllegalArgumentException("Quantity should be positive");
+        cart.addItem(p,quantity);
     }
 
     public void removeItem(Long customerId,Product p,int quantity) throws CustomerIdNotFoundException {
         Customer current = customerFinder.retrieveCustomer(customerId);
         Cart cart = current.getCart();
-        cart.removeItem(p);
+        if(quantity<0) throw new IllegalArgumentException("Quantity should be positive");
+        cart.removeItem(p,quantity);
     }
 }
