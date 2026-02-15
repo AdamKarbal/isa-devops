@@ -1,39 +1,31 @@
 package fr.univcotedazur.skimaster.forfait.entities;
 
-import fr.univcotedazur.skimaster.cart.entities.Item;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Objects;
 
 @Entity
-public class Forfait implements Item {
+public class Forfait{
 
     @NotNull
     private LocalDate validDate;
-
-    @NotNull
-    private AgeCategory ageCategory;
-
-    @NotNull
-    private PassType passType;
-
     @Id
     @GeneratedValue
     private Long id;
 
     @NotNull
     private Long userId;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "offer_id", nullable = false)
+    private ForfaitOffer offer;
 
-    public Forfait(Long userId, LocalDate vDate, AgeCategory aCat, PassType pType){
+    public Forfait(Long userId, LocalDate vDate, ForfaitOffer offer) {
         this.userId = userId;
         this.validDate = vDate;
-        this.ageCategory = aCat;
-        this.passType = pType;
+        this.offer = offer;
     }
 
     public Forfait(){
@@ -47,32 +39,32 @@ public class Forfait implements Item {
         return this.userId;
     }
 
-    @Override
+    public AgeCategory getAgeCategory(){
+        return offer.getAgeCategory();
+    }
+
+
     public Long getId() { return id;}
 
     @Override
     public String toString(){
         return "Forfait n°: " + this.id + ".\n"
-                + "id user : " + this.userId + "-" + this.ageCategory + ".\n"
-                + "Type de forfait : " + this.passType + ".\n"
+                + "id user : " + this.userId + "-" + this.getAgeCategory() + ".\n"
+                + "Type de forfait : " + this.getPassType() + ".\n"
                 + "Date d'expiration : " + this.validDate + ".\n";
 
     }
 
     public String userDisplay(){
-        return  "Forfait de type : " + this.passType + ".\n";
+        return  "Forfait de type : " + this.getPassType() + ".\n";
     }
 
     public @NotNull LocalDate getValidDate() {
         return validDate;
     }
 
-    public @NotNull AgeCategory getAgeCategory() {
-        return ageCategory;
-    }
-
     public @NotNull PassType getPassType() {
-        return passType;
+        return offer.getPassType();
     }
 
     @Override
