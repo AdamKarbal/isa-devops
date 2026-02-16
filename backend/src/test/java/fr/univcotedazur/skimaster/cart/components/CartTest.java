@@ -39,13 +39,14 @@ public class CartTest {
     }
 
     @Test
-    void e(){
+    void basicAddCart(){
         Cart cart = returned.getCart();
-        cart.addItem(childAdultProduct);
+        cart.addItem(childAdultProduct,1);
         assertEquals(cart.getItems().size(),1);
         assertEquals(cartHandler.computeCartPrice(cart),adultForfait.getPrice()+childForfait.getPrice());
-
     }
+
+
 
 
 }
