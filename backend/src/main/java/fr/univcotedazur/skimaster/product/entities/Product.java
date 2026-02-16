@@ -1,6 +1,6 @@
 package fr.univcotedazur.skimaster.product.entities;
 
-import fr.univcotedazur.skimaster.cart.entities.Item;
+import fr.univcotedazur.skimaster.cart.interfaces.Item;
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import jakarta.persistence.*;

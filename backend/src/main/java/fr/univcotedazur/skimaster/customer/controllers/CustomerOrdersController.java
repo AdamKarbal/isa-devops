@@ -2,7 +2,6 @@ package fr.univcotedazur.skimaster.customer.controllers;
 
 import fr.univcotedazur.skimaster.customer.components.OrderHistory;
 import fr.univcotedazur.skimaster.order.exceptions.OrderIdNotFoundException;
-import fr.univcotedazur.skimaster.order.dto.OrderDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
