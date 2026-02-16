@@ -9,7 +9,6 @@ import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerRegistration;
 import fr.univcotedazur.skimaster.forfait.components.ForfaitFinder;
 import fr.univcotedazur.skimaster.forfait.dto.ForfaitDTO;
-import fr.univcotedazur.skimaster.order.dto.OrderDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
