@@ -26,6 +26,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @NotNull
     private OrderStatus status;
+    private String paymentReceiptId;
     public Order(){
     }
 
@@ -33,7 +34,7 @@ public class Order {
         this.customer=customer;
         this.items = items;
         this.price = price;
-        this.status = OrderStatus.COMPLETED;
+        this.status = OrderStatus.CREATED;
         this.customer.addOrder(this);
     }
 
@@ -62,5 +63,11 @@ public class Order {
     public void setPrice(double price){
         this.price = price;
     }
+
+    public OrderStatus getStatus() { return status; }
+    public void setStatus(OrderStatus status) { this.status = status; }
+
+    public String getPaymentReceiptId() { return paymentReceiptId; }
+    public void setPaymentReceiptId(String paymentReceiptId) { this.paymentReceiptId = paymentReceiptId; }
 
 }
