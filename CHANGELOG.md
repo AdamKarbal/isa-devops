@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.1.1...v1.1.2) (2026-02-17)
+
+
+### Bug Fixes
+
+* **github:** fix commitlint error ([2c994ae](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/2c994ae06845b27c8a67edbd19bf399b22290914))
+
 ## 1.1.1 (2026-02-09)
 
 
