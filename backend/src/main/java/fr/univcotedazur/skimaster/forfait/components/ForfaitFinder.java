@@ -57,7 +57,7 @@ public class ForfaitFinder implements FFinder {
     private ForfaitDTO toDto(Forfait f) {
         return new ForfaitDTO(
                 f.getId(),
-                f.getCustomer().getId(),
+                f.getUserId(),
                 f.getPassType().name(),
                 f.getAgeCategory().name(),
                 f.getValidDate()

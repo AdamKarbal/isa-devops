@@ -45,11 +45,13 @@ public class Product implements Item {
         this.id = id;
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public double getPrice() {
+        return this.price;
     }
 
-    public int getPrice() {
-        return price;
+    @Override
+    public long getId() {
+        return this.id;
     }
 }
