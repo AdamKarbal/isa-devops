@@ -3,8 +3,6 @@ package fr.univcotedazur.skimaster.customer.components;
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.customer.repositories.CustomerRepository;
-import fr.univcotedazur.skimaster.order.OrderStatus;
-import fr.univcotedazur.skimaster.order.dto.OrderDTO;
 import fr.univcotedazur.skimaster.order.entities.Order;
 import fr.univcotedazur.skimaster.order.exceptions.OrderIdNotFoundException;
 import fr.univcotedazur.skimaster.order.repositories.OrderRepository;
