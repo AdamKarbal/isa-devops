@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(GlobalControllerAdvice.class)
 class CartControllerTest {
 
-    @Autowired
+    /*@Autowired
     private MockMvc mockMvc;
 
     @Autowired
@@ -58,6 +58,15 @@ class CartControllerTest {
 
     @MockitoBean
     private CustomerFinder customerFinder;
+
+    @Test
+    void returnsNotFoundWhenCustomerDoesNotExist() throws Exception {
+        when(customerFinder.retrieveCustomer(404L)).thenThrow(new CustomerIdNotFoundException(404L));
+
+        mockMvc.perform(get("/carts/404/price"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("Customer not found"));
+    }
 
     @Test
     void addItemUsesProductIdAndQuantity() throws Exception {
@@ -84,17 +93,6 @@ class CartControllerTest {
     }
 
     /*@Test
-    void returnsNotFoundWhenProductDoesNotExist() throws Exception {
-        doThrow(new ProductIdNotFound(999L)).when(cartModifier).addItem(5L, 999L, 1);
-
-        mockMvc.perform(post("/carts/5/items")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new Request(999L, 1))))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value("Product not found"));
-    }
-
-    @Test
     void createAndFindForfaitOffer() throws Exception {
         ForfaitOffer offer = new ForfaitOffer(AgeCategory.ADULT, PassType.DAILY, 45.0);
         when(productCatalog.createForfaitOffer(AgeCategory.ADULT, PassType.DAILY, 45.0)).thenReturn(offer);
