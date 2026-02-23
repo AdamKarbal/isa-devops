@@ -13,6 +13,7 @@ import fr.univcotedazur.skimaster.order.dtos.OrderCreatedDTO;
 import fr.univcotedazur.skimaster.order.entities.Order;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -24,12 +25,10 @@ public class CartController {
     private final CustomerFinder customerFinder;
     private final CartModifier cartModifier;
     private final CartProcessor cartProcessor;
-    private final ProductRepository productRepository;
-    public CartController(CartModifier cartModifier, CartProcessor cartProcessor, CustomerFinder customerFinder, ProductRepository productRepository) {
+    public CartController(CartModifier cartModifier, CartProcessor cartProcessor, CustomerFinder customerFinder) {
         this.cartModifier = cartModifier;
         this.cartProcessor = cartProcessor;
         this.customerFinder = customerFinder;
-        this.productRepository = productRepository;
     }
     @PostMapping(path = "/{customerId}/add",consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> addItem(@PathVariable("customerId") Long customerId, @RequestBody @Valid CartItemRequestDTO infos) throws CustomerIdNotFoundException, ProductIdNotFound {
@@ -41,11 +40,6 @@ public class CartController {
     public ResponseEntity<Void> removeItem(@PathVariable("customerId") Long customerId, @RequestBody @Valid CartItemRequestDTO infos) throws CustomerIdNotFoundException, ProductIdNotFound {
         cartModifier.removeItem(customerId, infos.productId(), infos.quantity());
         return ResponseEntity.noContent().build();
-    }
-    @GetMapping(path = "/{customerId}/price",consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Double> price(@PathVariable("customerId") Long customerId) throws CustomerIdNotFoundException{
-        double price = cartProcessor.computeCartPrice(customerFinder.retrieveCustomer(customerId).getCart());
-        return ResponseEntity.ok(price);
     }
     @PostMapping(path = "/{customerId}/validate",consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderCreatedDTO> validate(@PathVariable("customerId") Long customerId) throws CustomerIdNotFoundException, EmptyCartException {
