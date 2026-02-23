@@ -1,5 +1,6 @@
 package fr.univcotedazur.skimaster.cart.controllers;
 
+import fr.univcotedazur.skimaster.cart.dtos.CartDTO;
 import fr.univcotedazur.skimaster.cart.dtos.CartItemAddedDTO;
 import fr.univcotedazur.skimaster.cart.dtos.CartItemRequestDTO;
 import fr.univcotedazur.skimaster.cart.exceptions.EmptyCartException;
@@ -7,6 +8,7 @@ import fr.univcotedazur.skimaster.cart.exceptions.ProductIdNotFound;
 import fr.univcotedazur.skimaster.cart.interfaces.CartModifier;
 import fr.univcotedazur.skimaster.cart.interfaces.CartProcessor;
 import fr.univcotedazur.skimaster.cart.repositories.ProductRepository;
+import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
 import fr.univcotedazur.skimaster.order.dtos.OrderCreatedDTO;
@@ -41,10 +43,15 @@ public class CartController {
         cartModifier.removeItem(customerId, infos.productId(), infos.quantity());
         return ResponseEntity.noContent().build();
     }
-    @PostMapping(path = "/{customerId}/validate",consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/{customerId}/validate")
     public ResponseEntity<OrderCreatedDTO> validate(@PathVariable("customerId") Long customerId) throws CustomerIdNotFoundException, EmptyCartException {
         Order validated = cartProcessor.validate(customerId);
         return ResponseEntity.ok(new OrderCreatedDTO(validated.getOrderId(),validated.getItems(),validated.getPrice()));
+    }
+    @GetMapping(path = "/{customerId}")
+    public ResponseEntity<CartDTO> getCart(@PathVariable("customerId") Long customerId) throws CustomerIdNotFoundException{
+        Customer customer = customerFinder.retrieveCustomer(customerId);
+        return ResponseEntity.ok(customer.getCart().toDto());
     }
 
 }
