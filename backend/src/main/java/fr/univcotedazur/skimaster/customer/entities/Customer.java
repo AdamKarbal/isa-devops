@@ -17,7 +17,7 @@ public class Customer {
 
     @Id
     @GeneratedValue
-    private Long id; // Whether Long/Int or UUID are better primary keys, exposable outside is a vast issue, keep it simple here
+    private Long id;
 
     @NotBlank
     @Column(unique = true)

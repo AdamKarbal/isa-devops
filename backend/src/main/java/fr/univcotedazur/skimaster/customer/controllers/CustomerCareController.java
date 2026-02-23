@@ -83,7 +83,7 @@ public class CustomerCareController {
     public ResponseEntity<List<ForfaitDTO>> getForfaits(@PathVariable("customerId") Long customerId)
             throws CustomerIdNotFoundException {
 
-        finder.retrieveCustomer(customerId); // déclenche 404 si absent
+        finder.retrieveCustomer(customerId);
         return ResponseEntity.ok(forfaitFinder.findForfaitsByCustomerId(customerId));
     }
 
