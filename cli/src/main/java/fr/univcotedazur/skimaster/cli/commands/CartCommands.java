@@ -2,6 +2,8 @@ package fr.univcotedazur.skimaster.cli.commands;
 
 import fr.univcotedazur.skimaster.cli.CliContext;
 import fr.univcotedazur.skimaster.cli.model.CartElement;
+import fr.univcotedazur.skimaster.cli.model.CliCart;
+import fr.univcotedazur.skimaster.cli.model.CliOrder;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.web.client.RestClient;
@@ -24,6 +26,19 @@ public class CartCommands {
                 .body(new CartElement(productId, quantity))
                 .retrieve()
                 .body(CartElement.class);
+    }
+
+    @ShellMethod("Get the client's cart (getCart CUSTOMER_NAME)")
+    public CliCart getCurrentCart(String name){
+        return restClient.get().uri(getUriForCustomer(name)).retrieve().body(CliCart.class);
+    }
+
+    @ShellMethod("Validate the order (validate CUSTOMER_NAME)")
+    public CliOrder validate(String name){
+        return restClient.post()
+                .uri(getUriForCustomer(name)+"/validate")
+                .retrieve()
+                .body(CliOrder.class);
     }
 
     private String getUriForCustomer(String name) {
