@@ -38,9 +38,7 @@ public class CartHandler implements CartProcessor, CartModifier {
         return itemsPrice / product.getReduction();
     }
 
-    public double computeCartPrice(Long customerId) throws CustomerIdNotFoundException{
-        Customer customer = customerFinder.retrieveCustomer(customerId);
-        Cart cart = customer.getCart();
+    public double computeCartPrice(Cart cart){
         return cart.getItems().stream()
                 .mapToDouble(e -> priceProduct(e.getProduct())* e.getQuantity())
                 .sum();
