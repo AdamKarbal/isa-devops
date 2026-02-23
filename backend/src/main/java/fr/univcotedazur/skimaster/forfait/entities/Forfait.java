@@ -1,5 +1,6 @@
 package fr.univcotedazur.skimaster.forfait.entities;
 
+import fr.univcotedazur.skimaster.customer.entities.Customer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,15 +16,16 @@ public class Forfait{
     @GeneratedValue
     private Long id;
 
-    @NotNull
-    private Long userId;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "offer_id", nullable = false)
     private ForfaitOffer offer;
 
-    public Forfait(Long userId, LocalDate vDate, ForfaitOffer offer) {
-        this.userId = userId;
+    public Forfait(Customer customer, LocalDate vDate, ForfaitOffer offer) {
+        this.customer = customer;
         this.validDate = vDate;
         this.offer = offer;
     }
@@ -31,12 +33,12 @@ public class Forfait{
     public Forfait(){
     }
 
-    public void setUserId(Long userId){
-        this.userId = userId;
+    public void setUserId(Customer customer){
+        this.customer = customer;
     }
 
-    public Long getUserId(){
-        return this.userId;
+    public Customer getUserId(){
+        return this.customer;
     }
 
     public AgeCategory getAgeCategory(){
@@ -49,7 +51,7 @@ public class Forfait{
     @Override
     public String toString(){
         return "Forfait n°: " + this.id + ".\n"
-                + "id user : " + this.userId + "-" + this.getAgeCategory() + ".\n"
+                + "id user : " + this.customer.getId() + "-" + this.getAgeCategory() + ".\n"
                 + "Type de forfait : " + this.getPassType() + ".\n"
                 + "Date d'expiration : " + this.validDate + ".\n";
 

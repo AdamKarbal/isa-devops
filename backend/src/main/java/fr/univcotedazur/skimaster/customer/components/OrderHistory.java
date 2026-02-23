@@ -21,14 +21,13 @@ public class OrderHistory {
     }
 
     public List<OrderCreatedDTO> orderHistory(Long customerId) {
-        if (!customerRepository.existsById(customerId)) throw new CustomerIdNotFoundException(customerId);
+        if (!customerRepository.existsById(customerId)) {
+            throw new CustomerIdNotFoundException(customerId);
+        }
 
-        return orderRepository.findAllByCustomerIdWithLines(customerId).stream()
-                .map(o -> new OrderCreatedDTO(
-                        o.getOrderId(),
-                        o.getItems(),
-                        o.getPrice()
-                )).toList();
+        return orderRepository.findAllByCustomerIdWithItems(customerId).stream()
+                .map(this::toDto)
+                .toList();
     }
 
     public OrderCreatedDTO getOrder(Long customerId, Long orderId) {
@@ -36,7 +35,7 @@ public class OrderHistory {
             throw new CustomerIdNotFoundException(customerId);
         }
 
-        Order o = orderRepository.findByCustomerIdAndIdWithLines(customerId, orderId)
+        Order o = orderRepository.findByCustomerIdAndOrderIdWithItems(customerId, orderId)
                 .orElseThrow(() -> new OrderIdNotFoundException(orderId));
 
         return toDto(o);
