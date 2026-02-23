@@ -11,20 +11,27 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
+
     @Query("""
     select distinct o
     from Order o
-    left join fetch o.lines l
+    left join fetch o.items i
     where o.customer.id = :customerId
-    order by o.id desc
+    order by o.orderId desc
   """)
-    List<Order> findAllByCustomerIdWithLines(@Param("customerId") Long customerId);
-    List<Order> findByCustomerId(Long customerId);
+    List<Order> findAllByCustomerIdWithItems(@Param("customerId") Long customerId);
+
+    // derived query correcte
+    List<Order> findByCustomer_Id(Long customerId);
+
     @Query("""
-        select distinct o
-        from Order o
-        left join fetch o.lines
-        where o.customer.id = :customerId and o.id = :orderId
-    """)
-    Optional<Order> findByCustomerIdAndIdWithLines(@Param("customerId") Long customerId, @Param("orderId") Long orderId);
+    select distinct o
+    from Order o
+    left join fetch o.items i
+    where o.customer.id = :customerId and o.orderId = :orderId
+  """)
+    Optional<Order> findByCustomerIdAndOrderIdWithItems(
+            @Param("customerId") Long customerId,
+            @Param("orderId") Long orderId
+    );
 }

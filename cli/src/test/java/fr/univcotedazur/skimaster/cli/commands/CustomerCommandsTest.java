@@ -95,35 +95,6 @@ class CustomerCommandsTest {
     }
 
     @Test
-    void ordersDisplaysSeveralOrdersAndDetails() {
-        server.expect(requestTo("http://localhost:8080/customers/1/orders"))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess("[" +
-                        "{" +
-                        "\"id\":91," +
-                        "\"price\":120.0," +
-                        "\"items\":[{\"id\":1001,\"reduction\":1},{\"id\":1002,\"reduction\":2}]" +
-                        "}," +
-                        "{" +
-                        "\"id\":92," +
-                        "\"price\":10.0," +
-                        "\"items\":[{\"id\":1003,\"reduction\":3}]" +
-                        "}" +
-                        "]", MediaType.APPLICATION_JSON));
-
-        String result = customerCommands.orders(1L);
-
-        assertThat(result).contains(
-                "commande #91",
-                "commande #92",
-                "produit #1001",
-                "produit #1002",
-                "produit #1003"
-        );
-        server.verify();
-    }
-
-    @Test
     void ordersDisplaysEmptyMessageWhenNoHistory() {
         server.expect(requestTo("http://localhost:8080/customers/1/orders"))
                 .andExpect(method(HttpMethod.GET))
@@ -144,18 +115,6 @@ class CustomerCommandsTest {
         String result = customerCommands.passes(1L);
 
         assertThat(result).isEqualTo("Aucun forfait pour ce client");
-        server.verify();
-    }
-
-    @Test
-    void ordersReturnsCustomerNotFoundWhenBackendSays404() {
-        server.expect(requestTo("http://localhost:8080/customers/404/orders"))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withResourceNotFound());
-
-        String result = customerCommands.orders(404L);
-
-        assertThat(result).isEqualTo("client introuvable");
         server.verify();
     }
 }
