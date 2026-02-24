@@ -23,7 +23,6 @@ class OrderHistoryTest {
     @Autowired OrderHistory orderHistory;
 
     @Autowired CustomerRepository customerRepository;
-    @Autowired OrderRepository orderRepository;
 
     @Test
     void orderHistory_customerNotFound_throws() {

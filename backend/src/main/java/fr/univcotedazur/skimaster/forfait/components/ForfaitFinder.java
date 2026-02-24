@@ -25,7 +25,13 @@ public class ForfaitFinder implements FFinder {
     }
 
     public List<ForfaitDTO> findForfaitsByCustomerId(Long customerId) {
-        return null;
+        if (!customerRepository.existsById(customerId)) {
+            throw new CustomerIdNotFoundException(customerId);
+        }
+
+        return forfaitRepository.findAllByCustomerId(customerId).stream()
+                .map(this::toDto)
+                .toList();
     }
 
     @Override
@@ -57,7 +63,7 @@ public class ForfaitFinder implements FFinder {
     private ForfaitDTO toDto(Forfait f) {
         return new ForfaitDTO(
                 f.getId(),
-                f.getUserId(),
+                f.getCustomerId(),
                 f.getPassType().name(),
                 f.getAgeCategory().name(),
                 f.getValidDate()
