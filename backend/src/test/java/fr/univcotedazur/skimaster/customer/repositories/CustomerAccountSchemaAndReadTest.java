@@ -46,7 +46,9 @@ class CustomerAccountSchemaAndReadTest {
             assertThat(tables).anyMatch(t -> t.equals("forfait") || t.equals("passes"));
 
             assertThat(listImportedKeyColumns(metaData, "orders")).contains("customer_id");
-            assertThat(listImportedKeyColumns(metaData, "forfait")).contains("customer_id", "offer_id");
+            assertThat(listImportedKeyColumns(metaData, "forfait")).contains("offer_id");
+            assertThat(listImportedKeyColumns(metaData, "forfait")).doesNotContain("customer_id");
+            assertThat(listColumns(metaData, "forfait")).contains("customer_id");
 
             assertThat(listIndexedColumns(metaData, "orders")).contains("customer_id");
             assertThat(listIndexedColumns(metaData, "forfait")).contains("customer_id");
@@ -61,7 +63,7 @@ class CustomerAccountSchemaAndReadTest {
         orderRepository.saveAndFlush(order);
 
         ForfaitOffer offer = forfaitOfferRepository.saveAndFlush(new ForfaitOffer(AgeCategory.ADULT, PassType.FULL, 35.0));
-        forfaitRepository.saveAndFlush(new Forfait(clienta, LocalDate.parse("2026-01-01"), offer));
+        forfaitRepository.saveAndFlush(new Forfait(clienta.getId(), LocalDate.parse("2026-01-01"), offer));
 
         List<Order> orders = orderRepository.findByCustomer_Id(clienta.getId());
         List<Forfait> forfaits = forfaitRepository.findAllByCustomerId(clienta.getId());
@@ -105,6 +107,19 @@ class CustomerAccountSchemaAndReadTest {
                 }
             }
             return indexedColumns;
+        }
+    }
+
+    private Set<String> listColumns(DatabaseMetaData metaData, String table) throws Exception {
+        try (ResultSet resultSet = metaData.getColumns(null, null, table.toUpperCase(Locale.ROOT), "%")) {
+            Set<String> columns = new java.util.HashSet<>();
+            while (resultSet.next()) {
+                String columnName = resultSet.getString("COLUMN_NAME");
+                if (columnName != null) {
+                    columns.add(columnName.toLowerCase(Locale.ROOT));
+                }
+            }
+            return columns;
         }
     }
 }

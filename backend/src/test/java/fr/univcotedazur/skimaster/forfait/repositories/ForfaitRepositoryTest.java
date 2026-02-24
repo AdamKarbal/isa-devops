@@ -47,12 +47,12 @@ public class ForfaitRepositoryTest {
     @Test
     void testFindForfaitByUserId() {
         forfaitRepository.saveAndFlush(forfait);
-        Assertions.assertEquals(List.of(forfait), forfaitRepository.findByUserId(userId));
+        Assertions.assertEquals(List.of(forfait), forfaitRepository.findByCustomerId(userId));
     }
 
     @Test
     void testNullUserId() {
-        Forfait invalidForfait = new Forfait(null, LocalDate.of(2026, 2, 24), savedOffer);
+        Forfait invalidForfait = new Forfait((Long) null, LocalDate.of(2026, 2, 24), savedOffer);
         Assertions.assertThrows(ConstraintViolationException.class, () ->
                 forfaitRepository.saveAndFlush(invalidForfait)
         );

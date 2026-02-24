@@ -1,19 +1,15 @@
 package fr.univcotedazur.skimaster.forfait.components;
 
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
-import fr.univcotedazur.skimaster.forfait.entities.PassType;
-import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
 import fr.univcotedazur.skimaster.forfait.interfaces.FRegister;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import fr.univcotedazur.skimaster.forfait.exceptions.AlreadyExistingForfaitException;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class ForfaitRegistry implements FFinder, FRegister {
+public class ForfaitRegistry implements FRegister {
     private final ForfaitRepository repository;
 
     public ForfaitRegistry(ForfaitRepository repository){
@@ -21,21 +17,9 @@ public class ForfaitRegistry implements FFinder, FRegister {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Forfait> findForfaitByUserId(Long customerId){
-        return this.repository.findByUserId(customerId);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Forfait> findAllForfaits(){
-        return this.repository.findAll();
-    }
-
-    @Override
     @Transactional
     public void registerForfait(Forfait forfait, Long userId){
-        forfait.setUserId(userId);
+        forfait.setCustomerId(userId);
         this.repository.save(forfait);
     }
 
@@ -43,15 +27,8 @@ public class ForfaitRegistry implements FFinder, FRegister {
     @Transactional
     public void registerForfaits(List<Forfait> forfaits, Long userId){
         for(Forfait f : forfaits){
-            f.setUserId(userId);
+            f.setCustomerId(userId);
         }
         this.repository.saveAll(forfaits);
     }
-
-    @Override
-    public List<PassType> getAvailablePassTypes(){
-        return Arrays.asList(PassType.values());
-    }
-
-
 }

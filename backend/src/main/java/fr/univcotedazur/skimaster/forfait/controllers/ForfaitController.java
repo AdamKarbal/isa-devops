@@ -52,7 +52,7 @@ public class ForfaitController {
     private static ForfaitDTO forfaitToDTO(Forfait f){
         return new ForfaitDTO(
                 f.getId(),
-                f.getUserId(),
+                f.getCustomerId(),
                 f.getPassType().name(),
                 f.getAgeCategory().name(),
                 f.getValidDate()

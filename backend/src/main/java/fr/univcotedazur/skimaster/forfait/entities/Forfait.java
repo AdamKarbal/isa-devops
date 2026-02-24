@@ -1,61 +1,62 @@
 package fr.univcotedazur.skimaster.forfait.entities;
 
-import fr.univcotedazur.skimaster.cart.entities.Item;
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
+@Table(name = "forfait", indexes = {
+        @Index(name = "idx_forfait_customer_id", columnList = "customer_id")
+})
 public class Forfait {
-    @Enumerated(EnumType.STRING)
     @NotNull
-    private AgeCategory ageCategory;
-
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private PassType passType;
-
     private LocalDate validDate;
+
     @Id
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
     @NotNull
-    private Long userId;
+    @Column(name = "customer_id", nullable = false)
+    private Long customerId;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "offer_id", nullable = false)
     private ForfaitOffer offer;
 
-    public Forfait(Customer customer, LocalDate vDate, ForfaitOffer offer){
-        this.customer = customer;
+    public Forfait(Long customerId, LocalDate vDate, ForfaitOffer offer) {
+        this.customerId = customerId;
         this.validDate = vDate;
         this.offer = offer;
     }
 
-    public Forfait(){
+    public Forfait(Customer customer, LocalDate vDate, ForfaitOffer offer) {
+        this(customer.getId(), vDate, offer);
     }
 
-    public Customer getCustomer() { return customer; }
-    public void setCustomer(Customer customer) { this.customer = customer; }
+    public Forfait() {}
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
 
     public AgeCategory getAgeCategory(){
         return offer.getAgeCategory();
     }
-
 
     public Long getId() { return id;}
 
     @Override
     public String toString(){
         return "Forfait n°: " + this.id + ".\n"
-                + "id user : " + this.customer.getId() + "-" + this.getAgeCategory() + ".\n"
+                + "id user : " + this.customerId + "-" + this.getAgeCategory() + ".\n"
                 + "Type de forfait : " + this.getPassType() + ".\n"
                 + "Date d'expiration : " + this.validDate + ".\n";
 
@@ -80,12 +81,10 @@ public class Forfait {
         if (o == null || getClass() != o.getClass()) return false;
 
         Forfait forfait = (Forfait) o;
-        System.out.println(this.id);
-        System.out.println(forfait.id);
-        return Objects.equals(id, forfait.id);
+        return id != null && id.equals(forfait.id);
     }
 
     @Override public int hashCode(){
-        return Objects.hash(id);
+        return 31;
     }
 }

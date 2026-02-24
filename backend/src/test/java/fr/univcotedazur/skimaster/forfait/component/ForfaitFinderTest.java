@@ -1,6 +1,5 @@
 package fr.univcotedazur.skimaster.forfait.component;
 
-import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.customer.repositories.CustomerRepository;
 import fr.univcotedazur.skimaster.forfait.components.ForfaitFinder;
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -92,14 +90,11 @@ class ForfaitFinderTest {
     @Test
     void findForfaitsByCustomerId_returnsMappedDtos() {
         Long customerId = 20L;
-        Customer customer = new Customer("John", "1234567890");
-        ReflectionTestUtils.setField(customer, "id", customerId);
-
         ForfaitOffer offer = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 50.0);
-        Forfait first = new Forfait(customer, LocalDate.parse("2026-01-10"), offer);
-        Forfait second = new Forfait(customer, LocalDate.parse("2026-01-11"), offer);
-        ReflectionTestUtils.setField(first, "id", 55L);
-        ReflectionTestUtils.setField(second, "id", 56L);
+        Forfait first = new Forfait(customerId, LocalDate.parse("2026-01-10"), offer);
+        Forfait second = new Forfait(customerId, LocalDate.parse("2026-01-11"), offer);
+        org.springframework.test.util.ReflectionTestUtils.setField(first, "id", 55L);
+        org.springframework.test.util.ReflectionTestUtils.setField(second, "id", 56L);
 
         when(customerRepository.existsById(customerId)).thenReturn(true);
         when(forfaitRepository.findAllByCustomerId(customerId)).thenReturn(List.of(first, second));
@@ -109,6 +104,7 @@ class ForfaitFinderTest {
         assertEquals(2, result.size());
         assertEquals(55L, result.getFirst().id());
         assertEquals(56L, result.get(1).id());
+        assertEquals(customerId, result.getFirst().customerId());
         assertEquals(PassType.WEEKLY.name(), result.getFirst().passType());
         assertEquals(AgeCategory.ADULT.name(), result.getFirst().ageCategory());
     }
@@ -134,12 +130,9 @@ class ForfaitFinderTest {
 
     @Test
     void getForfait_returnsMappedForfaitDto() {
-        Customer customer = new Customer("John", "1234567890");
-        ReflectionTestUtils.setField(customer, "id", 20L);
-
         ForfaitOffer offer = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 50.0);
-        Forfait forfait = new Forfait(customer, LocalDate.parse("2026-01-10"), offer);
-        ReflectionTestUtils.setField(forfait, "id", 55L);
+        Forfait forfait = new Forfait(20L, LocalDate.parse("2026-01-10"), offer);
+        org.springframework.test.util.ReflectionTestUtils.setField(forfait, "id", 55L);
 
         when(customerRepository.existsById(20L)).thenReturn(true);
         when(forfaitRepository.findByIdAndCustomerId(55L, 20L)).thenReturn(Optional.of(forfait));
@@ -147,7 +140,7 @@ class ForfaitFinderTest {
         ForfaitDTO dto = forfaitFinder.getForfait(20L, 55L);
 
         assertEquals(55L, dto.id());
-        assertEquals(customer, dto.customer());
+        assertEquals(20L, dto.customerId());
         assertEquals(PassType.WEEKLY.name(), dto.passType());
         assertEquals(AgeCategory.ADULT.name(), dto.ageCategory());
         assertEquals(LocalDate.parse("2026-01-10"), dto.validDate());
