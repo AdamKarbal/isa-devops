@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
+
 @DataJpaTest // Only run a test container with the JPA layer (only repositories are up)
 // @DataJpaTest is "transactional rollback by default
 class CustomerRepositoryTest {
