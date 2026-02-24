@@ -7,6 +7,7 @@ import fr.univcotedazur.skimaster.order.entities.Order;
 import fr.univcotedazur.skimaster.order.exceptions.OrderIdNotFoundException;
 import fr.univcotedazur.skimaster.order.repositories.OrderRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -47,5 +48,18 @@ public class OrderHistory {
                 o.getItems(),
                 o.getPrice()
         );
+    }
+
+    @Transactional
+    public void cancelOrder(Long customerId, Long orderId) {
+        if (!customerRepository.existsById(customerId)) {
+            throw new CustomerIdNotFoundException(customerId);
+        }
+
+        Order order = orderRepository.findByCustomerIdAndOrderIdWithItems(customerId, orderId)
+                .orElseThrow(() -> new OrderIdNotFoundException(orderId));
+
+        order.cancel();
+        orderRepository.save(order);
     }
 }

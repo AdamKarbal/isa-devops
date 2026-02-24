@@ -6,6 +6,7 @@ import fr.univcotedazur.skimaster.order.exceptions.OrderIdNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,5 +34,11 @@ public class CustomerOrdersController {
     @GetMapping(path ="/{customerId}/orders/{orderId}")
     public ResponseEntity<OrderCreatedDTO> getOrderById(@PathVariable("customerId") Long customerId, @PathVariable("orderId") Long orderId) {
         return ResponseEntity.ok(orderHistory.getOrder(customerId, orderId));
+    }
+
+    @PostMapping(path = "/{customerId}/orders/{orderId}/cancel")
+    public ResponseEntity<Void> cancelOrder(@PathVariable("customerId") Long customerId, @PathVariable("orderId") Long orderId) {
+        orderHistory.cancelOrder(customerId, orderId);
+        return ResponseEntity.noContent().build();
     }
 }

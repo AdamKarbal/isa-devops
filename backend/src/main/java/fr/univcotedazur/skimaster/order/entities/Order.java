@@ -1,5 +1,6 @@
 package fr.univcotedazur.skimaster.order.entities;
 
+import fr.univcotedazur.skimaster.cart.entities.Cart;
 import fr.univcotedazur.skimaster.cart.entities.Product;
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.order.enums.OrderStatus;

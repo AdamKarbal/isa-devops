@@ -28,7 +28,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         select distinct o
         from Order o
         left join fetch o.items i
-        where o.customer.id = :customerId and o.id = :orderId
+        where o.customer.id = :customerId and o.orderId = :orderId
     """)
     Optional<Order> findByCustomerIdAndOrderIdWithItems(
             @Param("customerId") Long customerId,

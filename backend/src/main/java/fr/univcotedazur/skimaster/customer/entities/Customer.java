@@ -2,12 +2,15 @@ package fr.univcotedazur.skimaster.customer.entities;
 
 
 import fr.univcotedazur.skimaster.cart.entities.Cart;
+import fr.univcotedazur.skimaster.order.entities.Order;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import org.aspectj.weaver.ast.Or;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Customer {
@@ -23,8 +26,11 @@ public class Customer {
     @Pattern(regexp = "\\d{10}+", message = "Invalid creditCardNumber")
     private String creditCard;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart = new Cart();
+
+    @OneToMany(cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "customer")
+    private Set<Order> orders = new HashSet<>();
 
     public Customer() {
     }
@@ -59,13 +65,22 @@ public class Customer {
     }
 
     public void setCart(Cart cart) {
-         this.cart=cart;
+        this.cart=cart;
     }
 
     public void clearCart(){
         this.setCart(new Cart());
     }
 
+    public void addOrder(Order order){
+        this.orders.add(order);
+    }
+    public void setOrders(Set<Order> orders){
+        this.orders=orders;
+    }
+    public Set<Order> getOrders(){
+        return orders;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,6 +1,6 @@
 package fr.univcotedazur.skimaster.cart.interfaces;
 
 public interface Item {
-    int id;
+    double getPrice();
     int getId();
 }

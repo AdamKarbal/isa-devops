@@ -1,5 +1,6 @@
 package fr.univcotedazur.skimaster.forfait.components;
 
+import fr.univcotedazur.skimaster.forfait.exceptions.ForfaitIdNotFoundException;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
 import fr.univcotedazur.skimaster.forfait.interfaces.FRegister;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
@@ -30,5 +31,13 @@ public class ForfaitRegistry implements FRegister {
             f.setCustomerId(userId);
         }
         this.repository.saveAll(forfaits);
+    }
+
+    @Override
+    @Transactional
+    public void deleteForfait(Long customerId, Long forfaitId) {
+        Forfait forfait = repository.findByIdAndCustomerId(forfaitId, customerId)
+                .orElseThrow(() -> new ForfaitIdNotFoundException(forfaitId));
+        repository.delete(forfait);
     }
 }
