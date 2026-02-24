@@ -1,15 +1,15 @@
 package fr.univcotedazur.skimaster.forfait.repositories;
 
-import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
+import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,44 +17,68 @@ import java.util.List;
 @DataJpaTest
 public class ForfaitRepositoryTest {
 
-    private final Long userId = 1L;
-
+    @Autowired
+    private ForfaitRepository forfaitRepository;
 
     @Autowired
-    private ForfaitRepository repository;
+    private ForfaitOfferRepository forfaitOfferRepository;
+
+    private final Long userId = 1L;
+    private ForfaitOffer savedOffer;
+    private Forfait forfait;
+
+    @BeforeEach
+    void setUp() {
+        // Sauvegarde de l'offre d'abord pour éviter l'erreur TransientPropertyValueException
+        ForfaitOffer offer = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 70.0);
+        savedOffer = forfaitOfferRepository.save(offer);
+
+        // Création du forfait avec l'offre persistée
+        forfait = new Forfait(userId, LocalDate.of(2026, 2, 24), savedOffer);
+    }
 
     @Test
     void testIdGenerationAndUnicity() {
-        Forfait forfait = new Forfait(userId, LocalDate.of(2026,02,11), AgeCategory.ADULT, PassType.WEEKLY);
         Assertions.assertNull(forfait.getId());
-        repository.saveAndFlush(forfait); // save in the persistent context and force saving in the DB (thus ensuring validation by Hibernate)
+        forfaitRepository.saveAndFlush(forfait);
         Assertions.assertNotNull(forfait.getId());
     }
 
     @Test
-    void testFindForfaitByUserId(){
-        Forfait forfait = new Forfait(userId, LocalDate.of(2026,02,11), AgeCategory.ADULT, PassType.WEEKLY);
-        repository.saveAndFlush(forfait);
-        Assertions.assertEquals(repository.findByUserId(userId), List.of(forfait));
+    void testFindForfaitByUserId() {
+        forfaitRepository.saveAndFlush(forfait);
+        Assertions.assertEquals(List.of(forfait), forfaitRepository.findByUserId(userId));
     }
 
     @Test
     void testNullUserId() {
-        Assertions.assertThrows(ConstraintViolationException.class, () -> repository.saveAndFlush(new Forfait(null, LocalDate.of(2026,02,11), AgeCategory.ADULT, PassType.WEEKLY)));
+        Forfait invalidForfait = new Forfait(null, LocalDate.of(2026, 2, 24), savedOffer);
+        Assertions.assertThrows(ConstraintViolationException.class, () ->
+                forfaitRepository.saveAndFlush(invalidForfait)
+        );
     }
 
     @Test
     void testNullVDate() {
-        Assertions.assertThrows(ConstraintViolationException.class, () -> repository.saveAndFlush(new Forfait(userId, null, AgeCategory.ADULT, PassType.WEEKLY)));
+        Forfait invalidForfait = new Forfait(userId, null, savedOffer);
+        Assertions.assertThrows(ConstraintViolationException.class, () ->
+                forfaitRepository.saveAndFlush(invalidForfait)
+        );
     }
 
     @Test
     void testNullAgeCategory() {
-        Assertions.assertThrows(ConstraintViolationException.class, () -> repository.saveAndFlush(new Forfait(userId, LocalDate.of(2026,02,11), null, PassType.WEEKLY)));
+        ForfaitOffer invalidOffer = new ForfaitOffer(null, PassType.WEEKLY, 70.0);
+        Assertions.assertThrows(ConstraintViolationException.class, () ->
+                forfaitOfferRepository.saveAndFlush(invalidOffer)
+        );
     }
 
     @Test
     void testNullPassType() {
-        Assertions.assertThrows(ConstraintViolationException.class, () -> repository.saveAndFlush(new Forfait(userId, LocalDate.of(2026,02,11), AgeCategory.ADULT, null)));
+        ForfaitOffer invalidOffer = new ForfaitOffer(AgeCategory.ADULT, null, 70.0);
+        Assertions.assertThrows(ConstraintViolationException.class, () ->
+                forfaitOfferRepository.saveAndFlush(invalidOffer)
+        );
     }
 }

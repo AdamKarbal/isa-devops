@@ -33,7 +33,7 @@ class ForfaitOfferRepositoryTest {
     void testNegativePriceNotAllowed() {
         Assertions.assertThrows(
                 ConstraintViolationException.class,
-                () -> forfaitOfferRepository.saveAndFlush(new ForfaitOffer(AgeCategory.CHILD, PassType.DAILY, -1.0))
+                () -> forfaitOfferRepository.saveAndFlush(new ForfaitOffer(AgeCategory.CHILD, PassType.FULL, -1.0))
         );
     }
 
