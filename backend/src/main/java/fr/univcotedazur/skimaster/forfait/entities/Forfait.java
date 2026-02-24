@@ -33,11 +33,11 @@ public class Forfait{
     public Forfait(){
     }
 
-    public void setUserId(Customer customer){
+    public void setCustomerId(Customer customer){
         this.customer = customer;
     }
 
-    public Customer getUserId(){
+    public Customer getCustomerId(){
         return this.customer;
     }
 
@@ -78,7 +78,7 @@ public class Forfait{
         Forfait forfait = (Forfait) o;
         System.out.println(this.id);
         System.out.println(forfait.id);
-        return Objects.equals(id, forfait.id);
+        return id != null && id.equals(forfait.id);
     }
 
     @Override public int hashCode(){
