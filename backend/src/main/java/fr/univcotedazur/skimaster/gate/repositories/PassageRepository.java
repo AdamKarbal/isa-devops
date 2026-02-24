@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface PassageRepository extends JpaRepository<Passage, Long> {
-    Optional<Passage> findLastPassageByCustomerId(Long customerId);
+    Optional<Passage> findLastPassageByCustomerId(Long customerId);//not sure
 }

@@ -1,11 +1,12 @@
 package fr.univcotedazur.skimaster.gate.components;
 
 
-import fr.univcotedazur.skimaster.gate.entities.Forfeit;
+import fr.univcotedazur.skimaster.forfait.entities.Forfeit;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class WhiteListCache {
@@ -19,6 +20,11 @@ public WhiteListCache() {
     }
 
     public void addForfeits(List<Forfeit> forfeitToAdd){
+        forfeitList.clear();
         forfeitList.addAll(forfeitToAdd);
+    }
+
+    public List<Long> getValidForfeitIds() {
+        return forfeitList.stream().map(Forfeit::getId).toList();
     }
 }

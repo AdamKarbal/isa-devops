@@ -1,12 +1,12 @@
 package fr.univcotedazur.skimaster.forfait.components;
 
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
-import fr.univcotedazur.skimaster.forfait.entities.Forfait;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.Forfeit;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
 import fr.univcotedazur.skimaster.forfait.interfaces.FRegister;
-import fr.univcotedazur.skimaster.forfait.repositories.ForfaitOfferRepository;
+import fr.univcotedazur.skimaster.forfait.repositories.ForfeitOfferRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-public class ForfaitRegistryTest {
+public class ForfeitRegistryTest {
 
     @Autowired
     private FRegister register;
@@ -29,44 +29,44 @@ public class ForfaitRegistryTest {
     private FFinder finder;
 
     @Autowired
-    private ForfaitOfferRepository forfaitOfferRepository;
+    private ForfeitOfferRepository forfeitOfferRepository;
 
     private final Long userId = 1L;
-    private ForfaitOffer savedOffer;
-    private Forfait newForfait;
+    private ForfeitOffer savedOffer;
+    private Forfeit newForfeit;
 
     @BeforeEach
     void setUp() {
         // Préparation de l'offre en base de données
-        ForfaitOffer offer = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 70.0);
-        savedOffer = forfaitOfferRepository.save(offer);
+        ForfeitOffer offer = new ForfeitOffer(AgeCategory.ADULT, PassType.WEEKLY, 70.0);
+        savedOffer = forfeitOfferRepository.save(offer);
 
         // Liaison du forfait avec l'offre gérée par Hibernate
-        newForfait = new Forfait(userId, LocalDate.of(2026, 2, 24), savedOffer);
+        newForfeit = new Forfeit(userId, LocalDate.of(2026, 2, 24), savedOffer);
     }
 
     @Test
     void noForfait() {
-        List<Forfait> forfaits = finder.findForfaitByUserId(userId);
-        assertTrue(forfaits.isEmpty());
+        List<Forfeit> forfeits = finder.findForfaitByUserId(userId);
+        assertTrue(forfeits.isEmpty());
     }
 
     @Test
     void registerForfait() throws Exception {
-        register.registerForfait(newForfait, userId);
+        register.registerForfait(newForfeit, userId);
 
-        List<Forfait> fetchedForfait = finder.findForfaitByUserId(userId);
-        assertFalse(fetchedForfait.isEmpty());
+        List<Forfeit> fetchedForfeit = finder.findForfaitByUserId(userId);
+        assertFalse(fetchedForfeit.isEmpty());
         // Comparaison basée sur l'égalité des objets. Si cela échoue, vérifie ta méthode equals() dans Forfait.
-        assertEquals(newForfait, fetchedForfait.getFirst());
+        assertEquals(newForfeit, fetchedForfeit.getFirst());
     }
 
     @Test
     void registerForfaits() throws Exception {
-        register.registerForfait(newForfait, userId);
+        register.registerForfait(newForfeit, userId);
 
-        List<Forfait> fetchedForfait = finder.findForfaitByUserId(userId);
-        assertFalse(fetchedForfait.isEmpty());
-        assertEquals(newForfait, fetchedForfait.getFirst());
+        List<Forfeit> fetchedForfeit = finder.findForfaitByUserId(userId);
+        assertFalse(fetchedForfeit.isEmpty());
+        assertEquals(newForfeit, fetchedForfeit.getFirst());
     }
 }

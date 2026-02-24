@@ -1,51 +1,50 @@
 package fr.univcotedazur.skimaster.forfait.components;
 
-import fr.univcotedazur.skimaster.forfait.entities.Forfait;
+import fr.univcotedazur.skimaster.forfait.entities.Forfeit;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
 import fr.univcotedazur.skimaster.forfait.interfaces.FRegister;
-import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
+import fr.univcotedazur.skimaster.forfait.repositories.ForfeitRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import fr.univcotedazur.skimaster.forfait.exceptions.AlreadyExistingForfaitException;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class ForfaitRegistry implements FFinder, FRegister {
-    private final ForfaitRepository repository;
+public class ForfeitRegistry implements FFinder, FRegister {
+    private final ForfeitRepository repository;
 
-    public ForfaitRegistry(ForfaitRepository repository){
+    public ForfeitRegistry(ForfeitRepository repository){
         this.repository = repository;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Forfait> findForfaitByUserId(Long customerId){
+    public List<Forfeit> findForfaitByUserId(Long customerId){
         return this.repository.findByUserId(customerId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Forfait> findAllForfaits(){
+    public List<Forfeit> findAllForfaits(){
         return this.repository.findAll();
     }
 
     @Override
     @Transactional
-    public void registerForfait(Forfait forfait, Long userId){
-        forfait.setUserId(userId);
-        this.repository.save(forfait);
+    public void registerForfait(Forfeit forfeit, Long userId){
+        forfeit.setUserId(userId);
+        this.repository.save(forfeit);
     }
 
     @Override
     @Transactional
-    public void registerForfaits(List<Forfait> forfaits, Long userId){
-        for(Forfait f : forfaits){
+    public void registerForfaits(List<Forfeit> forfeits, Long userId){
+        for(Forfeit f : forfeits){
             f.setUserId(userId);
         }
-        this.repository.saveAll(forfaits);
+        this.repository.saveAll(forfeits);
     }
 
     @Override

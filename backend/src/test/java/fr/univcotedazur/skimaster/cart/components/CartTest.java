@@ -7,10 +7,9 @@ import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.AlreadyExistingCustomerException;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerRegistration;
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
-import fr.univcotedazur.skimaster.forfait.repositories.ForfaitOfferRepository;
-import jakarta.persistence.EntityManager;
+import fr.univcotedazur.skimaster.forfait.repositories.ForfeitOfferRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,30 +31,29 @@ public class CartTest {
     private CartHandler cartHandler;
 
     @Autowired
-    private ForfaitOfferRepository forfaitOfferRepository;
+    private ForfeitOfferRepository forfeitOfferRepository;
 
     @Autowired
     private ProductRepository productRepository;
 
     private Customer returned;
-    private ForfaitOffer adultForfait;
-    private ForfaitOffer childForfait;
+    private ForfeitOffer adultForfait;
+    private ForfeitOffer childForfait;
     private Product childAdultProduct;
-
-    private final String name = "John";
-    private final String creditCard = "1234567890";
 
     @BeforeEach
     void setup() throws AlreadyExistingCustomerException {
-        adultForfait = new ForfaitOffer(AgeCategory.ADULT, PassType.FULL, 10.0);
-        childForfait = new ForfaitOffer(AgeCategory.CHILD, PassType.FULL, 5.0);
+        adultForfait = new ForfeitOffer(AgeCategory.ADULT, PassType.FULL, 10.0);
+        childForfait = new ForfeitOffer(AgeCategory.CHILD, PassType.FULL, 5.0);
 
-        adultForfait = forfaitOfferRepository.save(adultForfait);
-        childForfait = forfaitOfferRepository.save(childForfait);
+        adultForfait = forfeitOfferRepository.save(adultForfait);
+        childForfait = forfeitOfferRepository.save(childForfait);
 
         childAdultProduct = new Product(List.of(adultForfait, childForfait));
         childAdultProduct = productRepository.save(childAdultProduct);
 
+        String name = "John";
+        String creditCard = "1234567890";
         returned = customerRegistration.register(name, creditCard);
     }
 

@@ -13,12 +13,12 @@ public Portier() {
 }
     @Override
     public void authorizePassage(Long gateId, BeepSignal signal) {
-        
+        // TODO
     }
 
     @Override
     public void denyPassage(Long gateId, String reason) {
-
+        // TODO
     }
 
     @Override

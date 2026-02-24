@@ -1,9 +1,9 @@
 package fr.univcotedazur.skimaster.forfait.controllers;
 
 import fr.univcotedazur.skimaster.common.dto.ErrorDTO;
-import fr.univcotedazur.skimaster.forfait.components.ForfaitRegistry;
+import fr.univcotedazur.skimaster.forfait.components.ForfeitRegistry;
 import fr.univcotedazur.skimaster.forfait.dto.ForfaitDTO;
-import fr.univcotedazur.skimaster.forfait.entities.Forfait;
+import fr.univcotedazur.skimaster.forfait.entities.Forfeit;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
 import org.springframework.http.HttpStatus;
@@ -16,15 +16,15 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(path = ForfaitController.BASE_URI, produces = APPLICATION_JSON_VALUE)
-public class ForfaitController {
+@RequestMapping(path = ForfeitController.BASE_URI, produces = APPLICATION_JSON_VALUE)
+public class ForfeitController {
     public static final String BASE_URI = "/forfaits";
 
     private final FFinder finder;
 
-    private final ForfaitRegistry register;
+    private final ForfeitRegistry register;
 
-    public ForfaitController(FFinder finder, ForfaitRegistry register){
+    public ForfeitController(FFinder finder, ForfeitRegistry register){
         this.register = register;
         this.finder=finder;
     }
@@ -37,9 +37,9 @@ public class ForfaitController {
 
     @GetMapping
     public ResponseEntity<List<ForfaitDTO>>getAllForfaits(){
-        List<Forfait> forfaits = finder.findAllForfaits();
-        List<ForfaitDTO> dtos = forfaits.stream()
-                .map(ForfaitController::forfaitToDTO)
+        List<Forfeit> forfeits = finder.findAllForfaits();
+        List<ForfaitDTO> dtos = forfeits.stream()
+                .map(ForfeitController::forfaitToDTO)
                 .toList();
         return ResponseEntity.ok(dtos);
     }
@@ -49,7 +49,7 @@ public class ForfaitController {
         return ResponseEntity.ok(finder.getAvailablePassTypes());
     }
 
-    private static ForfaitDTO forfaitToDTO(Forfait f){
+    private static ForfaitDTO forfaitToDTO(Forfeit f){
         return new ForfaitDTO(
                 f.getId(),
                 f.getUserId(),

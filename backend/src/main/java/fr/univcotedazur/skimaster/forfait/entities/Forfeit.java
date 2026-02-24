@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-public class Forfait{
+public class Forfeit {
 
     @NotNull
     private LocalDate validDate;
@@ -20,15 +20,15 @@ public class Forfait{
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "offer_id", nullable = false)
-    private ForfaitOffer offer;
+    private ForfeitOffer offer;
 
-    public Forfait(Long userId, LocalDate vDate, ForfaitOffer offer) {
+    public Forfeit(Long userId, LocalDate vDate, ForfeitOffer offer) {
         this.userId = userId;
         this.validDate = vDate;
         this.offer = offer;
     }
 
-    public Forfait(){
+    public Forfeit(){
     }
 
     public void setUserId(Long userId){
@@ -73,10 +73,10 @@ public class Forfait{
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        Forfait forfait = (Forfait) o;
+        Forfeit forfeit = (Forfeit) o;
         System.out.println(this.id);
-        System.out.println(forfait.id);
-        return Objects.equals(id, forfait.id);
+        System.out.println(forfeit.id);
+        return Objects.equals(id, forfeit.id);
     }
 
     @Override public int hashCode(){

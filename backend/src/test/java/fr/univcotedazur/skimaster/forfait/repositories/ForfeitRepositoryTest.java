@@ -1,8 +1,8 @@
 package fr.univcotedazur.skimaster.forfait.repositories;
 
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
-import fr.univcotedazur.skimaster.forfait.entities.Forfait;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.Forfeit;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
@@ -15,70 +15,70 @@ import java.time.LocalDate;
 import java.util.List;
 
 @DataJpaTest
-public class ForfaitRepositoryTest {
+public class ForfeitRepositoryTest {
 
     @Autowired
-    private ForfaitRepository forfaitRepository;
+    private ForfeitRepository forfeitRepository;
 
     @Autowired
-    private ForfaitOfferRepository forfaitOfferRepository;
+    private ForfeitOfferRepository forfeitOfferRepository;
 
     private final Long userId = 1L;
-    private ForfaitOffer savedOffer;
-    private Forfait forfait;
+    private ForfeitOffer savedOffer;
+    private Forfeit forfeit;
 
     @BeforeEach
     void setUp() {
         // Sauvegarde de l'offre d'abord pour éviter l'erreur TransientPropertyValueException
-        ForfaitOffer offer = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 70.0);
-        savedOffer = forfaitOfferRepository.save(offer);
+        ForfeitOffer offer = new ForfeitOffer(AgeCategory.ADULT, PassType.WEEKLY, 70.0);
+        savedOffer = forfeitOfferRepository.save(offer);
 
         // Création du forfait avec l'offre persistée
-        forfait = new Forfait(userId, LocalDate.of(2026, 2, 24), savedOffer);
+        forfeit = new Forfeit(userId, LocalDate.of(2026, 2, 24), savedOffer);
     }
 
     @Test
     void testIdGenerationAndUnicity() {
-        Assertions.assertNull(forfait.getId());
-        forfaitRepository.saveAndFlush(forfait);
-        Assertions.assertNotNull(forfait.getId());
+        Assertions.assertNull(forfeit.getId());
+        forfeitRepository.saveAndFlush(forfeit);
+        Assertions.assertNotNull(forfeit.getId());
     }
 
     @Test
     void testFindForfaitByUserId() {
-        forfaitRepository.saveAndFlush(forfait);
-        Assertions.assertEquals(List.of(forfait), forfaitRepository.findByUserId(userId));
+        forfeitRepository.saveAndFlush(forfeit);
+        Assertions.assertEquals(List.of(forfeit), forfeitRepository.findByUserId(userId));
     }
 
     @Test
     void testNullUserId() {
-        Forfait invalidForfait = new Forfait(null, LocalDate.of(2026, 2, 24), savedOffer);
+        Forfeit invalidForfeit = new Forfeit(null, LocalDate.of(2026, 2, 24), savedOffer);
         Assertions.assertThrows(ConstraintViolationException.class, () ->
-                forfaitRepository.saveAndFlush(invalidForfait)
+                forfeitRepository.saveAndFlush(invalidForfeit)
         );
     }
 
     @Test
     void testNullVDate() {
-        Forfait invalidForfait = new Forfait(userId, null, savedOffer);
+        Forfeit invalidForfeit = new Forfeit(userId, null, savedOffer);
         Assertions.assertThrows(ConstraintViolationException.class, () ->
-                forfaitRepository.saveAndFlush(invalidForfait)
+                forfeitRepository.saveAndFlush(invalidForfeit)
         );
     }
 
     @Test
     void testNullAgeCategory() {
-        ForfaitOffer invalidOffer = new ForfaitOffer(null, PassType.WEEKLY, 70.0);
+        ForfeitOffer invalidOffer = new ForfeitOffer(null, PassType.WEEKLY, 70.0);
         Assertions.assertThrows(ConstraintViolationException.class, () ->
-                forfaitOfferRepository.saveAndFlush(invalidOffer)
+                forfeitOfferRepository.saveAndFlush(invalidOffer)
         );
     }
 
     @Test
     void testNullPassType() {
-        ForfaitOffer invalidOffer = new ForfaitOffer(AgeCategory.ADULT, null, 70.0);
+        ForfeitOffer invalidOffer = new ForfeitOffer(AgeCategory.ADULT, null, 70.0);
         Assertions.assertThrows(ConstraintViolationException.class, () ->
-                forfaitOfferRepository.saveAndFlush(invalidOffer)
+                forfeitOfferRepository.saveAndFlush(invalidOffer)
         );
     }
 }

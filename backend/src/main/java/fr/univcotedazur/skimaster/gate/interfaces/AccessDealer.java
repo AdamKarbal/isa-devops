@@ -1,12 +1,12 @@
 package fr.univcotedazur.skimaster.gate.interfaces;
 
-import fr.univcotedazur.skimaster.customer.dto.CustomerDTO;
-import fr.univcotedazur.skimaster.gate.entities.Passage;
+import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
+import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 
 import java.util.List;
 
 public interface AccessDealer {
 
-    List<Passage> fetchRecentPassages();
-    void sendWhiteListToGates();
+    void fetchRecentPassage(BeepContext beepContext) throws CustomerIdNotFoundException;
+    void computeWhiteList();
 }
