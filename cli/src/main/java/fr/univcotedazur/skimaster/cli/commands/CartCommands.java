@@ -29,7 +29,7 @@ public class CartCommands {
     }
 
     @ShellMethod("Get the client's cart (getCart CUSTOMER_NAME)")
-    public CliCart getCurrentCart(String name){
+    public CliCart showCart(String name){
         return restClient.get().uri(getUriForCustomer(name)).retrieve().body(CliCart.class);
     }
 
