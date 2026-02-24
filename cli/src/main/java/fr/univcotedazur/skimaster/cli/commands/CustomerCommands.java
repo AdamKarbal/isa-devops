@@ -13,6 +13,7 @@ import org.springframework.web.client.RestClient;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -30,25 +31,33 @@ public class CustomerCommands {
         this.cliContext = cliContext;
     }
 
+    @ShellMethod(key = "register", value = "Register a customer in the CoD backend (register CUSTOMER_NAME CREDIT_CARD_NUMBER)")
+    public CliCustomer register(String name, String creditCard) {
+        CliCustomer res = restClient.post()
+                .uri(BASE_URI)
+                .body(new CliCustomer(name, creditCard))
+                .retrieve()
+                .body(CliCustomer.class);
+        cliContext.getCustomers().put(Objects.requireNonNull(res).getName(), res);
+        return res;
+    }
+
     @ShellMethod(key = "customers", value = "List all customers (customers)")
-    public String all() {
+    public String customers() {
+        return cliContext.getCustomers().toString();
+    }
+    @ShellMethod("Update all known customers from server")
+    public String updateCustomers() {
         Map<String, CliCustomer> customerMap = cliContext.getCustomers();
         customerMap.clear();
-
         CliCustomer[] customers = restClient
                 .get()
                 .uri(BASE_URI)
                 .retrieve()
                 .body(CliCustomer[].class);
-
-        if (customers == null || customers.length == 0) {
-            return "Aucun customer enregistré";
-        }
-
         customerMap.putAll(Arrays.stream(customers)
                 .collect(Collectors.toMap(CliCustomer::getName, Function.identity()))
         );
-
         return customerMap.toString();
     }
 

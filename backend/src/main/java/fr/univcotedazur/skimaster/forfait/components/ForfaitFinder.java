@@ -34,7 +34,6 @@ public class ForfaitFinder implements FFinder {
                 .toList();
     }
 
-    @Override
     public List<Forfait> findForfaitByUserId(Long customerId) {
         return forfaitRepository.findAllByCustomerId(customerId);
     }

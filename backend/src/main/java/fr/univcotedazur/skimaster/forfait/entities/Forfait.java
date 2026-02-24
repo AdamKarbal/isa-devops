@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "forfait", indexes = {
@@ -81,10 +82,12 @@ public class Forfait {
         if (o == null || getClass() != o.getClass()) return false;
 
         Forfait forfait = (Forfait) o;
-        return id != null && id.equals(forfait.id);
+        System.out.println(this.id);
+        System.out.println(forfait.id);
+        return id != null && Objects.equals(id, forfait.id);
     }
 
     @Override public int hashCode(){
-        return 31;
+        return Objects.hash(id);
     }
 }

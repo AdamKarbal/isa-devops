@@ -1,6 +1,7 @@
 package fr.univcotedazur.skimaster.cli.commands;
 
 import fr.univcotedazur.skimaster.cli.CliContext;
+import fr.univcotedazur.skimaster.cli.model.CliCustomer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -10,6 +11,7 @@ import org.springframework.web.client.RestClient;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withResourceNotFound;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -39,7 +41,58 @@ class CustomerCommandsTest {
         String result = customerCommands.show(1L);
 
         assertThat(result).contains("Client #1", "Nom: Clienta");
-        assertThat(result).doesNotContain("CreditCard");
+        assertThat(result).contains("CB: 1234567890");
+        server.verify();
+    }
+
+    @Test
+    void registerCreatesCustomerAndStoresItInLocalContext() {
+        server.expect(requestTo("http://localhost:8080/customers"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{" +
+                        "\"name\":\"Clienta\"," +
+                        "\"creditCard\":\"1234567890\"}"))
+                .andRespond(withSuccess("{" +
+                        "\"id\":1," +
+                        "\"name\":\"Clienta\"," +
+                        "\"creditCard\":\"1234567890\"}", MediaType.APPLICATION_JSON));
+
+        CliCustomer created = customerCommands.register("Clienta", "1234567890");
+
+        assertThat(created).isNotNull();
+        assertThat(created.getId()).isEqualTo(1L);
+        assertThat(customerCommands.customers()).contains("Clienta", "1234567890");
+        server.verify();
+    }
+
+    @Test
+    void customersDisplaysAlreadyKnownCustomers() {
+        server.expect(requestTo("http://localhost:8080/customers"))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess("{" +
+                        "\"id\":3," +
+                        "\"name\":\"Clientc\"," +
+                        "\"creditCard\":\"3333\"}", MediaType.APPLICATION_JSON));
+
+        customerCommands.register("Clientc", "3333");
+
+        assertThat(customerCommands.customers()).contains("Clientc", "3333");
+        server.verify();
+    }
+
+    @Test
+    void updateCustomersRefreshesKnownCustomersFromServer() {
+        server.expect(requestTo("http://localhost:8080/customers"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess("[" +
+                        "{\"id\":1,\"name\":\"Clienta\",\"creditCard\":\"1111\"}," +
+                        "{\"id\":2,\"name\":\"Clientb\",\"creditCard\":\"2222\"}" +
+                        "]", MediaType.APPLICATION_JSON));
+
+        String result = customerCommands.updateCustomers();
+
+        assertThat(result).contains("Clienta", "Clientb", "1111", "2222");
+        assertThat(customerCommands.customers()).contains("Clienta", "Clientb");
         server.verify();
     }
 
