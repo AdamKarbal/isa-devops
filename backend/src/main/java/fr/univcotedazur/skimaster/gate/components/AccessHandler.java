@@ -4,7 +4,6 @@ import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundExceptio
 import fr.univcotedazur.skimaster.forfait.components.ForfeitRegistry;
 import fr.univcotedazur.skimaster.forfait.entities.Forfeit;
 import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
-import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessDealer;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessTreatment;
 import org.springframework.stereotype.Component;
