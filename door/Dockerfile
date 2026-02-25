@@ -4,7 +4,7 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn clean package
 
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 ARG JAR_FILE=turnstile-1.0.0.jar
 COPY --from=build /app/target/${JAR_FILE} app.jar
