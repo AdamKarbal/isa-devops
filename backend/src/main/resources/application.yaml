@@ -2,6 +2,10 @@ bank:
   host:
     baseurl: http://${BANK_WITH_PORT:localhost:9090}
 
+door:
+  host:
+    baseurl: http://${DOOR_WITH_PORT:localhost:8082}
+
 # Property to set the visible level on all logs (OFF will turn off all of them)
 # logging:
 #   level:
