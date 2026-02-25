@@ -19,6 +19,6 @@ public class BeepStrategy implements BeepInformation {
     @Override
     public void assignBeep(BeepContext beep, AgeCategory age) {
         BeepSignal signalSend = age.equals(AgeCategory.CHILD)?BeepSignal.CHILD_BEEP:BeepSignal.STANDARD_BEEP;
-        portierInformation.authorizePassage(beep.gateId(), signalSend);
+        portierInformation.authorizePassage(beep.gateId(), beep.cardId(), signalSend);
     }
 }

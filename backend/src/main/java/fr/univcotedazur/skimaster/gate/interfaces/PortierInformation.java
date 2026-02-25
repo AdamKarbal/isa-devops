@@ -1,13 +1,12 @@
 package fr.univcotedazur.skimaster.gate.interfaces;
 
+import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
 import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
 
 public interface PortierInformation {
 
-    void authorizePassage(Long gateId,BeepSignal signal);
-    void denyPassage(Long gateId, String reason);
-
-    void closeGateById(Long gateId);
+    AccessRequest authorizePassage(Long gateId,Long forfeitId, BeepSignal signal);
+    AccessRequest denyPassage(Long gateId,Long forfeitId);
 
 
 }
