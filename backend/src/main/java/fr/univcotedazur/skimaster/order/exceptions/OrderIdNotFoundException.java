@@ -3,7 +3,7 @@ package fr.univcotedazur.skimaster.order.exceptions;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class OrderIdNotFoundException extends Exception {
+public class OrderIdNotFoundException extends RuntimeException {
 
     private final Long orderId;
 
@@ -13,6 +13,10 @@ public class OrderIdNotFoundException extends Exception {
     }
 
     public Long getOrderId() {
+        return orderId;
+    }
+
+    public Long getId() {
         return orderId;
     }
 }

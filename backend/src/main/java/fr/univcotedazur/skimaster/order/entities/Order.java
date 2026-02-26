@@ -26,6 +26,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @NotNull
     private OrderStatus status;
+    private String paymentReceiptId;
     public Order(){
     }
 
@@ -65,6 +66,10 @@ public class Order {
 
     public OrderStatus getStatus() { return status; }
     public void setStatus(OrderStatus status) { this.status = status; }
+
+    public void cancel() {
+        this.status = OrderStatus.CANCELED;
+    }
 
     public String getPaymentReceiptId() { return paymentReceiptId; }
     public void setPaymentReceiptId(String paymentReceiptId) { this.paymentReceiptId = paymentReceiptId; }
