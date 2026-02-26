@@ -16,16 +16,17 @@ public class Order {
     @Id
     @GeneratedValue
     private Long orderId;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<Product> items;
     @Positive
     private double price;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER) // Force le chargement du client avec la commande
     @JoinColumn(name = "customer_id")
     private Customer customer;
     @Enumerated(EnumType.STRING)
     @NotNull
     private OrderStatus status;
+    private String paymentReceiptId;
     public Order(){
     }
 
@@ -33,7 +34,7 @@ public class Order {
         this.customer=customer;
         this.items = items;
         this.price = price;
-        this.status = OrderStatus.COMPLETED;
+        this.status = OrderStatus.CREATED;
         this.customer.addOrder(this);
     }
 
@@ -62,5 +63,11 @@ public class Order {
     public void setPrice(double price){
         this.price = price;
     }
+
+    public OrderStatus getStatus() { return status; }
+    public void setStatus(OrderStatus status) { this.status = status; }
+
+    public String getPaymentReceiptId() { return paymentReceiptId; }
+    public void setPaymentReceiptId(String paymentReceiptId) { this.paymentReceiptId = paymentReceiptId; }
 
 }

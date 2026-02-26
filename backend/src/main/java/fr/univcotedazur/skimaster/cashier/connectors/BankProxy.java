@@ -42,7 +42,7 @@ public class BankProxy implements Bank {
                     .body(new PaymentRequestDTO(customer.getCreditCard(), value))
                     .retrieve()
                     .toEntity(PaymentReceiptDTO.class);
-            if (responseEntity.getStatusCode() == HttpStatus.CREATED) {
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
                 if (responseEntity.getBody() != null) {
                     return Optional.of(responseEntity.getBody().payReceiptId());
                 } else {

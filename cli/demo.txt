@@ -1,35 +1,35 @@
-echo "start of demo"
-echo "SCENARIO: simple registration and valid order"
-recipes
-register kadoc 5251896983
+echo ===_0.a_INITIALIZATION_:_Customers_===
+register Julien3 1238969831
+register Tatie3 1234567890
+update-customers
+
+echo ===_0.b_INITIALIZATION_:_Catalog_===
+add-offer ADULT DAILY 10.0
+add-product 1 1
+
+echo ===_0.c_INITIALIZATION_:_Creating_Orders_via_Cart_===
+add-to-cart Julien3 1 1
+validate Julien3
+add-to-cart Tatie3 1 1
+validate Tatie3
+
+echo ===_1._Verification_of_existing_Customers_===
 customers
-echo "cart content ->"
-show-cart kadoc
-add-to-cart kadoc CHOCOLALALA 12
-add-to-cart kadoc SOO_CHOCOLATE 3
-show-cart kadoc
-remove-from-cart kadoc SOO_CHOCOLATE 1
-show-cart kadoc
-validate-cart kadoc
-show-cart kadoc
+
+echo ===_2._Checking_existing_Orders_===
 orders
-echo "ERROR 403: removing too much cookies in a cart"
-add-to-cart kadoc SOO_CHOCOLATE 2
-remove-from-cart kadoc SOO_CHOCOLATE 3
-show-cart kadoc
-validate-cart kadoc
+
+echo ===_3._SUCCESSFUL_SCENARIO:_Paying_a_valid_order_===
+pay-order 1
+
+echo ===_4._Checking_the_Order_status_after_payment_===
 orders
-echo "ERROR 403: validating empty cart triggers an error"
-validate-cart kadoc
-echo "ERROR 409: registering a customer twice triggers an error"
-register kadoc 5251896983
-echo "ERROR 422: registering a customer with an invalid credit card"
-register tatie 121212
-echo "ERROR 400: paying with a credit card that will be denied by the bank"
-register tatie 1234567890
-customers
-add-to-cart tatie CHOCOLALALA 1
-show-cart tatie
-validate-cart tatie
+
+echo ===_5._ERROR_SCENARIO:_Paying_again_===
+pay-order 1
+
+echo ===_6._ERROR_SCENARIO:_Bank_Denies_Payment_===
+pay-order 2
+
+echo ===_7._Final_check_of_all_orders_===
 orders
-echo "END OF SCENARIO / you can get the status of an order by its id"
