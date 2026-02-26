@@ -41,13 +41,12 @@ public class InvoiceHandler implements InvoiceCreator {
 
     @Override
     public Invoice createInvoice(Order order, String receiptId) {
-        Invoice invoice = new Invoice(++idCounter, order);
-        invoiceDatabase.put(invoice.getInvoiceID(), invoice);
         return invoice;
     }
 
     @Override
     public Invoice getInvoice(long invoiceID) {
+
         return invoiceDatabase.get(invoiceID);
     }
 
