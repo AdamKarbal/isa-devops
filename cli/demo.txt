@@ -1,27 +1,35 @@
-echo "\n--- 1. Verification of existing Customers ---"
+echo ===_0.a_INITIALIZATION_:_Customers_===
+register Julien3 1238969831
+register Tatie3 1234567890
+update-customers
+
+echo ===_0.b_INITIALIZATION_:_Catalog_===
+add-offer ADULT DAILY 10.0
+add-product 1 1
+
+echo ===_0.c_INITIALIZATION_:_Creating_Orders_via_Cart_===
+add-to-cart Julien3 1 1
+validate Julien3
+add-to-cart Tatie3 1 1
+validate Tatie3
+
+echo ===_1._Verification_of_existing_Customers_===
 customers
 
-echo "\n--- 2. Checking existing Orders ---"
+echo ===_2._Checking_existing_Orders_===
 orders
 
-echo "\n--- 3. SUCCESSFUL SCENARIO: Paying a valid order ---"
-echo "Action: Julien pays his order (ID: 1) with his valid credit card"
+echo ===_3._SUCCESSFUL_SCENARIO:_Paying_a_valid_order_===
 pay-order 1
 
-echo "\n--- 4. Checking the Order status after payment ---"
-echo "The status should now be PAID and have a paymentReceiptId"
+echo ===_4._Checking_the_Order_status_after_payment_===
 orders
 
-echo "\n--- 5. ERROR SCENARIO: Trying to pay an already paid order ---"
-echo "Action: Julien tries to pay Order 1 again"
+echo ===_5._ERROR_SCENARIO:_Paying_again_===
 pay-order 1
 
-echo "\n--- 6. ERROR SCENARIO: Bank Denies Payment ---"
-echo "Assuming Order 2 belongs to 'Tatie' with an invalid credit card (1234567890)"
+echo ===_6._ERROR_SCENARIO:_Bank_Denies_Payment_===
 pay-order 2
 
-echo "\n--- 7. Final check of all orders ---"
+echo ===_7._Final_check_of_all_orders_===
 orders
-
-echo "\n====================================================="
-echo "END OF DEMO"

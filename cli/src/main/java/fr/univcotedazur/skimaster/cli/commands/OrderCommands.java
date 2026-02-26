@@ -3,12 +3,14 @@ package fr.univcotedazur.skimaster.cli.commands;
 import fr.univcotedazur.skimaster.cli.CliContext;
 import fr.univcotedazur.skimaster.cli.model.CliInvoice;
 import fr.univcotedazur.skimaster.cli.model.CliOrder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.Arrays;
+import java.util.List;
 
 @ShellComponent
 public class OrderCommands {
@@ -23,14 +25,15 @@ public class OrderCommands {
         this.cliContext = cliContext;
     }
 
-    @ShellMethod("List all orders in the system")
+    @ShellMethod("List all orders")
     public String orders() {
         try {
-            CliOrder[] orders = restClient.get()
+            List<CliOrder> orders = restClient.get()
                     .uri(BASE_URI)
                     .retrieve()
-                    .body(CliOrder[].class);
-            return orders != null ? Arrays.toString(orders) : "No orders found.";
+                    .body(new ParameterizedTypeReference<List<CliOrder>>() {});
+
+            return orders.isEmpty() ? "No orders found." : orders.toString();
         } catch (Exception e) {
             return "Error retrieving orders: " + e.getMessage();
         }

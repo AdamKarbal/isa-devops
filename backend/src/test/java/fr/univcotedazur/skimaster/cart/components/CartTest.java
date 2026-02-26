@@ -37,15 +37,16 @@ public class CartTest {
     void setup() throws AlreadyExistingCustomerException {
         returned = customerRegistration.register(name,creditCard);
     }
-/*
-    @Test
-    void e(){
-        Cart cart = returned.getCart();
-        cart.addItem(childAdultProduct);
-        assertEquals(cart.getItems().size(),1);
-        assertEquals(cartHandler.computeCartPrice(cart),adultForfait.getPrice()+childForfait.getPrice());
 
-    }*/
+    @Test
+    void basicAddCart(){
+        Cart cart = returned.getCart();
+        cart.addItem(childAdultProduct, 1);
+        assertEquals(1, cart.getItems().size());
+        double actualPrice = cartHandler.computeCartPrice(cart);
+        assertEquals(14.85, actualPrice, 0.01);
+    }
+
 
 
 }

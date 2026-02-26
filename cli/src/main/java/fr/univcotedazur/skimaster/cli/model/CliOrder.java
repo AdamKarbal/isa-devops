@@ -1,29 +1,58 @@
 package fr.univcotedazur.skimaster.cli.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * CLI-side representation aligned with an OrderCreatedDTO-like payload
+ * containing an order identifier, ordered item identifiers and total price.
+ */
 public class CliOrder {
-    private Long id;
+
+    private Long orderId;
+    private List<CliProduct> items = new ArrayList<>();
     private double price;
-    private String status;
-    private String paymentReceiptId;
 
-    public CliOrder() {}
+    public CliOrder() {
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-    public String getPaymentReceiptId() { return paymentReceiptId; }
-    public void setPaymentReceiptId(String paymentReceiptId) { this.paymentReceiptId = paymentReceiptId; }
+    public CliOrder(Long orderId, List<CliProduct> items, double price) {
+        this.orderId = orderId;
+        this.items = new ArrayList<>(items);
+        this.price = price;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    public List<CliProduct> getItems() {
+        return items;
+    }
+
+    public void setItems(List<CliProduct> items) {
+        this.items = items;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
     @Override
     public String toString() {
+        List<Long> itemIds = items.stream().map(CliProduct::getId).toList();
         return "Order{" +
-                "id=" + id +
+                "orderId=" + orderId +
+                ", itemIds=" + itemIds +
                 ", price=" + price +
-                ", status='" + status + '\'' +
-                (paymentReceiptId != null ? ", receipt='" + paymentReceiptId + '\'' : "") +
                 '}';
     }
 }

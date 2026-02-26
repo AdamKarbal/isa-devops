@@ -21,7 +21,7 @@ class ProductRepositoryTest {
 
     @Autowired
     private ForfaitOfferRepository forfaitOfferRepository;
-/*
+
     @Test
     void testIdGenerationAndPersistence() {
         ForfaitOffer adultDailyOffer = forfaitOfferRepository.saveAndFlush(
@@ -49,6 +49,6 @@ class ProductRepositoryTest {
                 ConstraintViolationException.class,
                 () -> productRepository.saveAndFlush(new Product(List.of(adultDailyOffer), 0))
         );
-    }*/
+    }
 
 }

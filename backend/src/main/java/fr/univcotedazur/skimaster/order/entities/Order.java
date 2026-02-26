@@ -16,11 +16,11 @@ public class Order {
     @Id
     @GeneratedValue
     private Long orderId;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<Product> items;
     @Positive
     private double price;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER) // Force le chargement du client avec la commande
     @JoinColumn(name = "customer_id")
     private Customer customer;
     @Enumerated(EnumType.STRING)
