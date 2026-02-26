@@ -1,10 +1,8 @@
 package fr.univcotedazur.skimaster.cashier.entites;
 
-import fr.univcotedazur.skimaster.order.entities.Order;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,6 +18,7 @@ public class Invoice {
 
     public Invoice() {
     }
+
     public Invoice(Long orderRefId, double amount, String bankReceiptId) {
         this.orderRefId = orderRefId;
         this.amount = amount;
@@ -27,15 +26,9 @@ public class Invoice {
         this.paymentDate = LocalDateTime.now();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getBankReceiptId() {
-        return bankReceiptId;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
+    public Long getId() { return id; }
+    public Long getOrderRefId() { return orderRefId; }
+    public double getAmount() { return amount; }
+    public LocalDateTime getPaymentDate() { return paymentDate; }
+    public String getBankReceiptId() { return bankReceiptId; }
 }
