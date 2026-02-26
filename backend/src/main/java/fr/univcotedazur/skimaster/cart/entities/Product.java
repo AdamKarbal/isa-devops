@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 @Entity
 public class Product {
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<ForfaitOffer> packageItems = new ArrayList<>();
     @Id
     @GeneratedValue

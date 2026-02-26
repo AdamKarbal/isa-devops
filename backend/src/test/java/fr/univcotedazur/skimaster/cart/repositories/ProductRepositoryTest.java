@@ -25,7 +25,7 @@ class ProductRepositoryTest {
     @Test
     void testIdGenerationAndPersistence() {
         ForfaitOffer adultDailyOffer = forfaitOfferRepository.saveAndFlush(
-                new ForfaitOffer(AgeCategory.ADULT, PassType.FULL, 50.0)
+                new ForfaitOffer(AgeCategory.ADULT, PassType.DAILY, 50.0)
         );
         Product product = new Product(List.of(adultDailyOffer), 10);
 
@@ -42,7 +42,7 @@ class ProductRepositoryTest {
     @Test
     void testReductionMustBeAtLeastOne() {
         ForfaitOffer adultDailyOffer = forfaitOfferRepository.saveAndFlush(
-                new ForfaitOffer(AgeCategory.ADULT, PassType.FULL, 50.0)
+                new ForfaitOffer(AgeCategory.ADULT, PassType.DAILY, 50.0)
         );
 
         Assertions.assertThrows(

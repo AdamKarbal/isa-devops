@@ -1,0 +1,6 @@
+server:
+  port: 8082
+
+gate:
+  id: gate-1
+  alert-threshold: 50
