@@ -21,6 +21,8 @@ services:
         condition: service_healthy
       door-service:
         condition: service_healthy
+      bank-system:
+        condition: service_healthy
     healthcheck:
       test: "curl --silent --fail localhost:8080/actuator/health | grep UP || exit 1"
       interval: 5s
