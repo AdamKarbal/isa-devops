@@ -47,7 +47,13 @@ public class CartController {
         cartModifier.removeItem(customerId, infos.productId(), infos.quantity());
         return ResponseEntity.noContent().build();
     }
-    @PostMapping(path = "/{customerId}/validate")
+@GetMapping(path = "/{customerId}/price", consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Double> price(@PathVariable("customerId") Long customerId) throws CustomerIdNotFoundException {
+        double price = cartProcessor.computeCartPrice(customerFinder.retrieveCustomer(customerId).getCart());
+        return ResponseEntity.ok(price);
+    }
+
+    @PostMapping(path = "/{customerId}/validate", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderCreatedDTO> validate(@PathVariable("customerId") Long customerId)
             throws CustomerIdNotFoundException, EmptyCartException {
         Order validated = cartProcessor.validate(customerId);
@@ -57,8 +63,9 @@ public class CartController {
                 validated.getPrice()
         ));
     }
+
     @GetMapping(path = "/{customerId}")
-    public ResponseEntity<CartDTO> getCart(@PathVariable("customerId") Long customerId) throws CustomerIdNotFoundException{
+    public ResponseEntity<CartDTO> getCart(@PathVariable("customerId") Long customerId) throws CustomerIdNotFoundException {
         Customer customer = customerFinder.retrieveCustomer(customerId);
         return ResponseEntity.ok(customer.getCart().toDto());
     }

@@ -1,5 +1,41 @@
 # Changelog
 
+# [1.2.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.1.2...v1.2.0) (2026-02-24)
+
+
+### Bug Fixes
+
+* **back:** correction de certains tests unitaires liés au cart et au forfaitOffer ([9bdaf6d](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/9bdaf6d7249481cc8919f8e77139dfa5609221fa))
+* **back:** correction de tests unitaires après rebase ([f30a5d6](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/f30a5d60b5217a8f5a53dd5ee03c3c7f00f6a3e9))
+* **back:** rebase de origin main dans main local ([0994816](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/0994816d08a4be4dd296a753ca21819c3db59b09))
+
+
+### Features
+
+* ajout d'un controlleur pour consulter catalogue et visualiser forfaits existants + ForfaitDTO ([08822e1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/08822e16fcf487a0cb90e5c0f80df6c5f6755b05))
+* **back:** added files I needed ([b2c0704](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/b2c0704fddfd35f400c37d246bdbd210f99ed0ff))
+* **back:** added validate & removeItem on entity and component Cart ([6f9d09f](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/6f9d09f8f5a279c40517c63f3e022c34e4a87937))
+* **back:** components interacting with forfaitoffer & product repos ([2e47164](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/2e47164fe9b1999d2cd0162f3232b46fd7400f12))
+* **back:** endpoints for each method in cart interfaces ([fb15987](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/fb159872e37b26467a30f2178195eea67e2f74e4))
+* **back:** entity creation ([fd33bd5](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/fd33bd51de03ccb1941459a7c7681e0b2e942fe8))
+* **back:** enums & exceptions creation ([314aa1b](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/314aa1b35a1a6c19b0413273fa39253832b88158))
+* **back:** forfaitOfferRepository & ProductRepository implementation ([fbd2850](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/fbd2850aa2eb908225b51a8de77a2b9152dbf936))
+* **back:** implementation of the order class ([825a2bd](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/825a2bdb64c99d95b4bd7e03b0f7220790c582b8))
+* **back:** implementation of the orderer component ([99469b9](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/99469b9ad1e285e1be520a1a5f6a1f01b534791a))
+* **back:** informations of the forfait are now wrapped in a forfaitOffer ([760ddb4](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/760ddb4b9c14c23ce5f8526698c27521261df1ae))
+* **back:** orders are stored directly in the customer ([5b67424](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/5b674243738609209d4fe288e951f65870918f1c))
+* changement de nom de mapToDTO() ([0062633](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/0062633d1a0af6285ad6ed9270dcce724fbc4c2a))
+* implémentation de ForfaitRegistry ([6a0421a](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/6a0421ac876da2040a6bc057ebafff1f7988a65c))
+* implémentation des Forfaits et des interfaces pour la registry ([e0a5769](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/e0a5769ca3378fdd8d3878fbe5caa81e26c5b947))
+* tests unitaires pour les forfaits ([ed2bcad](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/ed2bcad174f51dc51ee9eae8644b1291120bc1c7))
+
+## [1.1.2](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.1.1...v1.1.2) (2026-02-17)
+
+
+### Bug Fixes
+
+* **github:** fix commitlint error ([2c994ae](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/2c994ae06845b27c8a67edbd19bf399b22290914))
+
 ## 1.1.1 (2026-02-09)
 
 
