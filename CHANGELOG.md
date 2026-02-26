@@ -1,5 +1,19 @@
 # Changelog
 
+# [1.3.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.2.0...v1.3.0) (2026-02-26)
+
+
+### Features
+
+* **door:** added door-service dependency to docker compose ([a3bd3a4](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/a3bd3a41e5196e00b574636ef19af5d2d95c3db3))
+* **door:** application boot ([c9d1be9](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/c9d1be92a1c385f8538478b213d348c87df095d9))
+* **door:** dependencies ([3c4dc39](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/3c4dc39d4cce8c01c23e8bac150e8c00030a0f93))
+* **door:** dockerfile and build script to build the door image ([056f056](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/056f0562a6508eb473e1cdd4930b0070aafabd22))
+* **door:** dockerfile and build script to build the door image ([d1ce493](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/d1ce4937916e7d8516d7c6815c17003853f4c9d5))
+* **door:** implemented DTOs ([ef01d3b](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/ef01d3b484d34d43c481c1ca81e2237d3703a684))
+* **door:** implemented gateService and gateController ([bbc9633](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/bbc9633c3160ccbb60c8bbda1e772b0f91f14d29))
+* **door:** implemented the entities ([5153792](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/51537925d440d1f1c1cf72bd7987c60139f51696))
+
 # [1.2.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.1.2...v1.2.0) (2026-02-24)
 
 
