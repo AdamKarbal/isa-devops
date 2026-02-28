@@ -16,7 +16,7 @@ public class Order {
     @Id
     @GeneratedValue
     private Long orderId;
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     private Set<Product> items;
     @Positive
     private double price;
@@ -66,6 +66,10 @@ public class Order {
 
     public OrderStatus getStatus() { return status; }
     public void setStatus(OrderStatus status) { this.status = status; }
+
+    public void cancel() {
+        this.status = OrderStatus.CANCELED;
+    }
 
     public String getPaymentReceiptId() { return paymentReceiptId; }
     public void setPaymentReceiptId(String paymentReceiptId) { this.paymentReceiptId = paymentReceiptId; }
