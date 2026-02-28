@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional // default behavior : rollback DB operations after each test (even if it fails)
-class CustomerRegistryTest {
-
+class
+CustomerRegistryTest {
     @Autowired
     private CustomerRegistration customerRegistration;
 

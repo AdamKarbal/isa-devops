@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
+
 @DataJpaTest // Only run a test container with the JPA layer (only repositories are up)
 // @DataJpaTest is "transactional rollback by default
 class CustomerRepositoryTest {
@@ -19,7 +21,7 @@ class CustomerRepositoryTest {
     void testIdGenerationAndUnicity() {
         Customer john = new Customer("john", "1234567890");
         Assertions.assertNull(john.getId());
-        customerRepository.saveAndFlush(john); // save in the persistent context and force saving in the DB (thus ensuring validation by Hibernate)
+        customerRepository.saveAndFlush(john);
         Assertions.assertNotNull(john.getId());
         Assertions.assertThrows(DataIntegrityViolationException.class, () -> customerRepository.saveAndFlush(new Customer("john", "1234567890")));
     }
