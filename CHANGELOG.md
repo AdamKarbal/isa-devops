@@ -1,5 +1,7 @@
 # Changelog
 
+# [2.0.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.5.0...v2.0.0) (2026-03-01)
+
 # [1.5.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.4.0...v1.5.0) (2026-02-28)
 
 
