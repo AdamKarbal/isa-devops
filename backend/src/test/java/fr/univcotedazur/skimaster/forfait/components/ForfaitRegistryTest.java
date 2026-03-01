@@ -18,7 +18,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(properties = {"gate.host.baseurl=http://localhost:8082"})
+
 @Transactional
 public class ForfaitRegistryTest {
 

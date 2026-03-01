@@ -46,7 +46,8 @@ public class OrderHistory {
         return new OrderCreatedDTO(
                 o.getOrderId(),
                 o.getItems(),
-                o.getPrice()
+                o.getPrice(),
+                o.getStatus()
         );
     }
 

@@ -18,7 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-@SpringBootTest
+@SpringBootTest(properties = {"gate.host.baseurl=http://localhost:8082"})
+
 @Transactional
 class OrdererTest {
 

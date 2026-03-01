@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class CliContext {
+public class    CliContext {
 
     private Map<String, CliCustomer> customers;
     private Map<Long, CliForfaitOffer> offers;

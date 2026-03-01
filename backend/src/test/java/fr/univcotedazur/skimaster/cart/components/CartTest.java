@@ -18,7 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@SpringBootTest(properties = {"gate.host.baseurl=http://localhost:8082"})
 @Transactional
 public class CartTest {
     @Autowired

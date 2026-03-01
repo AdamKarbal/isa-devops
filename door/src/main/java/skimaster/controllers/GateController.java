@@ -49,4 +49,8 @@ public class GateController {
     public IncidentDTO reportIncident(@RequestBody IncidentRequestDTO request) {
         return gateService.addIncident(request);
     }
+    @GetMapping("/passages")
+    public List<Long> getAllPassageIds() {
+        return gateService.getAllPassages();
+    }
 }

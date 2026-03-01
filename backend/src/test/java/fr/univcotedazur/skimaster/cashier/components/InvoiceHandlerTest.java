@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@SpringBootTest(properties = {"gate.host.baseurl=http://localhost:8082"})
 @Transactional
 class InvoiceHandlerTest {
 
