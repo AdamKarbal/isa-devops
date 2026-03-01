@@ -7,7 +7,7 @@ import fr.univcotedazur.skimaster.cart.repositories.ProductRepository;
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.order.components.Orderer;
 import fr.univcotedazur.skimaster.order.entities.Order;
 import fr.univcotedazur.skimaster.cart.entities.Product;
@@ -33,7 +33,7 @@ public class CartHandler implements CartProcessor, CartModifier {
     }
     private double priceProduct(Product product) {
         double itemsPrice = product.getItems().stream()
-                .mapToDouble(ForfaitOffer::getPrice)
+                .mapToDouble(ForfeitOffer::getPrice)
                 .sum();
         return itemsPrice * (1 - (product.getReduction() / 100.0));
     }

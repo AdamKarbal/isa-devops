@@ -3,10 +3,11 @@ package fr.univcotedazur.skimaster.forfait.components;
 import fr.univcotedazur.skimaster.forfait.dto.ForfaitDTO;
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import fr.univcotedazur.skimaster.forfait.interfaces.FRegister;
-import fr.univcotedazur.skimaster.forfait.repositories.ForfaitOfferRepository;
+import fr.univcotedazur.skimaster.forfait.repositories.ForfeitOfferRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +31,16 @@ public class ForfaitRegistryTest {
     private ForfaitRegistry finder;
 
     @Autowired
-    private ForfaitOfferRepository forfaitOfferRepository;
+    private ForfeitOfferRepository forfaitOfferRepository;
 
     private final Long userId = 1L;
-    private ForfaitOffer savedOffer;
+    private ForfeitOffer savedOffer;
     private Forfait newForfait;
 
     @BeforeEach
     void setUp() {
         // Préparation de l'offre en base de données
-        ForfaitOffer offer = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 70.0);
+        ForfeitOffer offer = new ForfeitOffer(AgeCategory.ADULT, PassType.WEEKLY, 70.0);
         savedOffer = forfaitOfferRepository.save(offer);
 
         // Liaison du forfait avec l'offre gérée par Hibernate

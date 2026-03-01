@@ -26,15 +26,15 @@ public class Forfait {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "offer_id", nullable = false)
-    private ForfaitOffer offer;
+    private ForfeitOffer offer;
 
-    public Forfait(Long customerId, LocalDate vDate, ForfaitOffer offer) {
+    public Forfait(Long customerId, LocalDate vDate, ForfeitOffer offer) {
         this.customerId = customerId;
         this.validDate = vDate;
         this.offer = offer;
     }
 
-    public Forfait(Customer customer, LocalDate vDate, ForfaitOffer offer) {
+    public Forfait(Customer customer, LocalDate vDate, ForfeitOffer offer) {
         this(customer.getId(), vDate, offer);
     }
 

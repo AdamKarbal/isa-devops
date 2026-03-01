@@ -6,7 +6,7 @@ import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.AlreadyExistingCustomerException;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerRegistration;
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,8 +29,8 @@ public class CartTest {
 
     private final String name = "John";
     private final String creditCard = "1234567890";
-    private final ForfaitOffer adultForfait = new ForfaitOffer(AgeCategory.ADULT, PassType.FULL,10);
-    private final ForfaitOffer childForfait = new ForfaitOffer(AgeCategory.CHILD,PassType.FULL,5);
+    private final ForfeitOffer adultForfait = new ForfeitOffer(AgeCategory.ADULT, PassType.FULL,10);
+    private final ForfeitOffer childForfait = new ForfeitOffer(AgeCategory.CHILD,PassType.FULL,5);
     private final Product childAdultProduct = new Product(List.of(adultForfait,childForfait));
 
     @BeforeEach

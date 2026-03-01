@@ -7,8 +7,8 @@ import jakarta.validation.constraints.Positive;
 import java.util.Objects;
 
 @Entity
-@Table(name = "forfait_offer")
-public class ForfaitOffer {
+@Table(name = "forfeit_offer")
+public class ForfeitOffer {
 
     @Id
     @GeneratedValue
@@ -27,9 +27,9 @@ public class ForfaitOffer {
     private double price;
 
 
-    protected ForfaitOffer() {}
+    protected ForfeitOffer() {}
 
-    public ForfaitOffer(AgeCategory ageCategory, PassType passType, double price) {
+    public ForfeitOffer(AgeCategory ageCategory, PassType passType, double price) {
         this.ageCategory = ageCategory;
         this.passType = passType;
         this.price = price;
@@ -42,7 +42,7 @@ public class ForfaitOffer {
 
     @Override public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ForfaitOffer other)) return false;
+        if (!(o instanceof ForfeitOffer other)) return false;
         return id != null && Objects.equals(id, other.id);
     }
 

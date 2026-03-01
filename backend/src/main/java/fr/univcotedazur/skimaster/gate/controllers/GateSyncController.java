@@ -9,15 +9,25 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
+import fr.univcotedazur.skimaster.gate.interfaces.AccessDealer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping(path = "/gatesync", produces = APPLICATION_JSON_VALUE)
 public class GateSyncController {
 
     private final AccessHandler accessHandler;
+    public static final String BASE_URI = "/gates";
+    private final AccessDealer accessDealer;
 
-    public GateSyncController(AccessHandler accessHandler) {
+    public GateSyncController(AccessHandler accessHandler, AccesDealer accesDealer) {
         this.accessHandler = accessHandler;
+        this.accesDealer = accesDealer;
     }
 
     @PostMapping("/push")

@@ -11,12 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class ForfaitTest {
 
     private Long customerId;
-    private ForfaitOffer offer;
+    private ForfeitOffer offer;
 
     @BeforeEach
     void setUp() {
         customerId = 7L;
-        offer = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 35.0);
+        offer = new ForfeitOffer(AgeCategory.ADULT, PassType.WEEKLY, 35.0);
     }
 
     @Test
