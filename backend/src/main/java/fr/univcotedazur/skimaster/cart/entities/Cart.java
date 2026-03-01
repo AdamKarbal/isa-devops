@@ -1,5 +1,6 @@
 package fr.univcotedazur.skimaster.cart.entities;
 
+import fr.univcotedazur.skimaster.cart.dtos.CartDTO;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -62,6 +63,10 @@ public class Cart {
         if (target.getQuantity() <= 0) {
             items.remove(target);
         }
+    }
+
+    public CartDTO toDto(){
+        return new CartDTO(items);
     }
 }
 

@@ -8,6 +8,8 @@ public class CliCustomer {
     private String name;
     private String creditCard;
 
+    public CliCustomer() {}
+
     public CliCustomer(String name, String creditCard) {
         this.name = name;
         this.creditCard = creditCard;

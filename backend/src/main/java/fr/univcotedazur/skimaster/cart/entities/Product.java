@@ -1,7 +1,7 @@
 package fr.univcotedazur.skimaster.cart.entities;
 
-import fr.univcotedazur.skimaster.forfait.entities.Forfeit;
-import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.Forfait;
+import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 @Entity
 public class Product {
-    @ManyToMany
-    private List<ForfeitOffer> packageItems = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<ForfaitOffer> packageItems = new ArrayList<>();
     @Id
     @GeneratedValue
     private Long productId;
@@ -21,24 +21,24 @@ public class Product {
     public Product() {
     }
 
-    public Product(List<ForfeitOffer> items) {
+    public Product(List<ForfaitOffer> items) {
         this.packageItems = new ArrayList<>(items);
     }
 
-    public Product(List<ForfeitOffer> items, int reduction){
+    public Product(List<ForfaitOffer> items, int reduction){
         this.packageItems = new ArrayList<>(items);
         this.reduction = reduction;
     }
 
-    public void addItem(ForfeitOffer item) {
+    public void addItem(ForfaitOffer item) {
         packageItems.add(item);
     }
 
-    public void removeItem(Forfeit item) {
+    public void removeItem(Forfait item) {
         packageItems.remove(item);
     }
 
-    public List<ForfeitOffer> getItems() { return packageItems; }
+    public List<ForfaitOffer> getItems() { return packageItems; }
     public Long getId() { return productId; }
     public int getReduction(){
         return reduction;

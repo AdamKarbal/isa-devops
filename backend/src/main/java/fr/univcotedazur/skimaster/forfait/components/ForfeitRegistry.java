@@ -1,10 +1,12 @@
 package fr.univcotedazur.skimaster.forfait.components;
 
-import fr.univcotedazur.skimaster.forfait.entities.Forfeit;
+import fr.univcotedazur.skimaster.forfait.dto.ForfaitDTO;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
+import fr.univcotedazur.skimaster.forfait.exceptions.ForfaitIdNotFoundException;
+import fr.univcotedazur.skimaster.forfait.entities.Forfait;
 import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
 import fr.univcotedazur.skimaster.forfait.interfaces.FRegister;
-import fr.univcotedazur.skimaster.forfait.repositories.ForfeitRepository;
+import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,45 +14,63 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class ForfeitRegistry implements FFinder, FRegister {
-    private final ForfeitRepository repository;
+public class ForfaitRegistry implements FRegister, FFinder {
+    private final ForfaitRepository repository;
 
-    public ForfeitRegistry(ForfeitRepository repository){
+    public ForfaitRegistry(ForfaitRepository repository){
         this.repository = repository;
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Forfeit> findForfaitByUserId(Long customerId){
-        return this.repository.findByUserId(customerId);
+    @Transactional
+    public void registerForfait(Forfait forfait, Long userId){
+        forfait.setCustomerId(userId);
+        this.repository.save(forfait);
+    }
+
+    @Override
+    @Transactional
+    public void registerForfaits(List<Forfait> forfaits, Long userId){
+        for(Forfait f : forfaits){
+            f.setCustomerId(userId);
+        }
+        this.repository.saveAll(forfaits);
+    }
+
+    @Override
+    @Transactional
+    public void deleteForfait(Long customerId, Long forfaitId) {
+        Forfait forfait = repository.findByIdAndCustomerId(forfaitId, customerId)
+                .orElseThrow(() -> new ForfaitIdNotFoundException(forfaitId));
+        repository.delete(forfait);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Forfeit> findAllForfaits(){
+    public List<Forfait> findAllForfaits(){
         return this.repository.findAll();
     }
 
     @Override
-    @Transactional
-    public void registerForfait(Forfeit forfeit, Long userId){
-        forfeit.setUserId(userId);
-        this.repository.save(forfeit);
-    }
-
-    @Override
-    @Transactional
-    public void registerForfaits(List<Forfeit> forfeits, Long userId){
-        for(Forfeit f : forfeits){
-            f.setUserId(userId);
-        }
-        this.repository.saveAll(forfeits);
-    }
-
-    @Override
-    public List<PassType> getAvailablePassTypes(){
+    public List<PassType> getAvailablePassTypes() {
         return Arrays.asList(PassType.values());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ForfaitDTO> findForfaitsByCustomerId(Long customerId) {
+        return repository.findAllByCustomerId(customerId).stream()
+                .map(this::toDto)
+                .toList();
+    }
 
+    private ForfaitDTO toDto(Forfait forfait) {
+        return new ForfaitDTO(
+                forfait.getId(),
+                forfait.getCustomerId(),
+                forfait.getPassType().name(),
+                forfait.getAgeCategory().name(),
+                forfait.getValidDate()
+        );
+    }
 }

@@ -13,10 +13,16 @@ import fr.univcotedazur.skimaster.order.entities.Order;
 import fr.univcotedazur.skimaster.cart.entities.Product;
 import fr.univcotedazur.skimaster.cart.interfaces.CartModifier;
 import fr.univcotedazur.skimaster.cart.interfaces.CartProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Component
+@Service
+@Transactional
 public class CartHandler implements CartProcessor, CartModifier {
+    private static final Logger LOG = LoggerFactory.getLogger(CartHandler.class);
     private final Orderer orderCreator;
     private final CustomerFinder customerFinder;
     private final ProductRepository productRepository;
@@ -29,13 +35,14 @@ public class CartHandler implements CartProcessor, CartModifier {
         double itemsPrice = product.getItems().stream()
                 .mapToDouble(ForfeitOffer::getPrice)
                 .sum();
-        return itemsPrice / product.getReduction();
+        return itemsPrice * (1 - (product.getReduction() / 100.0));
     }
 
     public double computeCartPrice(Cart cart) {
-        return cart.getItems().stream()
-                .mapToDouble(e -> priceProduct(e.getProduct())* e.getQuantity())
+        double rawPrice = cart.getItems().stream()
+                .mapToDouble(e -> priceProduct(e.getProduct()) * e.getQuantity())
                 .sum();
+        return Math.round(rawPrice * 100.0) / 100.0;
     }
 
 

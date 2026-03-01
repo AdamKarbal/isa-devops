@@ -2,9 +2,9 @@ package fr.univcotedazur.skimaster.cart.repositories;
 
 import fr.univcotedazur.skimaster.cart.entities.Product;
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
-import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
-import fr.univcotedazur.skimaster.forfait.repositories.ForfeitOfferRepository;
+import fr.univcotedazur.skimaster.forfait.repositories.ForfaitOfferRepository;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,12 +20,12 @@ class ProductRepositoryTest {
     private ProductRepository productRepository;
 
     @Autowired
-    private ForfeitOfferRepository forfeitOfferRepository;
+    private ForfaitOfferRepository forfaitOfferRepository;
 
     @Test
     void testIdGenerationAndPersistence() {
-        ForfeitOffer adultDailyOffer = forfeitOfferRepository.saveAndFlush(
-                new ForfeitOffer(AgeCategory.ADULT, PassType.FULL, 50.0)
+        ForfaitOffer adultDailyOffer = forfaitOfferRepository.saveAndFlush(
+                new ForfaitOffer(AgeCategory.ADULT, PassType.DAILY, 50.0)
         );
         Product product = new Product(List.of(adultDailyOffer), 10);
 
@@ -41,8 +41,8 @@ class ProductRepositoryTest {
 
     @Test
     void testReductionMustBeAtLeastOne() {
-        ForfeitOffer adultDailyOffer = forfeitOfferRepository.saveAndFlush(
-                new ForfeitOffer(AgeCategory.ADULT, PassType.FULL, 50.0)
+        ForfaitOffer adultDailyOffer = forfaitOfferRepository.saveAndFlush(
+                new ForfaitOffer(AgeCategory.ADULT, PassType.DAILY, 50.0)
         );
 
         Assertions.assertThrows(

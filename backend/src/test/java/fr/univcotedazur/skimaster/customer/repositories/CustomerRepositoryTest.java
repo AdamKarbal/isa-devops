@@ -21,7 +21,7 @@ class CustomerRepositoryTest {
     void testIdGenerationAndUnicity() {
         Customer john = new Customer("john", "1234567890");
         Assertions.assertNull(john.getId());
-        customerRepository.saveAndFlush(john); // save in the persistent context and force saving in the DB (thus ensuring validation by Hibernate)
+        customerRepository.saveAndFlush(john);
         Assertions.assertNotNull(john.getId());
         Assertions.assertThrows(DataIntegrityViolationException.class, () -> customerRepository.saveAndFlush(new Customer("john", "1234567890")));
     }

@@ -1,10 +1,11 @@
 package fr.univcotedazur.skimaster.customer.exceptions;
 
-public class CustomerIdNotFoundException extends Exception {
+public class CustomerIdNotFoundException extends RuntimeException {
 
     private Long id;
 
     public CustomerIdNotFoundException(Long id) {
+        super("Customer not found: " + id);
         this.id = id;
     }
 

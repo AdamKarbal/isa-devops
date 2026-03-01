@@ -7,6 +7,9 @@ import fr.univcotedazur.skimaster.customer.exceptions.AlreadyExistingCustomerExc
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerRegistration;
+import fr.univcotedazur.skimaster.forfait.components.ForfaitFinder;
+import fr.univcotedazur.skimaster.forfait.interfaces.FRegister;
+import fr.univcotedazur.skimaster.forfait.dto.ForfaitDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +29,14 @@ public class CustomerCareController {
     private final CustomerRegistration registry;
 
     private final CustomerFinder finder;
+    private final ForfaitFinder forfaitFinder;
+    private final FRegister forfaitRegister;
 
-    public CustomerCareController(CustomerRegistration registry, CustomerFinder finder) {
+    public CustomerCareController(CustomerRegistration registry, CustomerFinder finder, ForfaitFinder forfaitFinder, FRegister forfaitRegister) {
         this.registry = registry;
         this.finder = finder;
+        this.forfaitFinder = forfaitFinder;
+        this.forfaitRegister = forfaitRegister;
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -68,5 +75,22 @@ public class CustomerCareController {
         return new CustomerDTO(customer.getId(), customer.getName(), customer.getCreditCard());
     }
 
-}
+    @GetMapping(path = "/{customerId}/forfaits")
+    public ResponseEntity<List<ForfaitDTO>> getForfaits(@PathVariable("customerId") Long customerId)
+            throws CustomerIdNotFoundException {
 
+        finder.retrieveCustomer(customerId); // déclenche 404 si absent
+        return ResponseEntity.ok(forfaitFinder.findForfaitsByCustomerId(customerId));
+    }
+
+    @GetMapping(path ="/{customerId}/forfaits/{forfaitId}")
+    public ResponseEntity<ForfaitDTO> getForfaitById(@PathVariable("customerId") Long customerId, @PathVariable("forfaitId") Long forfaitId) {
+        return ResponseEntity.ok(forfaitFinder.getForfait(customerId, forfaitId));
+    }
+
+    @DeleteMapping(path = "/{customerId}/forfaits/{forfaitId}")
+    public ResponseEntity<Void> deleteForfait(@PathVariable("customerId") Long customerId, @PathVariable("forfaitId") Long forfaitId) {
+        forfaitRegister.deleteForfait(customerId, forfaitId);
+        return ResponseEntity.noContent().build();
+    }
+}
