@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(properties = {"gate.host.baseurl=http://localhost:8082"})
+@SpringBootTest
 
 @Transactional
 class OrderHistoryTest {

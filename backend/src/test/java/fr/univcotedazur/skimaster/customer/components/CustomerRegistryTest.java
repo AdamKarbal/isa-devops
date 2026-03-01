@@ -14,7 +14,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(properties = {"gate.host.baseurl=http://localhost:8082"})
+@SpringBootTest
 @Transactional // default behavior : rollback DB operations after each test (even if it fails)
 class
 CustomerRegistryTest {
