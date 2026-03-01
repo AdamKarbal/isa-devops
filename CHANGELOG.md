@@ -1,5 +1,19 @@
 # Changelog
 
+# [1.6.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.5.0...v1.6.0) (2026-03-01)
+
+
+### Bug Fixes
+
+* **github:** refactoring name Forfeit into Forfait ([b7a577e](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/b7a577e637ea9112691fbd544cccdb5031e3d462))
+
+
+### Features
+
+* **childDecection:** logic BeepStrategy implemented ([a322249](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/a32224940e6e5b6d4ea2ad4f73a6f41f08fbbdb4))
+* **childDetection:** feature childDetection done ([cabda50](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/cabda500608466e2c07621d11c646c4888cbb634))
+* **childDetection:** test nearly done waiting for Portier test ([7ed4e09](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/7ed4e09a035396c77079e567741cd74eebb000df))
+
 # [1.5.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.4.0...v1.5.0) (2026-02-28)
 
 

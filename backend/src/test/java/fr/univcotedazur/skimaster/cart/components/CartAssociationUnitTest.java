@@ -5,7 +5,7 @@ import fr.univcotedazur.skimaster.cart.entities.Product;
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import fr.univcotedazur.skimaster.order.entities.Order;
 import fr.univcotedazur.skimaster.order.enums.OrderStatus;
@@ -21,7 +21,7 @@ import java.util.Set;
 public class CartAssociationUnitTest {
     @Test
     void cartProductForfaitOfferAssociationShouldBeConsistent() {
-        ForfaitOffer adultWeekly = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 250.0);
+        ForfeitOffer adultWeekly = new ForfeitOffer(AgeCategory.ADULT, PassType.WEEKLY, 250.0);
         Product product = new Product(List.of(adultWeekly), 10);
         Cart cart = new Cart();
 
@@ -36,7 +36,7 @@ public class CartAssociationUnitTest {
 
     @Test
     void cartUsesSetSoSameProductTwiceKeepsSingleCartItem() {
-        ForfaitOffer childDaily = new ForfaitOffer(AgeCategory.CHILD, PassType.FULL, 35.0);
+        ForfeitOffer childDaily = new ForfeitOffer(AgeCategory.CHILD, PassType.FULL, 35.0);
         Product product = new Product(List.of(childDaily), 5);
         Cart cart = new Cart();
 
@@ -48,7 +48,7 @@ public class CartAssociationUnitTest {
 
     @Test
     void forfaitShouldDelegateAgeAndPassTypeToOffer() {
-        ForfaitOffer adultSeason = new ForfaitOffer(AgeCategory.ADULT, PassType.SEASONAL, 499.0);
+        ForfeitOffer adultSeason = new ForfeitOffer(AgeCategory.ADULT, PassType.SEASONAL, 499.0);
         Forfait forfait = new Forfait(42L, LocalDate.now().plusDays(7), adultSeason);
 
         Assertions.assertEquals(AgeCategory.ADULT, forfait.getAgeCategory());
@@ -60,7 +60,7 @@ public class CartAssociationUnitTest {
         CartHandler cartHandler = Mockito.mock(CartHandler.class);
         OrderFactory orderFactory = new OrderFactory(cartHandler);
 
-        ForfaitOffer adultDaily = new ForfaitOffer(AgeCategory.ADULT, PassType.FULL, 50.0);
+        ForfeitOffer adultDaily = new ForfeitOffer(AgeCategory.ADULT, PassType.FULL, 50.0);
         Product product = new Product(List.of(adultDaily), 1);
 
         Customer customer = new Customer("john", "1234567890");

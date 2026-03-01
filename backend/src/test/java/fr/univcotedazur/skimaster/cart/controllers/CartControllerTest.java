@@ -12,7 +12,6 @@ import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import fr.univcotedazur.skimaster.cart.exceptions.ForfaitOfferIdNotFound;
 import fr.univcotedazur.skimaster.order.entities.Order;
