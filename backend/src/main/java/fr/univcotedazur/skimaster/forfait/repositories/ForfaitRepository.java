@@ -1,0 +1,15 @@
+package fr.univcotedazur.skimaster.forfait.repositories;
+
+import fr.univcotedazur.skimaster.forfait.entities.Forfait;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface ForfaitRepository extends JpaRepository<Forfait, Long> {
+    List<Forfait> findByCustomerId(Long customerId);
+    Optional<Forfait> findByIdAndCustomerId(Long id, Long customerId);
+    List<Forfait> findAllByCustomerId(Long customerId);
+}

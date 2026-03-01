@@ -1,18 +1,27 @@
 services:
   # The Cookie Factory backend in SpringBoot
   tcf-server:
-    image: pcollet/tcf-spring-backend
-    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: skimaster-0.0.1-SNAPSHOT.jar
+    image: tcf-spring-backend:local
+    container_name: backend3
     ports:
       - "8080:8080"
     environment:
       - BANK_WITH_PORT=bank-system:9090
       - POSTGRES_HOST=postgres:5432
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,mappings
+      - DOOR_WITH_PORT=door-service:8082
     restart: always
     depends_on:
-      bank-system:
-        condition: service_healthy
       postgres:
+        condition: service_healthy
+      door-service:
+        condition: service_healthy
+      bank-system:
         condition: service_healthy
     healthcheck:
       test: "curl --silent --fail localhost:8080/actuator/health | grep UP || exit 1"
@@ -69,3 +78,16 @@ services:
       timeout: 3s
       retries: 3
       start_period: 5s
+
+  door-service:
+    image: skimaster-door:latest
+    container_name: door
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: "curl --silent --fail localhost:8082/actuator/health | grep UP || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+

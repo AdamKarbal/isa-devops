@@ -17,7 +17,6 @@ public class CustomerRegistry implements CustomerRegistration, CustomerFinder {
 
     private final CustomerRepository customerRepository;
 
-    // @Autowired // annotation is optional since Spring 4.3 if component has only one constructor
     public CustomerRegistry(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
