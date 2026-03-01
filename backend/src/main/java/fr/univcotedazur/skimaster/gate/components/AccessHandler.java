@@ -3,6 +3,7 @@ package fr.univcotedazur.skimaster.gate.components;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.forfait.components.ForfaitRegistry;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
+import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
 import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessDealer;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessTreatment;
@@ -26,8 +27,8 @@ public class AccessHandler implements AccessDealer {
     }
 
     @Override
-    public void processCurrentPassage(BeepContext beepContext) throws CustomerIdNotFoundException {
-        treatment.validateAndRegisterPassage(beepContext);
+    public AccessRequest processCurrentPassage(BeepContext beepContext) throws CustomerIdNotFoundException {
+        return treatment.validateAndRegisterPassage(beepContext);
     }
 
     @Override
