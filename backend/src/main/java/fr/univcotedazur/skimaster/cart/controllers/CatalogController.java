@@ -9,7 +9,8 @@ import fr.univcotedazur.skimaster.cart.interfaces.ProductCatalog;
 import fr.univcotedazur.skimaster.forfait.dto.ForfaitOfferDTO;
 import fr.univcotedazur.skimaster.forfait.dto.ForfaitOfferRequestDTO;
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -35,13 +36,13 @@ public class CatalogController {
     }
     @PostMapping(path = "/offers", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<ForfaitOfferDTO> createForfaitOffer(@RequestBody @Valid ForfaitOfferRequestDTO request) {
-        ForfaitOffer offer = productCatalog.createForfaitOffer(request.ageCategory(), request.passType(), request.price());
+        ForfeitOffer offer = productCatalog.createForfaitOffer(request.ageCategory(), request.passType(), request.price());
         return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(offer));
     }
 
     @GetMapping(path = "/offers")
     public ResponseEntity<ForfaitOfferDTO> findForfaitOffer(@RequestParam AgeCategory ageCategory, @RequestParam PassType passType) {
-        Optional<ForfaitOffer> found = productCatalog.findForfaitOffer(ageCategory, passType);
+        Optional<ForfeitOffer> found = productCatalog.findForfaitOffer(ageCategory, passType);
         return found.map(offer -> ResponseEntity.ok(toDTO(offer))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -57,10 +58,10 @@ public class CatalogController {
     }
 
     private static ProductDTO toDTO(Product product) {
-        return new ProductDTO(product.getId(), product.getItems().stream().map(ForfaitOffer::getId).toList(), product.getReduction());
+        return new ProductDTO(product.getId(), product.getItems().stream().map(ForfeitOffer::getId).toList(), product.getReduction());
     }
 
-    private static ForfaitOfferDTO toDTO(ForfaitOffer offer) {
+    private static ForfaitOfferDTO toDTO(ForfeitOffer offer) {
         return new ForfaitOfferDTO(offer.getId(), offer.getAgeCategory(), offer.getPassType(), offer.getPrice());
     }
 }

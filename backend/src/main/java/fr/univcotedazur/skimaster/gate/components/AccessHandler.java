@@ -1,8 +1,8 @@
 package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
-import fr.univcotedazur.skimaster.forfait.components.ForfeitRegistry;
-import fr.univcotedazur.skimaster.forfait.entities.Forfeit;
+import fr.univcotedazur.skimaster.forfait.components.ForfaitRegistry;
+import fr.univcotedazur.skimaster.forfait.entities.Forfait;
 import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessDealer;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessTreatment;
@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 public class AccessHandler implements AccessDealer {
 
     private final AccessTreatment treatment;
-    private final ForfeitRegistry forfeitRegistry;
+    private final ForfaitRegistry forfeitRegistry;
     private final WhiteListCache whiteListCache;
 
-    public AccessHandler(AccessTreatment treatment, ForfeitRegistry forfeitRegistry, WhiteListCache whiteListCache) {
+    public AccessHandler(AccessTreatment treatment, ForfaitRegistry forfeitRegistry, WhiteListCache whiteListCache) {
         this.treatment = treatment;
         this.forfeitRegistry = forfeitRegistry;
         this.whiteListCache = whiteListCache;
@@ -32,7 +32,7 @@ public class AccessHandler implements AccessDealer {
 
     @Override
     public void computeWhiteList() {
-        List<Forfeit> forfeits = forfeitRegistry.findAllForfaits().stream().filter(forfeit -> forfeit.getValidDate().isAfter(LocalDate.now())).collect(Collectors.toList());
+        List<Forfait> forfeits = forfeitRegistry.findAllForfaits().stream().filter(forfeit -> forfeit.getValidDate().isAfter(LocalDate.now())).collect(Collectors.toList());
         whiteListCache.addForfeits(forfeits);
     }
 }

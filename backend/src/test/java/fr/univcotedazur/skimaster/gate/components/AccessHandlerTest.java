@@ -7,13 +7,16 @@ import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.AlreadyExistingCustomerException;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerRegistration;
-import fr.univcotedazur.skimaster.forfait.components.ForfeitRegistry;
+import fr.univcotedazur.skimaster.forfait.components.ForfaitRegistry;
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
-import fr.univcotedazur.skimaster.forfait.entities.Forfeit;
+import fr.univcotedazur.skimaster.forfait.entities.Forfait;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
+import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfeitOfferRepository;
-import fr.univcotedazur.skimaster.forfait.repositories.ForfeitRepository;
+import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
+import fr.univcotedazur.skimaster.forfait.repositories.ForfeitOfferRepository;
 import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessDealer;
 import fr.univcotedazur.skimaster.order.entities.Order;
@@ -42,7 +45,7 @@ class AccessHandlerTest {
     private AccessHandler accessHandler;
 
     @Autowired
-    private ForfeitOfferRepository forfeitOfferRepository;
+    private ForfeitOfferRepository forfaitOfferRepository;
 
     @Autowired
     private ProductRepository productRepository;
@@ -50,7 +53,7 @@ class AccessHandlerTest {
     @Autowired
     private WhiteListCache whiteListCache;
     @Autowired
-    private ForfeitRepository forfeitRepository;
+    private ForfaitRepository ForfaitRepository;
     private Customer returned;
     private ForfeitOffer adultForfait;
     private ForfeitOffer childForfait;
@@ -62,8 +65,8 @@ class AccessHandlerTest {
         adultForfait = new ForfeitOffer(AgeCategory.ADULT, PassType.FULL, 10.0);
         childForfait = new ForfeitOffer(AgeCategory.CHILD, PassType.FULL, 5.0);
 
-        adultForfait = forfeitOfferRepository.save(adultForfait);
-        childForfait = forfeitOfferRepository.save(childForfait);
+        adultForfait = forfaitOfferRepository.save(adultForfait);
+        childForfait = forfaitOfferRepository.save(childForfait);
 
         childProduct = new Product(List.of(childForfait));
         adultProduct = new Product(List.of(adultForfait));
@@ -78,25 +81,25 @@ class AccessHandlerTest {
 
     @Test
     void testChildBeep(){
-        Forfeit forfeitChild = new Forfeit(returned.getId(), LocalDate.now().plusDays(1),childForfait);
-        forfeitRepository.save(forfeitChild);
-        BeepContext beepChild = new BeepContext(forfeitChild.getId(),12L, LocalDateTime.now());
+        Forfait forfaitChild = new Forfait(returned.getId(), LocalDate.now().plusDays(1),childForfait);
+        ForfaitRepository.save(forfaitChild);
+        BeepContext beepChild = new BeepContext(forfaitChild.getId(),12L, LocalDateTime.now());
         accessHandler.computeWhiteList();
         assertDoesNotThrow(()->accessHandler.fetchRecentPassage(beepChild));
         assertEquals(1, whiteListCache.getForfeitList().size());
-        assertEquals(forfeitChild.getId(),whiteListCache.getValidForfeitIds().getFirst());
+        assertEquals(forfaitChild.getId(),whiteListCache.getValidForfeitIds().getFirst());
 
     }
 
     @Test
     void testAdultBeep(){
-        Forfeit forfeitAdult = new Forfeit(returned.getId(), LocalDate.now().plusDays(1),adultForfait);
-        forfeitRepository.save(forfeitAdult);
-        BeepContext beepAdult = new BeepContext(forfeitAdult.getId(),14L, LocalDateTime.now());
+        Forfait forfaitAdult = new Forfait(returned.getId(), LocalDate.now().plusDays(1),adultForfait);
+        ForfaitRepository.save(forfaitAdult);
+        BeepContext beepAdult = new BeepContext(forfaitAdult.getId(),14L, LocalDateTime.now());
         accessHandler.computeWhiteList();
         assertDoesNotThrow(()->accessHandler.fetchRecentPassage(beepAdult));
         assertEquals(1, whiteListCache.getForfeitList().size());
-        assertEquals(forfeitAdult.getId(),whiteListCache.getValidForfeitIds().getFirst());
+        assertEquals(forfaitAdult.getId(),whiteListCache.getValidForfeitIds().getFirst());
     }
 
 }
