@@ -14,7 +14,6 @@ import fr.univcotedazur.skimaster.gate.interfaces.AccessDealer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -25,9 +24,9 @@ public class GateSyncController {
     public static final String BASE_URI = "/gates";
     private final AccessDealer accessDealer;
 
-    public GateSyncController(AccessHandler accessHandler, AccesDealer accesDealer) {
+    public GateSyncController(AccessHandler accessHandler, AccessDealer accessDealer) {
         this.accessHandler = accessHandler;
-        this.accesDealer = accesDealer;
+        this.accessDealer = accessDealer;
     }
 
     @PostMapping("/push")
