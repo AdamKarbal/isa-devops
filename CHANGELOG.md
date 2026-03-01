@@ -1,5 +1,14 @@
 # Changelog
 
+# [1.7.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.6.0...v1.7.0) (2026-03-01)
+
+
+### Bug Fixes
+
+* **childDetection:** changing return type on processCurrentPassage ([5dd4885](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/5dd48858a613f3395606ad4b15f618765d9d2c4b))
+* **childDetection:** fix test BeepStrategy ([f6ed1f8](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/f6ed1f82ac738783359eba87e4fb6f6a4210dc68))
+* **childDetection:** refactoring and add return value to processCurrentPassage ([abd0114](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/abd0114be7559a7d25480e76e1f65a54cf9bb107))
+
 # [1.6.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.5.0...v1.6.0) (2026-03-01)
 
 
