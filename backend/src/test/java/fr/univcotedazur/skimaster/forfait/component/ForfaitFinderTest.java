@@ -6,7 +6,7 @@ import fr.univcotedazur.skimaster.forfait.components.ForfaitFinder;
 import fr.univcotedazur.skimaster.forfait.dto.ForfaitDTO;
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import fr.univcotedazur.skimaster.forfait.exceptions.ForfaitIdNotFoundException;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
@@ -90,7 +90,7 @@ class ForfaitFinderTest {
     @Test
     void findForfaitsByCustomerId_returnsMappedDtos() {
         Long customerId = 20L;
-        ForfaitOffer offer = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 50.0);
+        ForfeitOffer offer = new ForfeitOffer(AgeCategory.ADULT, PassType.WEEKLY, 50.0);
         Forfait first = new Forfait(customerId, LocalDate.parse("2026-01-10"), offer);
         Forfait second = new Forfait(customerId, LocalDate.parse("2026-01-11"), offer);
         org.springframework.test.util.ReflectionTestUtils.setField(first, "id", 55L);
@@ -130,7 +130,7 @@ class ForfaitFinderTest {
 
     @Test
     void getForfait_returnsMappedForfaitDto() {
-        ForfaitOffer offer = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 50.0);
+        ForfeitOffer offer = new ForfeitOffer(AgeCategory.ADULT, PassType.WEEKLY, 50.0);
         Forfait forfait = new Forfait(20L, LocalDate.parse("2026-01-10"), offer);
         org.springframework.test.util.ReflectionTestUtils.setField(forfait, "id", 55L);
 

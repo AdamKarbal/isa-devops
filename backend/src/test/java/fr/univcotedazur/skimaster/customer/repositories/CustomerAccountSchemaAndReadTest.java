@@ -3,9 +3,9 @@ package fr.univcotedazur.skimaster.customer.repositories;
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
-import fr.univcotedazur.skimaster.forfait.repositories.ForfaitOfferRepository;
+import fr.univcotedazur.skimaster.forfait.repositories.ForfeitOfferRepository;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
 import fr.univcotedazur.skimaster.order.entities.Order;
 import fr.univcotedazur.skimaster.order.repositories.OrderRepository;
@@ -30,7 +30,7 @@ class CustomerAccountSchemaAndReadTest {
 
     @Autowired private CustomerRepository customerRepository;
     @Autowired private OrderRepository orderRepository;
-    @Autowired private ForfaitOfferRepository forfaitOfferRepository;
+    @Autowired private ForfeitOfferRepository forfaitOfferRepository;
     @Autowired private ForfaitRepository forfaitRepository;
 
     @Test
@@ -62,7 +62,7 @@ class CustomerAccountSchemaAndReadTest {
         Order order = new Order(clienta, Set.of(), 42.0);
         orderRepository.saveAndFlush(order);
 
-        ForfaitOffer offer = forfaitOfferRepository.saveAndFlush(new ForfaitOffer(AgeCategory.ADULT, PassType.FULL, 35.0));
+        ForfeitOffer offer = forfaitOfferRepository.saveAndFlush(new ForfeitOffer(AgeCategory.ADULT, PassType.FULL, 35.0));
         forfaitRepository.saveAndFlush(new Forfait(clienta.getId(), LocalDate.parse("2026-01-01"), offer));
 
         List<Order> orders = orderRepository.findByCustomer_Id(clienta.getId());
