@@ -1,6 +1,6 @@
-package fr.univcotedazur.skimaster.pass.connectors;
+package fr.univcotedazur.skimaster.gate.connectors;
 
-import fr.univcotedazur.skimaster.pass.connectors.externaldto.GateSyncDTO;
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateSyncDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;

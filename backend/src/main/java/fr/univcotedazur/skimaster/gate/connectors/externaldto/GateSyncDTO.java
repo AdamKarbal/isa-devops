@@ -1,4 +1,4 @@
-package fr.univcotedazur.skimaster.pass.connectors.externaldto;
+package fr.univcotedazur.skimaster.gate.connectors.externaldto;
 
 import java.util.List;
 

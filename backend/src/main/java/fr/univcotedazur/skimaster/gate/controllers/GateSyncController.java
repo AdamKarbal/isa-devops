@@ -1,6 +1,6 @@
-package fr.univcotedazur.skimaster.pass.controllers;
+package fr.univcotedazur.skimaster.gate.controllers;
 
-import fr.univcotedazur.skimaster.pass.handler.AccessHandler;
+import fr.univcotedazur.skimaster.gate.handler.AccessHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

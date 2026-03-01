@@ -1,4 +1,4 @@
-package fr.univcotedazur.skimaster.pass.interfaces;
+package fr.univcotedazur.skimaster.gate.interfaces;
 
 import java.util.List;
 

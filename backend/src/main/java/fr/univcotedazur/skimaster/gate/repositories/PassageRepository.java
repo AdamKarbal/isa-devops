@@ -1,6 +1,6 @@
-package fr.univcotedazur.skimaster.pass.repositories;
+package fr.univcotedazur.skimaster.gate.repositories;
 
-import fr.univcotedazur.skimaster.pass.entities.Passage;
+import fr.univcotedazur.skimaster.gate.entities.Passage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDate;

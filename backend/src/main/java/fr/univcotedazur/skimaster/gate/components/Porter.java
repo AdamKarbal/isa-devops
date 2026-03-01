@@ -1,9 +1,7 @@
-package fr.univcotedazur.skimaster.pass.components;
+package fr.univcotedazur.skimaster.gate.components;
 
-import fr.univcotedazur.skimaster.pass.interfaces.PassageUpdate;
+import fr.univcotedazur.skimaster.gate.interfaces.PassageUpdate;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class Porter implements PassageUpdate {

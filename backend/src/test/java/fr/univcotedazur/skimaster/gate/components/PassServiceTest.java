@@ -1,11 +1,11 @@
-package fr.univcotedazur.skimaster.pass.components;
+package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.repositories.CustomerRepository;
 import fr.univcotedazur.skimaster.order.entities.Order;
 import fr.univcotedazur.skimaster.order.repositories.OrderRepository;
-import fr.univcotedazur.skimaster.pass.connectors.TurnstileProxy;
-import fr.univcotedazur.skimaster.pass.repositories.PassageRepository;
+import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
+import fr.univcotedazur.skimaster.gate.repositories.PassageRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

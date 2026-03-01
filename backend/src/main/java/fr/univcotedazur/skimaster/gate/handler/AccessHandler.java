@@ -1,6 +1,6 @@
-package fr.univcotedazur.skimaster.pass.handler;
+package fr.univcotedazur.skimaster.gate.handler;
 
-import fr.univcotedazur.skimaster.pass.interfaces.AccessTreatment;
+import fr.univcotedazur.skimaster.gate.interfaces.AccessTreatment;
 import org.springframework.stereotype.Component;
 import java.util.List;
 

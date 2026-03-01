@@ -1,4 +1,4 @@
-package fr.univcotedazur.skimaster.pass.components;
+package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.cashier.interfaces.InvoiceCreator;
 import fr.univcotedazur.skimaster.customer.entities.Customer;
@@ -6,12 +6,11 @@ import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundExceptio
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
 import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
 import fr.univcotedazur.skimaster.order.entities.Order;
-import fr.univcotedazur.skimaster.order.enums.OrderStatus;
 import fr.univcotedazur.skimaster.order.repositories.OrderRepository;
-import fr.univcotedazur.skimaster.pass.connectors.TurnstileProxy;
-import fr.univcotedazur.skimaster.pass.entities.Passage;
-import fr.univcotedazur.skimaster.pass.interfaces.AccessTreatment;
-import fr.univcotedazur.skimaster.pass.repositories.PassageRepository;
+import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
+import fr.univcotedazur.skimaster.gate.entities.Passage;
+import fr.univcotedazur.skimaster.gate.interfaces.AccessTreatment;
+import fr.univcotedazur.skimaster.gate.repositories.PassageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
