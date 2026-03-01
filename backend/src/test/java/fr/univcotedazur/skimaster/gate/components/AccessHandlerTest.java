@@ -12,6 +12,7 @@ import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfeitOfferRepository;
 import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
+import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,7 +76,9 @@ class AccessHandlerTest {
         ForfaitRepository.save(forfaitChild);
         BeepContext beepChild = new BeepContext(forfaitChild.getId(),12L, LocalDateTime.now());
         accessHandler.computeWhiteList();
-        assertDoesNotThrow(()->accessHandler.processCurrentPassage(beepChild));
+        assertEquals(forfaitChild.getId(),accessHandler.processCurrentPassage(beepChild).forfeitId());
+        assertEquals(BeepSignal.CHILD_BEEP,accessHandler.processCurrentPassage(beepChild).beepSignal());
+        assertTrue(accessHandler.processCurrentPassage(beepChild).isAuthorized());
         assertEquals(1, whiteListCache.getForfeitList().size());
         assertEquals(forfaitChild.getId(),whiteListCache.getValidForfeitIds().getFirst());
 
@@ -87,7 +90,9 @@ class AccessHandlerTest {
         ForfaitRepository.save(forfaitAdult);
         BeepContext beepAdult = new BeepContext(forfaitAdult.getId(),14L, LocalDateTime.now());
         accessHandler.computeWhiteList();
-        assertDoesNotThrow(()->accessHandler.processCurrentPassage(beepAdult));
+        assertEquals(forfaitAdult.getId(),accessHandler.processCurrentPassage(beepAdult).forfeitId());
+        assertEquals(BeepSignal.STANDARD_BEEP,accessHandler.processCurrentPassage(beepAdult).beepSignal());
+        assertTrue(accessHandler.processCurrentPassage(beepAdult).isAuthorized());
         assertEquals(1, whiteListCache.getForfeitList().size());
         assertEquals(forfaitAdult.getId(),whiteListCache.getValidForfeitIds().getFirst());
     }
