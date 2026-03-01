@@ -41,16 +41,23 @@ public class PassService implements AccessTreatment {
     private final OrderRepository orderRepository;
     private final PassageRepository passageRepository;
     private final TurnstileProxy turnstileProxy;
+    private final BeepInformation beepInformation;
+    private final CustomerRegistry customerRegistry;
+    private final WhiteListCache whiteListCache;
 
     public PassService(FFinder forfaitFinder, CustomerFinder customerFinder,
                        InvoiceCreator invoiceCreator, OrderRepository orderRepository,
-                       PassageRepository passageRepository, TurnstileProxy turnstileProxy) {
+                       PassageRepository passageRepository, TurnstileProxy turnstileProxy,
+                      BeepInformation beepInformation, CustomerRegistry customerRegistry, WhiteListCache whiteListCache) {
         this.forfaitFinder = forfaitFinder;
         this.customerFinder = customerFinder;
         this.invoiceCreator = invoiceCreator;
         this.orderRepository = orderRepository;
         this.passageRepository = passageRepository;
         this.turnstileProxy = turnstileProxy;
+        this.beepInformation = beepInformation;
+        this.customerRegistry = customerRegistry;
+        this.whiteListCache = whiteListCache;
     }
 
     @Override
@@ -115,16 +122,6 @@ public class PassService implements AccessTreatment {
         LocalDateTime firstPassageTime = todaysPassages.get(0).getOccurrenceDate();
         handleSuperCarteBilling(customer);
 
-    }
-  
-    private final BeepInformation beepInformation;
-    private final CustomerRegistry customerRegistry;
-    private final WhiteListCache whiteListCache;
-
-    public PassService(BeepInformation beepInformation, CustomerRegistry customerRegistry, WhiteListCache whiteListCache) {
-        this.beepInformation = beepInformation;
-        this.customerRegistry = customerRegistry;
-        this.whiteListCache = whiteListCache;
     }
 
     public AccessRequest validateAndRegisterPassage(BeepContext beepContext) throws CustomerIdNotFoundException {
