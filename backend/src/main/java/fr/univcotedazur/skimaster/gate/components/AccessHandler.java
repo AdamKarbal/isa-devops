@@ -26,7 +26,7 @@ public class AccessHandler implements AccessDealer {
     }
 
     @Override
-    public void fetchRecentPassage(BeepContext beepContext) throws CustomerIdNotFoundException {
+    public void processCurrentPassage(BeepContext beepContext) throws CustomerIdNotFoundException {
         treatment.validateAndRegisterPassage(beepContext);
     }
 

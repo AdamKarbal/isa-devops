@@ -11,7 +11,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
@@ -25,14 +24,14 @@ class BeepStrategyTest {
     @Test
     void integrationTestChildBeep() {
         BeepContext context = new BeepContext(1L, 2L, LocalDateTime.now());
-        beepStrategy.assignBeep(context, AgeCategory.CHILD);
-        verify(portierInformation).authorizePassage(2L,1L, BeepSignal.CHILD_BEEP);
+        beepStrategy.assignAuthorizationBeep(context, AgeCategory.CHILD);
+        verify(portierInformation).authorizePassage(2L, BeepSignal.CHILD_BEEP);
     }
 
     @Test
     void integrationTestAdultBeep() {
         BeepContext context = new BeepContext(5L, 2L, LocalDateTime.now());
-        beepStrategy.assignBeep(context, AgeCategory.ADULT);
-        verify(portierInformation).authorizePassage(2L,5L, BeepSignal.STANDARD_BEEP);
+        beepStrategy.assignAuthorizationBeep(context, AgeCategory.ADULT);
+        verify(portierInformation).authorizePassage(2L, BeepSignal.STANDARD_BEEP);
     }
 }

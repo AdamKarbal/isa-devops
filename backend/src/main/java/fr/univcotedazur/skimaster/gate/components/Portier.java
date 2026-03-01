@@ -13,14 +13,14 @@ public Portier() {
 
 }
     @Override
-    public AccessRequest authorizePassage(Long gateId, Long forfeitId,BeepSignal signal) {
+    public AccessRequest authorizePassage(Long forfeitId,BeepSignal signal) {
     //check gate Opened
         return new AccessRequest(forfeitId,signal,true);
     }
 
     @Override
-    public AccessRequest denyPassage(Long gateId,Long forfeitId) {
+    public AccessRequest denyPassage() {
     //same
-        return new AccessRequest(forfeitId,BeepSignal.ACCESS_DENIED,false);
+        return new AccessRequest(null,BeepSignal.ACCESS_DENIED,false);
     }
 }
