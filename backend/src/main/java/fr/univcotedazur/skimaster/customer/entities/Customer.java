@@ -65,7 +65,7 @@ public class Customer {
     }
 
     public void setCart(Cart cart) {
-         this.cart=cart;
+        this.cart=cart;
     }
 
     public void clearCart(){

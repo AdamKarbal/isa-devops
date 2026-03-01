@@ -69,5 +69,4 @@ public class CartController {
         Customer customer = customerFinder.retrieveCustomer(customerId);
         return ResponseEntity.ok(customer.getCart().toDto());
     }
-
 }

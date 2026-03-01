@@ -1,6 +1,5 @@
 package fr.univcotedazur.skimaster.cart.interfaces;
 
-import fr.univcotedazur.skimaster.cart.entities.Product;
 import fr.univcotedazur.skimaster.cart.exceptions.ProductIdNotFound;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 

@@ -1,7 +1,8 @@
 package fr.univcotedazur.skimaster.forfait.repositories;
 
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
@@ -13,11 +14,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 class ForfaitOfferRepositoryTest {
 
     @Autowired
-    private ForfaitOfferRepository forfaitOfferRepository;
+    private ForfeitOfferRepository forfaitOfferRepository;
 
     @Test
     void testIdGenerationAndFindByAgeCategoryAndPassType() {
-        ForfaitOffer adultWeekOffer = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 300.0);
+        ForfeitOffer adultWeekOffer = new ForfeitOffer(AgeCategory.ADULT, PassType.WEEKLY, 300.0);
         Assertions.assertNull(adultWeekOffer.getId());
 
         forfaitOfferRepository.saveAndFlush(adultWeekOffer);
@@ -33,7 +34,7 @@ class ForfaitOfferRepositoryTest {
     void testNegativePriceNotAllowed() {
         Assertions.assertThrows(
                 ConstraintViolationException.class,
-                () -> forfaitOfferRepository.saveAndFlush(new ForfaitOffer(AgeCategory.CHILD, PassType.DAILY, -1.0))
+                () -> forfaitOfferRepository.saveAndFlush(new ForfeitOffer(AgeCategory.CHILD, PassType.DAILY, -1.0))
         );
     }
 
