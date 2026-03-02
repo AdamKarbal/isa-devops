@@ -204,4 +204,26 @@ public class CustomerCommands {
             return "commande introuvable";
         }
     }
+
+    @ShellMethod(key = "set-supercarte", value = "Enable or disable SuperCarte for a customer (set-supercarte CUSTOMER_NAME true/false)")
+    public String setSuperCarte(String name, boolean status) {
+        try {
+            // On cherche le client dans le contexte local par son nom
+            CliCustomer customer = cliContext.getCustomers().get(name);
+            if (customer == null) {
+                return "ERREUR : Client '" + name + "' inconnu. Avez-vous fait un 'update-customers' ?";
+            }
+            restClient.put()
+                    .uri(BASE_URI + "/{id}/supercarte?status={status}", customer.getId(), status)
+                    .retrieve()
+                    .toBodilessEntity();
+
+            return "SUCCÈS : SuperCarte " + (status ? "activée" : "désactivée") + " pour " + name;
+
+        } catch (HttpClientErrorException.NotFound e) {
+            return "ERREUR : Client non trouvé sur le serveur";
+        } catch (Exception e) {
+            return "ERREUR : " + e.getMessage();
+        }
+    }
 }

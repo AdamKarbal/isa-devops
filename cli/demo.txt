@@ -1,3 +1,5 @@
+echo ===_PARTIE_1_:_INITIALISATION_ET_PAIEMENT_CLASSIQUE_===
+
 echo ===_0.a_INITIALIZATION_:_Customers_===
 register Julien3 1238969831
 register Tatie3 1234567890
@@ -32,4 +34,40 @@ echo ===_6._ERROR_SCENARIO:_Bank_Denies_Payment_===
 pay-order 2
 
 echo ===_7._Final_check_of_all_orders_===
+orders
+
+echo ===_PARTIE_2_:PASSAGE_GATE_===
+
+echo ===_8._SUPERCARTE_SETUP_===
+register SuperJulien 1238969831
+set-supercarte SuperJulien true
+update-customers
+
+echo ===_9._AUTONOMY:_PUSH_AUTHORIZED_BADGES_===
+sync-gates
+
+echo ===_10._SIMULATION:_FIRST_PASSAGE_AND_BILLING_===
+echo Simulant-premier-passage-ID-3
+door-pass 3 true
+echo Declenchement-collecte-facturation
+collect-passages
+update-customers
+echo ===_CHECK_BILLING_AFTER_FIRST_PASSAGE_===
+orders 3
+
+echo ===_11._SIMULATION:_SECOND_PASSAGE_SAME_DAY_===
+echo Simulant-deuxieme-passage-ID-3
+door-pass 3 true
+collect-passages
+update-customers
+echo ===_CHECK_NO_NEW_BILL_===
+orders 3
+
+echo ===_12._SIMULATION:_PASSAGE_FAIL_===
+echo Simulant-passage-inconnu-999
+door-pass 999 false
+collect-passages
+update-customers
+
+echo ===_13._FINAL_VERIFICATION_OF_INVOICES_===
 orders

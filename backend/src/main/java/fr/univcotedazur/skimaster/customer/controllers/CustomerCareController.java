@@ -13,6 +13,7 @@ import fr.univcotedazur.skimaster.forfait.dto.ForfaitDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,5 +93,15 @@ public class CustomerCareController {
     public ResponseEntity<Void> deleteForfait(@PathVariable("customerId") Long customerId, @PathVariable("forfaitId") Long forfaitId) {
         forfaitRegister.deleteForfait(customerId, forfaitId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(path = "/{customerId}/supercarte")
+    @Transactional // <--- AJOUTE CECI pour que le changement soit sauvé en base
+    public ResponseEntity<Void> updateSuperCarte(@PathVariable("customerId") Long customerId, @RequestParam("status") boolean status)
+            throws CustomerIdNotFoundException {
+        Customer customer = finder.retrieveCustomer(customerId);
+        customer.setHasSuperCarte(status);
+        // Avec @Transactional, Hibernate fera l'UPDATE automatiquement à la fin de la méthode
+        return ResponseEntity.ok().build();
     }
 }

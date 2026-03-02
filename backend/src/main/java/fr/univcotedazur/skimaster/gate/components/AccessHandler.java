@@ -3,6 +3,8 @@ package fr.univcotedazur.skimaster.gate.components;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.forfait.components.ForfaitRegistry;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
+import fr.univcotedazur.skimaster.gate.components.WhiteListCache;
+import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
 import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessDealer;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessTreatment;
@@ -15,24 +17,38 @@ import java.util.stream.Collectors;
 @Component
 public class AccessHandler implements AccessDealer {
 
-    private final AccessTreatment treatment;
-    private final ForfaitRegistry forfeitRegistry;
+    private final AccessTreatment passService;
+    private final ForfaitRegistry forfaitRegistry;
     private final WhiteListCache whiteListCache;
 
-    public AccessHandler(AccessTreatment treatment, ForfaitRegistry forfeitRegistry, WhiteListCache whiteListCache) {
-        this.treatment = treatment;
-        this.forfeitRegistry = forfeitRegistry;
+    public AccessHandler(AccessTreatment passService, ForfaitRegistry forfaitRegistry, WhiteListCache whiteListCache) {
+        this.passService = passService;
+        this.forfaitRegistry = forfaitRegistry;
         this.whiteListCache = whiteListCache;
     }
 
+    // --- Logique issue du premier fichier (Gestion des passages unitaires) ---
+
     @Override
-    public void fetchRecentPassage(BeepContext beepContext) throws CustomerIdNotFoundException {
-        treatment.validateAndRegisterPassage(beepContext);
+    public AccessRequest processCurrentPassage(BeepContext beepContext) throws CustomerIdNotFoundException {
+        return passService.validateAndRegisterPassage(beepContext);
     }
 
     @Override
     public void computeWhiteList() {
-        List<Forfait> forfeits = forfeitRegistry.findAllForfaits().stream().filter(forfeit -> forfeit.getValidDate().isAfter(LocalDate.now())).collect(Collectors.toList());
-        whiteListCache.addForfeits(forfeits);
+        List<Forfait> forfaits = forfaitRegistry.findAllForfaits().stream()
+                .filter(forfait -> !forfait.getValidDate().isBefore(LocalDate.now()))
+                .collect(Collectors.toList());
+        whiteListCache.addForfeits(forfaits);
+    }
+
+    // --- Logique issue du second fichier (Synchronisation externe et collecte) ---
+
+    public void synchronizeExternalSystems() {
+        passService.pushAuthorizedBadges();
+    }
+
+    public void handleIncomingData(List<Long> nfcCardIds) {
+        passService.processReceivedPassages(nfcCardIds);
     }
 }

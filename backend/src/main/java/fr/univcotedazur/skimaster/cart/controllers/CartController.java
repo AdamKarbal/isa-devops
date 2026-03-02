@@ -53,14 +53,15 @@ public class CartController {
         return ResponseEntity.ok(price);
     }
 
-    @PostMapping(path = "/{customerId}/validate", consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/{customerId}/validate")
     public ResponseEntity<OrderCreatedDTO> validate(@PathVariable("customerId") Long customerId)
             throws CustomerIdNotFoundException, EmptyCartException {
         Order validated = cartProcessor.validate(customerId);
         return ResponseEntity.ok(new OrderCreatedDTO(
                 validated.getOrderId(),
                 validated.getItems(),
-                validated.getPrice()
+                validated.getPrice(),
+                validated.getStatus()
         ));
     }
 

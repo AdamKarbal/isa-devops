@@ -1,5 +1,44 @@
 # Changelog
 
+## [2.0.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.7.1...v2.0.1) (2026-03-02)
+
+
+### Bug Fixes
+
+* **release:** fix release-it.json ([4bf01f6](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/4bf01f6a3f0006612ec5a1889bba1cd22507bc68))
+
+
+### Features
+
+* test ([16f2cf1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/16f2cf193d98f0094ea9018df72159999702f5fe))
+
+## [1.7.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.7.0...v1.7.1) (2026-03-02)
+
+
+### Bug Fixes
+
+* **backend:** fix des test ([c3fd32a](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/c3fd32a2575408a7ffb516a153beeb607483f2d4))
+* **backend:** fix merge ([bcfcf56](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/bcfcf561e6ee211a707973940873708d3878f09a))
+* **backend:** fix test ([066cab5](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/066cab51981245535bee76f76064c6d334a4a3d7))
+* **backend:** fix test backend ([98d0e79](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/98d0e797f428613a72f7abe3d83083547830f6cd))
+* **backend:** fix test renommage package pass en gate ([3cc087a](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/3cc087a08a138dd6b5f4b660b09e600389b187b1))
+* **backend:** name instance ([7853877](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/7853877b0197c577346128bb8de642a7f9d2ccc1))
+* **test:** fix test backend ([c0545cc](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/c0545cc5e13e88b0dd64d375da17ef45c7c204e1))
+
+
+### Features
+
+* **backend:** implementation du systeme de passage, commande cli, demo améliorer ([adbd717](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/adbd717cbd9cad2090f06e4981d7d512ec5edf40))
+
+# [1.7.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.6.0...v1.7.0) (2026-03-01)
+
+
+### Bug Fixes
+
+* **childDetection:** changing return type on processCurrentPassage ([5dd4885](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/5dd48858a613f3395606ad4b15f618765d9d2c4b))
+* **childDetection:** fix test BeepStrategy ([f6ed1f8](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/f6ed1f82ac738783359eba87e4fb6f6a4210dc68))
+* **childDetection:** refactoring and add return value to processCurrentPassage ([abd0114](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/abd0114be7559a7d25480e76e1f65a54cf9bb107))
+
 # [1.6.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.5.0...v1.6.0) (2026-03-01)
 
 
@@ -13,6 +52,8 @@
 * **childDecection:** logic BeepStrategy implemented ([a322249](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/a32224940e6e5b6d4ea2ad4f73a6f41f08fbbdb4))
 * **childDetection:** feature childDetection done ([cabda50](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/cabda500608466e2c07621d11c646c4888cbb634))
 * **childDetection:** test nearly done waiting for Portier test ([7ed4e09](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/7ed4e09a035396c77079e567741cd74eebb000df))
+
+# [2.0.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.5.0...v2.0.0) (2026-03-01)
 
 # [1.5.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.4.0...v1.5.0) (2026-02-28)
 
