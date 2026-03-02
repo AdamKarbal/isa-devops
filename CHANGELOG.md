@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.7.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.7.0...v1.7.1) (2026-03-02)
+
+
+### Bug Fixes
+
+* **backend:** fix des test ([c3fd32a](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/c3fd32a2575408a7ffb516a153beeb607483f2d4))
+* **backend:** fix merge ([bcfcf56](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/bcfcf561e6ee211a707973940873708d3878f09a))
+* **backend:** fix test ([066cab5](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/066cab51981245535bee76f76064c6d334a4a3d7))
+* **backend:** fix test backend ([98d0e79](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/98d0e797f428613a72f7abe3d83083547830f6cd))
+* **backend:** fix test renommage package pass en gate ([3cc087a](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/3cc087a08a138dd6b5f4b660b09e600389b187b1))
+* **backend:** name instance ([7853877](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/7853877b0197c577346128bb8de642a7f9d2ccc1))
+* **test:** fix test backend ([c0545cc](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/c0545cc5e13e88b0dd64d375da17ef45c7c204e1))
+
+
+### Features
+
+* **backend:** implementation du systeme de passage, commande cli, demo améliorer ([adbd717](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/adbd717cbd9cad2090f06e4981d7d512ec5edf40))
+
 # [1.7.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.6.0...v1.7.0) (2026-03-01)
 
 

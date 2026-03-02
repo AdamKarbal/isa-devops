@@ -22,4 +22,10 @@ public class RestClientConfig {
                 .baseUrl(baseUrl)
                 .build();
     }
+
+    @Bean
+    public RestClient doorRestClient(RestClient.Builder builder,
+                                     @Value("${door.host.baseurl:http://localhost:8082}") String doorUrl) {
+        return builder.baseUrl(doorUrl).build();
+    }
 }

@@ -48,4 +48,14 @@ public class GateService {
         gate.registerIncident(incident);
         return new IncidentDTO(incident.getType(), incidentRequestDTO.description(),incident.getTimestamp());
     }
+
+    public List<Long> getAllPassages() {
+        List<Long> allIds = gate.getPassages().stream()
+                .filter(skimaster.entities.Passage::isAccepted)
+                .map(skimaster.entities.Passage::getNfcCardId)
+                .toList();
+        gate.getPassages().clear();
+
+        return allIds;
+    }
 }
