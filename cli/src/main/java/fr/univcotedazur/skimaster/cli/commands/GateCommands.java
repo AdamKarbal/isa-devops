@@ -1,7 +1,6 @@
 package fr.univcotedazur.skimaster.cli.commands;
 
 import fr.univcotedazur.skimaster.cli.CliContext;
-import fr.univcotedazur.skimaster.cli.model.CliGate;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.web.client.RestClient;
@@ -12,26 +11,28 @@ public class GateCommands {
 
     private final RestClient restClient;
 
-    private final CliContext cliContext;
 
     public GateCommands(RestClient restClient, CliContext cliContext){
         this.restClient = restClient;
-        this.cliContext = cliContext;
     }
 
-    @ShellMethod("Open a gate (open-gate)")
-    public CliGate openGate(){
-        return restClient.post()
+    @ShellMethod(value = "Open a gate", key="open-gate")
+    public String openGate(){
+        restClient.post()
                 .uri(BASE_URI + "/open")
                 .retrieve()
-                .body(CliGate.class);
+                .toBodilessEntity();
+
+        return "Le portique a été ouvert avec succès.";
     }
 
-    @ShellMethod("Close a gate (close-gate)")
-    public CliGate closeGate(){
-        return restClient.post()
+    @ShellMethod(value = "Close a gate", key ="close-gate")
+    public String closeGate(){
+        restClient.post()
                 .uri(BASE_URI + "/close")
                 .retrieve()
-                .body(CliGate.class);
+                .toBodilessEntity();
+
+        return "Le portique a été fermé avec succès.";
     }
 }
