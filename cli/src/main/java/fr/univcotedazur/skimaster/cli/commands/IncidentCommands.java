@@ -1,13 +1,11 @@
 package fr.univcotedazur.skimaster.cli.commands;
 
 import fr.univcotedazur.skimaster.incident.dto.IncidentDTO;
-import fr.univcotedazur.skimaster.incident.entities.Incident;
 import fr.univcotedazur.skimaster.incident.entities.IncidentType;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.web.client.RestClient;
-import fr.univcotedazur.skimaster.incident.components.IncidentService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,12 +33,39 @@ public class IncidentCommands {
         return "Incident envoyé au serveur avec succès.";
     }
 
-    @ShellMethod(value = "Voir tous les incidents signalés", key = "incidents-history")
-    public List<IncidentDTO> history(){
-        return restClient.get()
+    @ShellMethod(value = "Voir tous les incidents", key = "incidents-history")
+    public String history() {
+        List<IncidentDTO> incidents = restClient.get()
                 .uri(BASE_URI + "/getAllIncidents")
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<IncidentDTO>>() {});
+
+        if (incidents == null || incidents.isEmpty()) {
+            return "Aucun incident signalé pour le moment.";
+        }
+
+        StringBuilder sb = new StringBuilder("--- HISTORIQUE DES INCIDENTS ---\n");
+        for (IncidentDTO i : incidents) {
+            sb.append(String.format("[%s] %-10s : %s (ID: %d)\n",
+                    i.time(), i.type(), i.description(), i.id()));
+        }
+        return sb.toString();
+    }
+
+    @ShellMethod(value = "Voir le dernier incident signalé", key = "last-incident")
+    public String lastIncident(){
+        IncidentDTO dto = restClient.get()
+                .uri(BASE_URI + "/getLast")
+                .retrieve()
+                .body(IncidentDTO.class);
+
+        if(dto == null){
+            return "Aucun incident signalé pour le moment.";
+        }
+
+        StringBuilder sb = new StringBuilder("--- DERNIER INCIDENT ---\n");
+        sb.append(String.format("[%s] %-10s : %s (ID: %d)\n", dto.time(), dto.type(), dto.description(), dto.id()));
+        return sb.toString();
     }
 
 }

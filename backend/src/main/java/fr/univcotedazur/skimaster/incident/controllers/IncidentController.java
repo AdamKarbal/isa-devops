@@ -1,18 +1,9 @@
 package fr.univcotedazur.skimaster.incident.controllers;
 
-import fr.univcotedazur.skimaster.common.dto.ErrorDTO;
-import fr.univcotedazur.skimaster.forfait.components.ForfaitRegistry;
-import fr.univcotedazur.skimaster.forfait.dto.ForfaitDTO;
-import fr.univcotedazur.skimaster.forfait.entities.Forfait;
-import fr.univcotedazur.skimaster.forfait.entities.PassType;
-import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
 import fr.univcotedazur.skimaster.incident.components.IncidentService;
 import fr.univcotedazur.skimaster.incident.dto.IncidentDTO;
 import fr.univcotedazur.skimaster.incident.entities.Incident;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,6 +28,14 @@ public class IncidentController {
                 .map(fr.univcotedazur.skimaster.incident.controllers.IncidentController::incidentToDTO)
                 .toList();
         return ResponseEntity.ok(dtos);
+    }
+
+
+    @GetMapping("/getLast")
+    public ResponseEntity<IncidentDTO> getLastIncident(){
+        Incident incident = service.findFirstByOrderByTimeDesc().orElse(null);
+        IncidentDTO dto = incidentToDTO(incident);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/addIncident")
