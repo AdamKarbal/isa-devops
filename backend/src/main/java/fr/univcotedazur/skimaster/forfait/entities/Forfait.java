@@ -82,8 +82,6 @@ public class Forfait {
         if (o == null || getClass() != o.getClass()) return false;
 
         Forfait forfait = (Forfait) o;
-        System.out.println(this.id);
-        System.out.println(forfait.id);
         return id != null && Objects.equals(id, forfait.id);
     }
 
