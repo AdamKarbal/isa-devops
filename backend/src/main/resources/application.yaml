@@ -2,7 +2,7 @@ bank:
   host:
     baseurl: http://${BANK_WITH_PORT:localhost:9090}
 
-door:
+gate:
   host:
     baseurl: http://${DOOR_WITH_PORT:localhost:8082}
 
