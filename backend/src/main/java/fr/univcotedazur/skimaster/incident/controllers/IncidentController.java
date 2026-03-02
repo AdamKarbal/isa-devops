@@ -40,12 +40,11 @@ public class IncidentController {
     }
 
     @PostMapping("/addIncident")
-    public ResponseEntity<Void> addIncident(@RequestBody Incident incident){
+    public ResponseEntity<Void> addIncident(@RequestBody IncidentDTO dto){
+        Incident incident = new Incident(dto.type(), dto.description(), dto.time());
         service.saveIncident(incident);
         return ResponseEntity.noContent().build();
     }
-
-
 
     private static IncidentDTO incidentToDTO(Incident i){
         return new IncidentDTO(
