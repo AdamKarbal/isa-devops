@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-
 @Component
 public class Portier implements ManualGateControl, PortierInformation {
     @Autowired
@@ -51,10 +50,10 @@ public class Portier implements ManualGateControl, PortierInformation {
     }
 
     @Transactional
-    public void closeAllGates() {
+    public void closeAllGates(){
         List<Gate> allGates = repository.findAll();
-        if (allGates.isEmpty()) throw new NoGateExistentException("No gate found in the database. This is unexpected.");
-        for (Gate g : allGates) g.setStatus(GateStatus.CLOSED);
+        if(allGates.isEmpty()) throw new NoGateExistentException("No gate found in the database. This is unexpected.");
+        for(Gate g : allGates) g.setStatus(GateStatus.CLOSED);
     }
 
     @Override
