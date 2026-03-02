@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 public class AccessHandler implements AccessDealer {
 
     private final AccessTreatment passService;
-    private final ForfaitRegistry forfeitRegistry;
+    private final ForfaitRegistry forfaitRegistry;
     private final WhiteListCache whiteListCache;
 
-    public AccessHandler(AccessTreatment passService, ForfaitRegistry forfeitRegistry, WhiteListCache whiteListCache) {
+    public AccessHandler(AccessTreatment passService, ForfaitRegistry forfaitRegistry, WhiteListCache whiteListCache) {
         this.passService = passService;
-        this.forfaitRegistry = forfeitRegistry;
+        this.forfaitRegistry = forfaitRegistry;
         this.whiteListCache = whiteListCache;
     }
 
@@ -36,10 +36,10 @@ public class AccessHandler implements AccessDealer {
 
     @Override
     public void computeWhiteList() {
-        List<Forfait> forfeits = forfeitRegistry.findAllForfaits().stream()
-                .filter(forfeit -> !forfeit.getValidDate().isBefore(LocalDate.now()))
+        List<Forfait> forfaits = forfaitRegistry.findAllForfaits().stream()
+                .filter(forfait -> !forfait.getValidDate().isBefore(LocalDate.now()))
                 .collect(Collectors.toList());
-        whiteListCache.addForfeits(forfeits);
+        whiteListCache.addForfeits(forfaits);
     }
 
     // --- Logique issue du second fichier (Synchronisation externe et collecte) ---
