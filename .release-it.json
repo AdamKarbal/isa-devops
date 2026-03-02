@@ -1,6 +1,7 @@
 {
   "$schema": "https://unpkg.com/release-it/schema/release-it.json",
   "git": {
+    "getLatestTagFromAllBranches": true,
     "commitMessage": "chore(release): release v${version}",
     "tagName": "v${version}"
   },
