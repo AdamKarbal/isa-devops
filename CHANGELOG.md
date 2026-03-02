@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.7.1...v2.0.1) (2026-03-02)
+
+
+### Bug Fixes
+
+* **release:** fix release-it.json ([4bf01f6](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/4bf01f6a3f0006612ec5a1889bba1cd22507bc68))
+
+
+### Features
+
+* test ([16f2cf1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/16f2cf193d98f0094ea9018df72159999702f5fe))
+
 ## [1.7.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.7.0...v1.7.1) (2026-03-02)
 
 
