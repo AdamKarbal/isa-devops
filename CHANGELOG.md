@@ -23,6 +23,8 @@
 * **childDetection:** feature childDetection done ([cabda50](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/cabda500608466e2c07621d11c646c4888cbb634))
 * **childDetection:** test nearly done waiting for Portier test ([7ed4e09](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/7ed4e09a035396c77079e567741cd74eebb000df))
 
+# [2.0.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.5.0...v2.0.0) (2026-03-01)
+
 # [1.5.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.4.0...v1.5.0) (2026-02-28)
 
 
