@@ -4,6 +4,7 @@ import fr.univcotedazur.skimaster.customer.components.CustomerRegistry;
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
+import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
 import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessTreatment;
 import fr.univcotedazur.skimaster.gate.interfaces.BeepInformation;
@@ -24,14 +25,17 @@ public class PassService implements AccessTreatment {
         this.whiteListCache = whiteListCache;
     }
 
-    public void validateAndRegisterPassage(BeepContext beepContext) throws CustomerIdNotFoundException {
+    public AccessRequest validateAndRegisterPassage(BeepContext beepContext) throws CustomerIdNotFoundException {
         Optional<Forfait> forfeitOpt = whiteListCache.getForfeitList().stream()
                 .filter(forfeit -> Objects.equals(forfeit.getId(), beepContext.cardId()))
                 .findFirst();
         if (forfeitOpt.isPresent()) {
             Optional<Customer> customer = customerRegistry.findById(forfeitOpt.get().getCustomerId());
             //register into PassageRepo
-            customer.ifPresent(value -> beepInformation.assignBeep(beepContext, forfeitOpt.get().getAgeCategory()));
-        } else throw new CustomerIdNotFoundException();
+            if (customer.isPresent()) {
+                return beepInformation.assignAuthorizationBeep(beepContext, forfeitOpt.get().getAgeCategory());
+            }
+        }
+        return beepInformation.assignForbiddenBeep(beepContext);
     }
 }
