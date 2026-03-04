@@ -64,19 +64,25 @@ jobs:
 
   build-images:
     runs-on: self-hosted
-    if: github.event.pull_request.merged == true # TODO ABSOLUMENT : RAJT && github.base_ref == 'prod' une fois qu'on merge sur prod
+    if: github.event.pull_request.merged == true
     steps:
       - name: checkout
         uses: actions/checkout@v4
-      - name: build-image
-        run:
+        with:
+          fetch-depth: 0
+      - name: build-images
+        shell: bash
+        run: |
+          set -e
           docker build --build-arg JAR_FILE=door-0.0.1-SNAPSHOT.jar -t team-k/skimaster-door:latest ./door
           docker build --build-arg JAR_FILE=skimaster-0.0.1-SNAPSHOT.jar -t team-k/tcf-spring-backend:latest ./backend
           docker build --build-arg JAR_FILE=cli-0.0.1-SNAPSHOT.jar -t team-k/tcf-spring-cli:latest ./cli
-          docker build -t pcollet/tcf-bank-service .
+
       - name: push-images
-        run:
-          docker login -u ismakhil -p ${{secrets.DOCKER_HUB_TOKEN}}
+        shell: bash
+        run: |
+          set -e
+          echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u ismakhil --password-stdin
           docker push team-k/skimaster-door:latest
           docker push team-k/tcf-spring-backend:latest
           docker push team-k/tcf-spring-cli:latest
