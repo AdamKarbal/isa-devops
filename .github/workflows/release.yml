@@ -64,28 +64,84 @@ jobs:
 
   build-images:
     runs-on: self-hosted
-    if: github.event.pull_request.merged == true
+    needs: release
+    if: github.event.pull_request.merged == true # TODO : rajouter && github.base_ref == 'prod' une fois les tests finis
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: build-images
-        shell: bash
-        run: |
-          set -e
-          docker build --build-arg JAR_FILE=door-0.0.1-SNAPSHOT.jar -t team-k/skimaster-door:latest ./door
-          docker build --build-arg JAR_FILE=skimaster-0.0.1-SNAPSHOT.jar -t team-k/tcf-spring-backend:latest ./backend
-          docker build --build-arg JAR_FILE=cli-0.0.1-SNAPSHOT.jar -t team-k/tcf-spring-cli:latest ./cli
 
-      - name: push-images
+      - name: Fetch tags
         shell: bash
         run: |
-          set -e
+          set -euo pipefail
+          git fetch --force --tags
+
+      - name: Compute image tags (sha + version)
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SHORT_SHA="${GITHUB_SHA::7}"
+          echo "sha_tag=sha-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+
+          VERSION_TAG="$(git describe --tags --abbrev=0)"
+          echo "version_tag=${VERSION_TAG}" >> "$GITHUB_OUTPUT"
+
+          echo "sha_tag=sha-${SHORT_SHA}"
+          echo "version_tag=${VERSION_TAG}"
+
+      - name: Login to Docker Hub
+        shell: bash
+        run: |
+          set -euo pipefail
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u ismakhil --password-stdin
-          docker push team-k/skimaster-door:latest
-          docker push team-k/tcf-spring-backend:latest
-          docker push team-k/tcf-spring-cli:latest
+
+      - name: Build images (latest)
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker build --build-arg JAR_FILE=door-0.0.1-SNAPSHOT.jar \
+            -t ismakhil/skimaster-door:latest ./door
+
+          docker build --build-arg JAR_FILE=skimaster-0.0.1-SNAPSHOT.jar \
+            -t ismakhil/tcf-spring-backend:latest ./backend
+
+          docker build --build-arg JAR_FILE=cli-0.0.1-SNAPSHOT.jar \
+            -t ismakhil/tcf-spring-cli:latest ./cli
+
+      - name: Tag images (sha + version)
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION_TAG="${{ steps.meta.outputs.version_tag }}"
+
+          for img in \
+            ismakhil/skimaster-door \
+            ismakhil/tcf-spring-backend \
+            ismakhil/tcf-spring-cli
+          do
+            docker tag "${img}:latest" "${img}:${VERSION_TAG}"
+          done
+
+      - name: Push images (latest + sha + version)
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHA_TAG="${{ steps.meta.outputs.sha_tag }}"
+          VERSION_TAG="${{ steps.meta.outputs.version_tag }}"
+
+          for img in \
+            ismakhil/skimaster-door \
+            ismakhil/tcf-spring-backend \
+            ismakhil/tcf-spring-cli
+          do
+            docker push "${img}:latest"
+            docker push "${img}:${SHA_TAG}"
+            docker push "${img}:${VERSION_TAG}"
+          done
 
 
 
