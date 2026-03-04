@@ -33,15 +33,15 @@ public class IncidentController {
 
     @GetMapping("/getLast")
     public ResponseEntity<IncidentDTO> getLastIncident(){
-        Incident incident = service.findFirstByOrderByTimeDesc().orElse(null);
-        IncidentDTO dto = incidentToDTO(incident);
-        return ResponseEntity.ok(dto);
+        return service.findFirstByOrderByTimeDesc()
+                .map(IncidentController::incidentToDTO)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.ok(null));
     }
 
     @PostMapping("/addIncident")
     public ResponseEntity<Void> addIncident(@RequestBody IncidentDTO dto){
-        Incident incident = new Incident(dto.type(), dto.description(), dto.time());
-        service.saveIncident(incident);
+        service.reportIncident(dto);
         return ResponseEntity.noContent().build();
     }
 
@@ -50,7 +50,9 @@ public class IncidentController {
                 i.getId(),
                 i.getType(),
                 i.getDescription(),
-                i.getTime()
+                i.getTime(),
+                i.getTargetType(),
+                i.getTargetCode()
         );
     }
 

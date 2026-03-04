@@ -6,6 +6,10 @@ gate:
   host:
     baseurl: http://${DOOR_WITH_PORT:localhost:8082}
 
+display:
+  host:
+    baseurl: http://${DISPLAY_WITH_PORT:localhost:8083}
+
 # Property to set the visible level on all logs (OFF will turn off all of them)
 # logging:
 #   level:

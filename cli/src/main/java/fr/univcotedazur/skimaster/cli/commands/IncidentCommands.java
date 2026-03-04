@@ -1,6 +1,7 @@
 package fr.univcotedazur.skimaster.cli.commands;
 
 import fr.univcotedazur.skimaster.incident.dto.IncidentDTO;
+import fr.univcotedazur.skimaster.incident.entities.IncidentTargetType;
 import fr.univcotedazur.skimaster.incident.entities.IncidentType;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.shell.standard.ShellComponent;
@@ -20,9 +21,9 @@ public class IncidentCommands {
         this.restClient = restClient;
     }
 
-    @ShellMethod(value = "Signaler un incident (ex: report PANNE 'Panne de portique')", key = "report-problem")
-    public String report(IncidentType type, String description){
-        IncidentDTO dto = new IncidentDTO(null, type, description, LocalDateTime.now());
+    @ShellMethod(value = "Signaler un incident (ex: report-problem EQUIPMENT_FAILURE PORTIQUE G-NORD-01 \"Panne de portique\")", key = "report-problem")
+    public String report(IncidentType type, IncidentTargetType targetType, String targetCode, String description){
+        IncidentDTO dto = new IncidentDTO(null, type, description, LocalDateTime.now(), targetType, targetCode);
 
         restClient.post()
                 .uri(BASE_URI + "/addIncident")
@@ -46,8 +47,8 @@ public class IncidentCommands {
 
         StringBuilder sb = new StringBuilder("--- HISTORIQUE DES INCIDENTS ---\n");
         for (IncidentDTO i : incidents) {
-            sb.append(String.format("[%s] %-10s : %s (ID: %d)\n",
-                    i.time(), i.type(), i.description(), i.id()));
+            sb.append(String.format("[%s] %-10s [%s %s] : %s (ID: %d)\n",
+                    i.time(), i.type(), i.targetType(), i.targetCode(), i.description(), i.id()));
         }
         return sb.toString();
     }
@@ -64,7 +65,8 @@ public class IncidentCommands {
         }
 
         StringBuilder sb = new StringBuilder("--- DERNIER INCIDENT ---\n");
-        sb.append(String.format("[%s] %-10s : %s (ID: %d)\n", dto.time(), dto.type(), dto.description(), dto.id()));
+        sb.append(String.format("[%s] %-10s [%s %s] : %s (ID: %d)\n",
+                dto.time(), dto.type(), dto.targetType(), dto.targetCode(), dto.description(), dto.id()));
         return sb.toString();
     }
 

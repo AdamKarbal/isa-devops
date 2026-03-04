@@ -15,11 +15,14 @@ services:
       - POSTGRES_HOST=postgres:5432
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,mappings
       - DOOR_WITH_PORT=door-service:8082
+      - DISPLAY_WITH_PORT=display-service:8083
     restart: always
     depends_on:
       postgres:
         condition: service_healthy
       door-service:
+        condition: service_healthy
+      display-service:
         condition: service_healthy
       bank-system:
         condition: service_healthy
@@ -94,3 +97,17 @@ services:
       retries: 3
       start_period: 5s
 
+  display-service:
+    image: skimaster-display:latest
+    container_name: display
+    build:
+      context: ./display
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    healthcheck:
+      test: "curl --silent --fail localhost:8083/display/alerts || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s

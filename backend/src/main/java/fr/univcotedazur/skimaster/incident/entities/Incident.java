@@ -15,14 +15,27 @@ public class Incident {
     @NotNull
     private IncidentType type;
     @NotNull
+    private IncidentTargetType targetType;
+    private String targetCode;
+    @NotNull
     private String description;
     @NotNull
     private LocalDateTime time;
 
-    public Incident(IncidentType type, String description, LocalDateTime time) {
+    public Incident(IncidentType type, IncidentTargetType targetType, String targetCode, String description, LocalDateTime time) {
         this.type = type;
+        this.targetType = targetType;
+        this.targetCode = targetCode;
         this.description = description;
         this.time = LocalDateTime.now();
+    }
+
+    public Incident(IncidentType type, String description) {
+        this(type, IncidentTargetType.PISTE, "UNKNOWN", description, LocalDateTime.now());
+    }
+
+    public Incident(IncidentType type, String description, LocalDateTime time) {
+        this(type, IncidentTargetType.PISTE, "UNKNOWN", description, time);
     }
 
     public Incident() {
@@ -31,6 +44,14 @@ public class Incident {
 
     public @NotNull IncidentType getType() {
         return type;
+    }
+
+    public @NotNull IncidentTargetType getTargetType() {
+        return targetType;
+    }
+
+    public String getTargetCode() {
+        return targetCode;
     }
 
     public @NotNull String getDescription() {
