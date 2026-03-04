@@ -82,7 +82,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          docker login -u ismakhil -p ${{secrets.DOCKER_HUB_TOKEN}}
+          echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u ismakhil --password-stdin
           docker push team-k/skimaster-door:latest
           docker push team-k/tcf-spring-backend:latest
           docker push team-k/tcf-spring-cli:latest
