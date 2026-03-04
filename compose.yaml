@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
       args:
         JAR_FILE: skimaster-0.0.1-SNAPSHOT.jar
-    image: tcf-spring-backend:local
+    image: team-k/tcf-spring-backend:local
     container_name: backend3
     ports:
       - "8080:8080"
@@ -33,7 +33,7 @@ services:
   # the postgres DB to be connected to the backend (watch out: no volume specified, everything can be lost)
   postgres:
     image: postgres:18.1
-    container_name: db
+    container_name: db2
     environment:
       - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_USER=postgresuser
@@ -48,7 +48,7 @@ services:
 
   # A simple java CLI
   tcf-cli:
-    image: pcollet/tcf-spring-cli
+    image: team-k/tcf-spring-cli:local
     container_name: cli
     environment:
       - SERVER_WITH_PORT=tcf-server:8080
@@ -69,7 +69,7 @@ services:
   # An external bank service in NestJs
   bank-system:
     image: pcollet/tcf-bank-service
-    container_name: bank
+    container_name: bank2
     ports:
       - "9090:9090"
     healthcheck:
@@ -80,7 +80,7 @@ services:
       start_period: 5s
 
   door-service:
-    image: skimaster-door:latest
+    image: team-k/skimaster-door:local
     container_name: door
     build :
       context : ./door
