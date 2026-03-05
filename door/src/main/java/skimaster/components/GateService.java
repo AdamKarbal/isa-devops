@@ -10,8 +10,12 @@ import skimaster.entities.Incident;
 import skimaster.entities.Passage;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class GateService {
@@ -20,10 +24,13 @@ public class GateService {
                        @Value("${gate.alert-threshold}") int alertThreshold) {
         this.gate = new Gate(gateId, GateStatus.OPEN, alertThreshold);
     }
-    public PassageResponseDTO processPassage(@Valid PassageRequestDTO requestDTO){
+    public Optional<PassageResponseDTO> processPassage(@Valid PassageRequestDTO requestDTO){
         boolean accepted = gate.getStatus() == GateStatus.OPEN && requestDTO.accepted();
-        gate.registerPassage(new Passage(requestDTO.nfcCardId(),accepted, Instant.now()));
-        return new PassageResponseDTO(accepted,gate.getStatus());
+        if(!accepted){
+            return Optional.empty();
+        }
+        gate.registerPassage(new Passage(requestDTO.nfcCardId(),accepted, LocalDate.now()));
+        return Optional.of(new PassageResponseDTO(accepted,gate.getStatus()));
     }
 
     public void openGate(){
@@ -39,7 +46,7 @@ public class GateService {
     }
 
     public List<PassageDTO> getPassagesById(Long nfcCardId){
-        return gate.getPassages().stream().filter(x-> Objects.equals(x.getNfcCardId(), nfcCardId)).map(passage -> new PassageDTO(passage.getNfcCardId(), passage.isAccepted(),passage.getTimestamp())).toList();
+        return gate.getPassages().stream().filter(x-> Objects.equals(x.getNfcCardId(), nfcCardId)).map(passage -> new PassageDTO(passage.getNfcCardId(),passage.getTimestamp())).toList();
     }
 
     public IncidentDTO addIncident(@Valid IncidentRequestDTO incidentRequestDTO){
@@ -49,13 +56,16 @@ public class GateService {
         return new IncidentDTO(incident.getType(), incidentRequestDTO.description(),incident.getTimestamp());
     }
 
-    public List<Long> getAllPassages() {
-        List<Long> allIds = gate.getPassages().stream()
-                .filter(skimaster.entities.Passage::isAccepted)
-                .map(skimaster.entities.Passage::getNfcCardId)
-                .toList();
-        gate.getPassages().clear();
+    public List<PassageDTO> getAllPassages() {
+        return gate.getPassages().stream().map(x->new PassageDTO(x.getNfcCardId(), LocalDate.now())).toList();
+    }
 
-        return allIds;
+    public List<PassageDTO> getAllPassagesOfToday(){
+        LocalDate today = LocalDate.now();
+        return gate.getPassages().stream()
+                .filter(p -> p.getTimestamp()
+                        .equals(today))
+                .map(p -> new PassageDTO(p.getNfcCardId(), p.getTimestamp()))
+                .toList();
     }
 }
