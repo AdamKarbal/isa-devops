@@ -3,6 +3,7 @@ package fr.univcotedazur.skimaster.cli.commands;
 import fr.univcotedazur.skimaster.cli.model.PassageRequestDTO;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.web.ErrorResponseException;
 import org.springframework.web.client.RestClient;
 
 import java.util.Arrays;
@@ -28,12 +29,17 @@ public class GateSyncCommands {
     @ShellMethod(value = "Simulate a physical passage at the door", key = "door-pass")
     public String doorPass(Long cardId, boolean accepted) {
         // On tape directement sur le service externe (autonomie)
-        doorRestClient.post()
-                .uri("/gate/pass")
-                .body(new PassageRequestDTO(accepted, cardId))
-                .retrieve()
-                .toBodilessEntity();
-        return "SUCCESS: Card " + cardId + " badged at the door.";
+        try{
+            doorRestClient.post()
+                    .uri("/gate/pass")
+                    .body(new PassageRequestDTO(accepted, cardId))
+                    .retrieve()
+                    .toBodilessEntity();
+            return "SUCCESS: Card " + cardId + " badged at the door.";
+        }
+        catch(ErrorResponseException e){
+            return e.getMessage();
+        }
     }
 
     @ShellMethod(key = "collect-passages", value = "Collect passages from door and push to backend")
