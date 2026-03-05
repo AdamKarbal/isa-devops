@@ -1,14 +1,15 @@
 package skimaster.entities;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 public class Passage {
 
     private final Long nfcCardId;
     private final boolean accepted;
-    private final Instant timestamp;
+    private final LocalDate timestamp;
 
-    public Passage(Long nfcCardId, boolean accepted, Instant timestamp) {
+    public Passage(Long nfcCardId, boolean accepted, LocalDate timestamp) {
         this.nfcCardId = nfcCardId;
         this.accepted = accepted;
         this.timestamp = timestamp;
@@ -22,7 +23,7 @@ public class Passage {
         return accepted;
     }
 
-    public Instant getTimestamp() {
+    public LocalDate getTimestamp() {
         return timestamp;
     }
 }
