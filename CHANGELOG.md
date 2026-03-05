@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.6](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.5...v2.0.6) (2026-03-05)
+
+
+### Bug Fixes
+
+* **ci/cd:** removed the versionning of the commit on the pushed image ([47db922](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/47db922f390446f96e299dc7a5a5b864f2bd858c))
+
 ## [2.0.5](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.4...v2.0.5) (2026-03-05)
 
 
