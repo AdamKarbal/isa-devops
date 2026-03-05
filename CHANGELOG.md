@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.5](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.4...v2.0.5) (2026-03-05)
+
+
+### Bug Fixes
+
+* **ci/cd:** fixed the repo where the images are pushed and added tags of a build ([ef51465](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/ef5146527b112366d529f1769d34f248c749fd14))
+
 ## [2.0.4](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.3...v2.0.4) (2026-03-04)
 
 ## [2.0.3](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.2...v2.0.3) (2026-03-04)
