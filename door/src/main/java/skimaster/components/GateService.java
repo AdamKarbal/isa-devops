@@ -29,7 +29,7 @@ public class GateService {
         if(!accepted){
             return Optional.empty();
         }
-        gate.registerPassage(new Passage(requestDTO.nfcCardId(),accepted, LocalDate.now()));
+        gate.registerPassage(new Passage(requestDTO.nfcCardId(),accepted, LocalDateTime.now()));
         return Optional.of(new PassageResponseDTO(accepted,gate.getStatus()));
     }
 
@@ -46,7 +46,7 @@ public class GateService {
     }
 
     public List<PassageDTO> getPassagesById(Long nfcCardId){
-        return gate.getPassages().stream().filter(x-> Objects.equals(x.getNfcCardId(), nfcCardId)).map(passage -> new PassageDTO(passage.getNfcCardId(),passage.getTimestamp())).toList();
+        return gate.getPassages().stream().filter(x-> Objects.equals(x.getNfcCardId(), nfcCardId)).map(passage -> new PassageDTO(passage.getNfcCardId(),passage.getTimestamp(),gate.getGateId())).toList();
     }
 
     public IncidentDTO addIncident(@Valid IncidentRequestDTO incidentRequestDTO){
@@ -57,15 +57,15 @@ public class GateService {
     }
 
     public List<PassageDTO> getAllPassages() {
-        return gate.getPassages().stream().map(x->new PassageDTO(x.getNfcCardId(), LocalDate.now())).toList();
+        return gate.getPassages().stream().map(x->new PassageDTO(x.getNfcCardId(), LocalDateTime.now(),gate.getGateId())).toList();
     }
 
-    public List<PassageDTO> getAllPassagesOfToday(){
-        LocalDate today = LocalDate.now();
-        return gate.getPassages().stream()
-                .filter(p -> p.getTimestamp()
-                        .equals(today))
-                .map(p -> new PassageDTO(p.getNfcCardId(), p.getTimestamp()))
-                .toList();
-    }
+//    public List<PassageDTO> getAllPassagesOfToday(){
+//        LocalDate today = LocalDate.now();
+//        return gate.getPassages().stream()
+//                .filter(p -> p.getTimestamp().toLocalDate()
+//                        .isEqual(today))
+//                .map(p -> new PassageDTO(p.getNfcCardId(), p.getTimestamp()))
+//                .toList();
+//    }
 }
