@@ -2,9 +2,13 @@ package fr.univcotedazur.skimaster.gate.connectors;
 
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateSyncDTO;
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class TurnstileProxy {
@@ -27,6 +31,15 @@ public class TurnstileProxy {
             System.err.println("Échec de synchronisation pour la porte : " + targetUrl);
         }
     }
+    public List<PassageDTO> getPassagesofToday() {
+        try{
+            return Arrays.stream(Objects.requireNonNull(restClient.build().get().uri("/gate/passages/today").retrieve().body(PassageDTO[].class))).toList();
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
 
     public void sendOrder(String baseUrl, String order){
         restClient.baseUrl(baseUrl).build()
