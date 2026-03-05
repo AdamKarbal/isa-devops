@@ -139,7 +139,6 @@ jobs:
             ismakhil/tcf-spring-cli
           do
             docker push "${img}:latest"
-            docker push "${img}:${SHA_TAG}"
             docker push "${img}:${VERSION_TAG}"
           done
 
