@@ -7,8 +7,10 @@ class IncidentTest {
 
     @Test
     void shouldCreateIncidentWithCorrectValues() {
+        // Arrange & Act
         Incident incident = new Incident(IncidentType.AVALANCHE, "Piste bloquée");
 
+        // Assert
         assertEquals(IncidentType.AVALANCHE, incident.getType());
         assertEquals("Piste bloquée", incident.getDescription());
         assertNotNull(incident.getTime());

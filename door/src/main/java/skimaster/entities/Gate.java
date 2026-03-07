@@ -1,7 +1,5 @@
 package skimaster.entities;
 
-import fr.univcotedazur.skimaster.incident.entities.Incident;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import skimaster.dtos.*;
 import skimaster.entities.Gate;
 import skimaster.entities.GateStatus;
+import skimaster.entities.Incident;
 import skimaster.entities.Passage;
 
 import java.time.Instant;
@@ -39,6 +40,13 @@ public class GateService {
 
     public List<PassageDTO> getPassagesById(Long nfcCardId){
         return gate.getPassages().stream().filter(x-> Objects.equals(x.getNfcCardId(), nfcCardId)).map(passage -> new PassageDTO(passage.getNfcCardId(), passage.isAccepted(),passage.getTimestamp())).toList();
+    }
+
+    public IncidentDTO addIncident(@Valid IncidentRequestDTO incidentRequestDTO){
+        closeGate();
+        Incident incident = new Incident(incidentRequestDTO.incidentType(), incidentRequestDTO.description(), Instant.now());
+        gate.registerIncident(incident);
+        return new IncidentDTO(incident.getType(), incidentRequestDTO.description(),incident.getTimestamp());
     }
 
     public List<Long> getAllPassages() {

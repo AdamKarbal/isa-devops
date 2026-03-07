@@ -7,7 +7,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.web.client.RestClient;
-import skimaster.dtos.DisplayAlertRequestDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,8 +14,6 @@ import java.util.List;
 @ShellComponent
 public class IncidentCommands {
     private static final String BASE_URI = "/incidents";
-    private static final String GATE_URI = "/gate";
-    private static final String DISPLAY_URI = "/display";
 
     private final RestClient restClient;
 
@@ -27,7 +24,6 @@ public class IncidentCommands {
     @ShellMethod(value = "Signaler un incident (ex: report-problem EQUIPMENT_FAILURE PORTIQUE G-NORD-01 \"Panne de portique\")", key = "report-problem")
     public String report(IncidentType type, IncidentTargetType targetType, String targetCode, String description){
         IncidentDTO dto = new IncidentDTO(null, type, description, LocalDateTime.now(), targetType, targetCode);
-        DisplayAlertRequestDTO disDto = new DisplayAlertRequestDTO(description, targetCode);
 
         restClient.post()
                 .uri(BASE_URI + "/addIncident")
@@ -35,18 +31,7 @@ public class IncidentCommands {
                 .retrieve()
                 .toBodilessEntity();
 
-        restClient.post()
-                .uri(GATE_URI + "/close")
-                .retrieve()
-                .toBodilessEntity();
-
-        restClient.post()
-                .uri(DISPLAY_URI + "/alerts")
-                .body(disDto)
-                .retrieve()
-                .toBodilessEntity();
-
-        return "Incident envoyé au serveur et portique fermé avec succès.";
+        return "Incident envoyé au serveur avec succès.";
     }
 
     @ShellMethod(value = "Voir tous les incidents", key = "incidents-history")
