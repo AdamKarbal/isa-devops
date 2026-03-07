@@ -8,7 +8,7 @@ import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
 import fr.univcotedazur.skimaster.order.entities.Order;
 import fr.univcotedazur.skimaster.order.repositories.OrderRepository;
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
-import fr.univcotedazur.skimaster.gate.entities.Passage;
+import fr.univcotedazur.skimaster.entities.Passage;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessTreatment;
 import fr.univcotedazur.skimaster.gate.repositories.PassageRepository;
 import org.slf4j.Logger;

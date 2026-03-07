@@ -1,7 +1,7 @@
 package skimaster.dtos;
 
+import fr.univcotedazur.skimaster.incident.entities.Incident;
 import skimaster.entities.GateStatus;
-import skimaster.entities.Incident;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package fr.univcotedazur.skimaster.gate.entities;
+package fr.univcotedazur.skimaster.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
