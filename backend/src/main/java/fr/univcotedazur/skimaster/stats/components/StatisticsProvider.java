@@ -45,4 +45,13 @@ public class StatisticsProvider implements AnalyticsProvider {
     public int todayActiveForfaits(){
         return getNbActiveForfaitsForDay(LocalDate.now());
     }
+    @Override
+    public int getNbActiveForfaitsForDay(LocalDate day){
+        return (int) forfaitRegistry.findAllForfaits().stream()
+                .filter(forfait -> !forfait.getValidDate().isBefore(day))
+                .count();
+    }
+    public int todayActiveForfaits(){
+        return getNbActiveForfaitsForDay(LocalDate.now());
+    }
 }
