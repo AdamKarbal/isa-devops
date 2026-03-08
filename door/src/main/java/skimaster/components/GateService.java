@@ -8,6 +8,8 @@ import skimaster.entities.Gate;
 import skimaster.entities.GateStatus;
 import skimaster.entities.Incident;
 import skimaster.entities.Passage;
+import skimaster.exceptions.AlreadyClosedGateException;
+import skimaster.exceptions.AlreadyOpenGateException;
 
 import java.time.Instant;
 import java.util.List;
@@ -27,10 +29,12 @@ public class GateService {
     }
 
     public void openGate(){
+        if(gate.getStatus() == GateStatus.OPEN) throw new AlreadyOpenGateException("Portique déjà ouvert.");
         gate.setStatus(GateStatus.OPEN);
     }
 
     public void closeGate(){
+        if(gate.getStatus() == GateStatus.CLOSED) throw new AlreadyClosedGateException("Portique déjà fermé.");
         gate.setStatus(GateStatus.CLOSED);
     }
 
