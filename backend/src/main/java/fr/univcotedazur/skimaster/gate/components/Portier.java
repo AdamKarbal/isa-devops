@@ -1,5 +1,6 @@
 package fr.univcotedazur.skimaster.gate.components;
 
+import fr.univcotedazur.skimaster.gate.config.GateConfig;
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
 import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
 import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
@@ -9,6 +10,9 @@ import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import fr.univcotedazur.skimaster.gate.interfaces.PortierInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,12 +23,13 @@ import java.util.Objects;
 public class Portier implements ManualGateControl, PortierInformation {
 
     private final TurnstileProxy turnstileProxy;
+    private final Map<String, String> gateUrls;
 
-    @Value("#{${gate.instances}}")
-    private Map<String, String> gateUrls;
-
-    public Portier(TurnstileProxy turnstileProxy) {
+    public Portier(TurnstileProxy turnstileProxy, Environment environment) {
         this.turnstileProxy = turnstileProxy;
+        this.gateUrls = Binder.get(environment)
+                .bind("gate.instances", Bindable.mapOf(String.class, String.class))
+                .orElseGet(Map::of);
     }
 
     public void syncAllGates(List<Long> cardIds) {

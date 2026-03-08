@@ -4,7 +4,8 @@ bank:
 
 gate:
   instances:
-    "gate-1": http://localhost:8082
+    "gate-1": "http://localhost:8082"
+    "gate-2": "http://localhost:8084"
 
 spring:
   main:

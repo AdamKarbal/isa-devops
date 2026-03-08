@@ -11,6 +11,8 @@ import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfeitOfferRepository;
+import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
 import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
 import jakarta.transaction.Transactional;
@@ -18,12 +20,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Transactional
@@ -45,6 +50,8 @@ class AccessHandlerTest {
     private WhiteListCache whiteListCache;
     @Autowired
     private ForfaitRepository ForfaitRepository;
+    @MockitoBean
+    TurnstileProxy turnstileProxy;
     private Customer returned;
     private ForfeitOffer adultForfait;
     private ForfeitOffer childForfait;
@@ -68,6 +75,9 @@ class AccessHandlerTest {
         String name = "John";
         String creditCard = "1234567890";
         returned = customerRegistration.register(name, creditCard);
+
+        when(turnstileProxy.getGateStatus(anyString()))
+                .thenReturn(new GateStatusResponseDTO("gate-1", "OPEN", 0));
     }
 
     @Test
