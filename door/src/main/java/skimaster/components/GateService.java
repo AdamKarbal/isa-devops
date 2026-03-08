@@ -8,8 +8,6 @@ import skimaster.entities.Gate;
 import skimaster.entities.GateStatus;
 import skimaster.entities.Incident;
 import skimaster.entities.Passage;
-import java.util.List;
-import java.util.ArrayList;
 import skimaster.exceptions.AlreadyClosedGateException;
 import skimaster.exceptions.AlreadyOpenGateException;
 
@@ -30,11 +28,15 @@ import org.slf4j.LoggerFactory;
 @Service
 public class GateService {
     private final Gate gate;
+    private Portier portier;
     private final List<LocalTime> openingTimes = new ArrayList<>();
     private final List<LocalTime> closingTimes = new ArrayList<>();
     private static final Logger LOG = LoggerFactory.getLogger(GateService.class);
     private List<Long> whitelist = new ArrayList<>();
     public GateService(@Value("${gate.id}") String gateId,
+                       @Value("${gate.alert-threshold}") int alertThreshold, Portier portier) {
+        this.gate = new Gate(gateId, GateStatus.OPEN, alertThreshold);
+        this.portier = portier;
                        @Value("${gate.alert-threshold}") int alertThreshold) {
         this.gate = new Gate(gateId, GateStatus.OPEN, alertThreshold, LocalTime.of(7,0),LocalTime.of(17,30));
         openingTimes.add(this.gate.getStartTime());

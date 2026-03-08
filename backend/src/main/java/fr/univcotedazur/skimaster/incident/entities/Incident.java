@@ -21,6 +21,7 @@ public class Incident {
     private String description;
     @NotNull
     private LocalDateTime time;
+    private boolean resolved;
 
     public Incident(IncidentType type, IncidentTargetType targetType, String targetCode, String description, LocalDateTime time) {
         this.type = type;
@@ -28,6 +29,7 @@ public class Incident {
         this.targetCode = targetCode;
         this.description = description;
         this.time = LocalDateTime.now();
+        this.resolved = false;
     }
 
     public Incident(IncidentType type, String description) {
@@ -78,5 +80,18 @@ public class Incident {
 
     @Override public int hashCode(){
         return Objects.hash(time);
+    }
+
+    public void resolve(){
+        this.resolved = true;
+    }
+
+    public boolean isResolved(){
+        return this.resolved;
+    }
+
+    @Override
+    public String toString(){
+        return "Incident à " + this.targetCode + " : " + this.type + " - " + this.description;
     }
 }

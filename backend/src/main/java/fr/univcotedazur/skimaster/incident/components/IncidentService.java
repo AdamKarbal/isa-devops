@@ -8,6 +8,7 @@ import fr.univcotedazur.skimaster.incident.interfaces.DisplayNotifier;
 import fr.univcotedazur.skimaster.incident.repositories.IncidentRepository;
 import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import jakarta.transaction.Transactional;
+import org.hibernate.validator.internal.constraintvalidators.bv.time.futureorpresent.FutureOrPresentValidatorForCalendar;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,20 +20,17 @@ public class IncidentService {
     private final IncidentRepository repository;
     private final ManualGateControl manualGateControl;
     private final DisplayNotifier displayNotifier;
+    private final FutureOrPresentValidatorForCalendar futureOrPresentValidatorForCalendar;
 
-    public IncidentService(IncidentRepository repository, ManualGateControl manualGateControl, DisplayNotifier displayNotifier) {
+    public IncidentService(IncidentRepository repository, ManualGateControl manualGateControl, DisplayNotifier displayNotifier, FutureOrPresentValidatorForCalendar futureOrPresentValidatorForCalendar) {
         this.repository = repository;
         this.manualGateControl = manualGateControl;
         this.displayNotifier = displayNotifier;
+        this.futureOrPresentValidatorForCalendar = futureOrPresentValidatorForCalendar;
     }
 
     public Optional<Incident> findFirstByOrderByTimeDesc() {
         return repository.findFirstByOrderByTimeDesc();
-    }
-
-    @Transactional
-    public void saveIncident(Incident incident){
-        repository.save(incident);
     }
 
     @Transactional
@@ -59,6 +57,16 @@ public class IncidentService {
         return repository.findByType(type);
     }
 
+    @Transactional
+    public List<Incident> findPendingIncidents(){
+        return repository.findByResolvedFalse();
+    }
+
+    @Transactional
+    public boolean hasUnresolvedIncidents(String code) {
+        return !repository.findByTargetCodeAndResolvedFalse(code).isEmpty();
+    }
+
     private String buildDisplayMessage(Incident incident) {
         return "[ALERTE] " + incident.getType() + " sur " + incident.getTargetType() + " " + incident.getTargetCode() + " : " + incident.getDescription();
     }
@@ -68,5 +76,14 @@ public class IncidentService {
             return incident.getTargetCode();
         }
         return "AUCUNE";
+    }
+
+    @Transactional
+    public Boolean resolveIncidentsForGate(String targetCode){
+        List<Incident> unresolved = repository.findByTargetCodeAndResolvedFalse(targetCode);
+        for (Incident incident : unresolved) {
+            incident.resolve();
+        }
+        return repository.findByTargetCodeAndResolvedFalse(targetCode).isEmpty();
     }
 }
