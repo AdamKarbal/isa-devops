@@ -18,11 +18,14 @@ import java.util.Objects;
 @Component
 public class Portier implements ManualGateControl, PortierInformation {
 
-    @Autowired
-    private TurnstileProxy turnstileProxy;
+    private final TurnstileProxy turnstileProxy;
 
     @Value("#{${gate.instances}}")
     private Map<String, String> gateUrls;
+
+    public Portier(TurnstileProxy turnstileProxy) {
+        this.turnstileProxy = turnstileProxy;
+    }
 
     public void syncAllGates(List<Long> cardIds) {
         gateUrls.values().forEach(url -> {

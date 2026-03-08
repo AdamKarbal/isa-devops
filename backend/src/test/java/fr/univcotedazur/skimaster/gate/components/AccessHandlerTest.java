@@ -74,7 +74,7 @@ class AccessHandlerTest {
     void testChildBeep(){
         Forfait forfaitChild = new Forfait(returned.getId(), LocalDate.now().plusDays(1),childForfait);
         ForfaitRepository.save(forfaitChild);
-        BeepContext beepChild = new BeepContext(forfaitChild.getId(),12L, LocalDateTime.now());
+        BeepContext beepChild = new BeepContext(forfaitChild.getId(),"gate-1", LocalDateTime.now());
         accessHandler.computeWhiteList();
         assertEquals(forfaitChild.getId(),accessHandler.processCurrentPassage(beepChild).forfeitId());
         assertEquals(BeepSignal.CHILD_BEEP,accessHandler.processCurrentPassage(beepChild).beepSignal());
@@ -88,7 +88,7 @@ class AccessHandlerTest {
     void testAdultBeep(){
         Forfait forfaitAdult = new Forfait(returned.getId(), LocalDate.now().plusDays(1),adultForfait);
         ForfaitRepository.save(forfaitAdult);
-        BeepContext beepAdult = new BeepContext(forfaitAdult.getId(),14L, LocalDateTime.now());
+        BeepContext beepAdult = new BeepContext(forfaitAdult.getId(),"gate-1", LocalDateTime.now());
         accessHandler.computeWhiteList();
         assertEquals(forfaitAdult.getId(),accessHandler.processCurrentPassage(beepAdult).forfeitId());
         assertEquals(BeepSignal.STANDARD_BEEP,accessHandler.processCurrentPassage(beepAdult).beepSignal());
