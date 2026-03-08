@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.0.6](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.5...v2.0.6) (2026-03-05)
+
+
+### Bug Fixes
+
+* **ci/cd:** removed the versionning of the commit on the pushed image ([47db922](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/47db922f390446f96e299dc7a5a5b864f2bd858c))
+
+## [2.0.5](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.4...v2.0.5) (2026-03-05)
+
+
+### Bug Fixes
+
+* **ci/cd:** fixed the repo where the images are pushed and added tags of a build ([ef51465](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/ef5146527b112366d529f1769d34f248c749fd14))
+
+## [2.0.4](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.3...v2.0.4) (2026-03-04)
+
+## [2.0.3](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.2...v2.0.3) (2026-03-04)
+
+## [2.0.2](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.1...v2.0.2) (2026-03-04)
+
+
+### Features
+
+* **back:** test ([b135234](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/b135234025861d400b64a8f521b3eda580552aee))
+
 ## [2.0.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v1.7.1...v2.0.1) (2026-03-02)
 
 
