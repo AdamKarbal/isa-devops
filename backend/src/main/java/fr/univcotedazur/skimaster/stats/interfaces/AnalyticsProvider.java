@@ -12,4 +12,5 @@ public interface AnalyticsProvider {
     List<Passage> getPassagesByDay(LocalDate day);
     Date getOpeningTimeByGate(String gateId);
     int getTotalUniqueNumberOfPassages();
+    int getNbActiveForfaitsForDay(LocalDate date);
 }
