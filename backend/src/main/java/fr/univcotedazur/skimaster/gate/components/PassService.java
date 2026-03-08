@@ -44,11 +44,12 @@ public class PassService implements AccessTreatment {
     private final BeepInformation beepInformation;
     private final CustomerRegistry customerRegistry;
     private final WhiteListCache whiteListCache;
+    private final Portier portier;
 
     public PassService(FFinder forfaitFinder, CustomerFinder customerFinder,
                        InvoiceCreator invoiceCreator, OrderRepository orderRepository,
                        PassageRepository passageRepository, TurnstileProxy turnstileProxy,
-                      BeepInformation beepInformation, CustomerRegistry customerRegistry, WhiteListCache whiteListCache) {
+                      BeepInformation beepInformation, CustomerRegistry customerRegistry, WhiteListCache whiteListCache, Portier portier) {
         this.forfaitFinder = forfaitFinder;
         this.customerFinder = customerFinder;
         this.invoiceCreator = invoiceCreator;
@@ -58,6 +59,7 @@ public class PassService implements AccessTreatment {
         this.beepInformation = beepInformation;
         this.customerRegistry = customerRegistry;
         this.whiteListCache = whiteListCache;
+        this.portier = portier;
     }
 
     @Override
@@ -66,7 +68,7 @@ public class PassService implements AccessTreatment {
                 .filter(f -> !f.getValidDate().isBefore(LocalDate.now()))
                 .map(f -> f.getCustomerId())
                 .toList();
-        turnstileProxy.syncAuthorizedCards(authorizedIds);
+        portier.syncAllGates(authorizedIds);
     }
 
 

@@ -24,15 +24,15 @@ class BeepStrategyTest {
 
     @Test
     void integrationTestChildBeep() {
-        BeepContext context = new BeepContext(1L, 2L, LocalDateTime.now());
+        BeepContext context = new BeepContext(1L, "gate-1", LocalDateTime.now());
         beepStrategy.assignAuthorizationBeep(context, AgeCategory.CHILD);
-        verify(portierInformation).authorizePassage(context.cardId(), BeepSignal.CHILD_BEEP);
+        verify(portierInformation).authorizePassage(context.gateId(), context.cardId(), BeepSignal.CHILD_BEEP);
     }
 
     @Test
     void integrationTestAdultBeep() {
-        BeepContext context = new BeepContext(5L, 2L, LocalDateTime.now());
+        BeepContext context = new BeepContext(5L, "gate-1", LocalDateTime.now());
         beepStrategy.assignAuthorizationBeep(context, AgeCategory.ADULT);
-        verify(portierInformation).authorizePassage(context.cardId(), BeepSignal.STANDARD_BEEP);
+        verify(portierInformation).authorizePassage(context.gateId(), context.cardId(), BeepSignal.STANDARD_BEEP);
     }
 }

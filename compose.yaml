@@ -14,13 +14,16 @@ services:
       - BANK_WITH_PORT=bank-system:9090
       - POSTGRES_HOST=postgres:5432
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,mappings
-      - DOOR_WITH_PORT=door-service:8082
+      - DOOR_WITH_PORT-1=http://door-1:8082
+      - DOOR_2_WITH_PORT-2=http://door-2:8082
       - DISPLAY_WITH_PORT=display-service:8083
     restart: always
     depends_on:
       postgres:
         condition: service_healthy
-      door-service:
+      door-1:
+        condition: service_healthy
+      door-2:
         condition: service_healthy
       display-service:
         condition: service_healthy
@@ -82,9 +85,9 @@ services:
       retries: 3
       start_period: 5s
 
-  door-service:
+  door-1:
     image: skimaster-door:latest
-    container_name: door
+    container_name: door-1
     build :
       context : ./door
       dockerfile: Dockerfile
@@ -96,6 +99,24 @@ services:
       timeout: 3s
       retries: 3
       start_period: 5s
+    environment:
+      - GATE_ID=gate-1
+      - SERVER_PORT=8082
+
+  door-2:
+    image: skimaster-door:latest
+    container_name: door-2
+    ports:
+      - "8084:8082"
+    healthcheck:
+      test: "curl --silent --fail localhost:8082/gate/status || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    environment:
+      - GATE_ID=gate-2
+      - SERVER_PORT=8082
 
   display-service:
     image: skimaster-display:latest

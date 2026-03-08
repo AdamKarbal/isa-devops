@@ -1,9 +1,10 @@
 bank:
   host:
     baseurl: http://localhost:9090
+
 gate:
-  host:
-    baseurl: http://localhost:8082
+  instances:
+    "gate-1": http://localhost:8082
 
 spring:
   main:

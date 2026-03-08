@@ -20,11 +20,11 @@ public class BeepStrategy implements BeepInformation {
     @Override
     public AccessRequest assignAuthorizationBeep(BeepContext beep, AgeCategory age) {
         BeepSignal signalSend = age.equals(AgeCategory.CHILD)?BeepSignal.CHILD_BEEP:BeepSignal.STANDARD_BEEP;
-        return portierInformation.authorizePassage(beep.cardId(), signalSend);
+        return portierInformation.authorizePassage(String.valueOf(beep.gateId()), beep.cardId(), signalSend);
     }
 
     @Override
     public AccessRequest assignForbiddenBeep(BeepContext beep) {
-        return portierInformation.denyPassage();
+        return portierInformation.denyPassage(String.valueOf(beep.gateId()));
     }
 }

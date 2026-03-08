@@ -5,8 +5,8 @@ import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
 
 public interface PortierInformation {
 
-    AccessRequest authorizePassage(Long forfeitId, BeepSignal signal);
-    AccessRequest denyPassage();
+    AccessRequest authorizePassage(String code, Long forfeitId, BeepSignal signal);
+    AccessRequest denyPassage(String code);
 
 
 }

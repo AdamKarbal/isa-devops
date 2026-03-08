@@ -1,4 +1,4 @@
-package fr.univcotedazur.skimaster.gate.exceptions;
+package skimaster.exceptions;
 
 public class AlreadyOpenGateException extends RuntimeException {
     public AlreadyOpenGateException(String message) {
