@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface IncidentRepository extends JpaRepository<Incident, Long> {
     List<Incident> findByType(IncidentType type);
     Optional<Incident> findFirstByOrderByTimeDesc();
+    List<Incident> findByResolvedFalse();
+    List<Incident> findByTargetCodeAndResolvedFalse(String targetCode);
 }
