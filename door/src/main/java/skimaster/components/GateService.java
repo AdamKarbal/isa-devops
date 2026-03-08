@@ -1,5 +1,6 @@
 package skimaster.components;
 
+import fr.univcotedazur.skimaster.gate.components.Portier;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,27 +12,27 @@ import skimaster.entities.Passage;
 import skimaster.exceptions.AlreadyClosedGateException;
 import skimaster.exceptions.AlreadyOpenGateException;
 
-import java.time.*;
-import java.util.ArrayList;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class GateService {
     private final Gate gate;
+    private Portier portier;
     private final List<LocalTime> openingTimes = new ArrayList<>();
     private final List<LocalTime> closingTimes = new ArrayList<>();
     public GateService(@Value("${gate.id}") String gateId,
+                       @Value("${gate.alert-threshold}") int alertThreshold, Portier portier) {
+        this.gate = new Gate(gateId, GateStatus.OPEN, alertThreshold);
+        this.portier = portier;
                        @Value("${gate.alert-threshold}") int alertThreshold) {
         this.gate = new Gate(gateId, GateStatus.OPEN, alertThreshold, LocalTime.of(7,0),LocalTime.of(17,30));
         openingTimes.add(this.gate.getStartTime());
         closingTimes.add(this.gate.getEndTime());
     }
+
+    public PassageResponseDTO processPassage(@Valid PassageRequestDTO requestDTO){
     public Optional<PassageResponseDTO> processPassage(@Valid PassageRequestDTO requestDTO){
         boolean accepted = gate.getStatus() == GateStatus.OPEN && requestDTO.accepted();
         if(!accepted){
