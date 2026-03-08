@@ -1,6 +1,5 @@
 package fr.univcotedazur.skimaster.gate.components;
 
-import fr.univcotedazur.skimaster.gate.config.GateConfig;
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
 import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
 import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
@@ -8,8 +7,6 @@ import fr.univcotedazur.skimaster.gate.exceptions.GateClosedException;
 import fr.univcotedazur.skimaster.gate.exceptions.NoGateExistentException;
 import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import fr.univcotedazur.skimaster.gate.interfaces.PortierInformation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
