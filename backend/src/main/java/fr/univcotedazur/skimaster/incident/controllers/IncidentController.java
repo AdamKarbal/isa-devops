@@ -52,7 +52,8 @@ public class IncidentController {
                 i.getDescription(),
                 i.getTime(),
                 i.getTargetType(),
-                i.getTargetCode()
+                i.getTargetCode(),
+                i.isClosing()
         );
     }
 
