@@ -8,14 +8,14 @@ public class Gate {
 
     private final String gateId;
     private GateStatus status;
-    private final int alertThreshold;
+    private int alertThreshold;
     private int currentPassages;
     private final List<Passage> passages;
     private final List<Incident> incidents;
     private final LocalTime startTime;
     private final LocalTime endTime;
 
-    public Gate(String gateId, GateStatus status, int alertThreshold,LocalTime startTime,LocalTime endTime) {
+    public Gate(String gateId, GateStatus status, int alertThreshold, LocalTime startTime,LocalTime endTime) {
         this.gateId = gateId;
         this.status = status;
         this.alertThreshold = alertThreshold;
@@ -40,6 +40,10 @@ public class Gate {
 
     public int getAlertThreshold() {
         return alertThreshold;
+    }
+
+    public void setAlertThreshold(int alertThreshold) {
+        this.alertThreshold = alertThreshold;
     }
 
     public LocalTime getStartTime() {

@@ -106,7 +106,7 @@ public class TurnstileProxy {
             System.out.println(e);
         }
     }
-    
+
     public List<PassageDTO> getPassagesofToday() {
         try{
             return Arrays.stream(Objects.requireNonNull(restClientBuilder.build().get().uri("/gate/passages/today").retrieve().body(PassageDTO[].class))).toList();
@@ -144,7 +144,7 @@ public class TurnstileProxy {
         try {
             Long result = restClientBuilder.baseUrl(targetUrl)
                     .build()
-                    .get()  
+                    .get()
                     .uri("/gate/opening-time")
                     .retrieve()
                     .body(Long.class);
@@ -163,6 +163,16 @@ public class TurnstileProxy {
 
     public void sendOrderAll(String order){
         gateUrls.values().forEach(url -> sendOrder(url, order));
+    }
+
+
+    public void setAlertThreshold(String baseUrl, int alertThreshold) {
+        restClientBuilder.baseUrl(baseUrl).build()
+                .put()
+                .uri("/gate/alert-threshold")
+                .body(new GateAlertThresholdUpdateDTO(alertThreshold))
+                .retrieve()
+                .toBodilessEntity();
     }
 
 }

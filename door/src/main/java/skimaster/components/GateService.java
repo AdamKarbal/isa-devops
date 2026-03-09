@@ -89,6 +89,10 @@ public class GateService {
         return new GateStatusResponseDTO(gate.getStatus(), gate.getAlertThreshold(), gate.getCurrentPassages(), gate.getIncidents());
     }
 
+    public void setAlertThreshold(int threshold) {
+        gate.setAlertThreshold(threshold);
+    }
+
     public List<PassageDTO> getPassagesById(Long nfcCardId){
         return gate.getPassages().stream().filter(x-> Objects.equals(x.getNfcCardId(), nfcCardId)).map(passage -> new PassageDTO(passage.getNfcCardId(),passage.getTimestamp(),gate.getGateId())).toList();
     }
