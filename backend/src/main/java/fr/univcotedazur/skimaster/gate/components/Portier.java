@@ -1,6 +1,7 @@
 package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
 import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
 import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
 import fr.univcotedazur.skimaster.gate.exceptions.GateClosedException;
@@ -33,6 +34,18 @@ public class Portier implements ManualGateControl, PortierInformation {
         gateUrls.values().forEach(url -> {
             turnstileProxy.syncAuthorizedCards(url, cardIds);
         });
+    }
+
+    public List<String> getConfiguredGateCodes() {
+        return gateUrls.keySet().stream().sorted().toList();
+    }
+
+    public GateStatusResponseDTO gateStatus(String code) {
+        return turnstileProxy.getGateStatus(getUrl(code));
+    }
+
+    public void setAlertThreshold(String code, int alertThreshold) {
+        turnstileProxy.setAlertThreshold(getUrl(code), alertThreshold);
     }
 
     @Override

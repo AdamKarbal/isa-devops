@@ -1,5 +1,6 @@
 package skimaster.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import skimaster.components.GateService;
@@ -37,6 +38,12 @@ public class GateController {
     @GetMapping("/status")
     public GateStatusResponseDTO getStatus() {
         return gateService.getStatus();
+    }
+
+    @PutMapping("/alert-threshold")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void setAlertThreshold(@RequestBody @Valid AlertThresholdRequestDTO request) {
+        gateService.setAlertThreshold(request.alertThreshold());
     }
 
     @GetMapping("/passages/{cardId}")

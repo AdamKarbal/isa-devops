@@ -2,6 +2,7 @@ package fr.univcotedazur.skimaster.gate.connectors;
 
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateSyncDTO;
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateAlertThresholdUpdateDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import java.util.List;
@@ -42,6 +43,15 @@ public class TurnstileProxy {
                 .uri("/gate/status")
                 .retrieve()
                 .body(GateStatusResponseDTO.class);
+    }
+
+    public void setAlertThreshold(String baseUrl, int alertThreshold) {
+        restClient.baseUrl(baseUrl).build()
+                .put()
+                .uri("/gate/alert-threshold")
+                .body(new GateAlertThresholdUpdateDTO(alertThreshold))
+                .retrieve()
+                .toBodilessEntity();
     }
 
 }
