@@ -37,6 +37,11 @@ public class ForfaitRegistry implements FRegister, FFinder {
         this.repository.saveAll(forfaits);
     }
 
+    @Transactional
+    public void saveAll(List<Forfait> forfaits){
+        repository.saveAll(forfaits);
+    }
+
     @Override
     @Transactional
     public void deleteForfait(Long customerId, Long forfaitId) {
