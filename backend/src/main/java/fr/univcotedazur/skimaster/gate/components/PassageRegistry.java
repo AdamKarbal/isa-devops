@@ -19,7 +19,7 @@ public class PassageRegistry implements PassageFinder {
         return passageRepository.findByCustomerId(customerId);
     }
 
-    private List<Passage> findByDate(LocalDate localDate){
+    public List<Passage> findByDate(LocalDate localDate){
         return passageRepository.findByDate(localDate);
     }
 

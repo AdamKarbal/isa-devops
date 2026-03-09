@@ -19,12 +19,12 @@ public class StatisticsProvider implements AnalyticsProvider {
     }
     @Override
     public List<Passage> getDailyPassages() {
-        return List.of();
+        return passageRegistry.findTodayPassages();
     }
 
     @Override
     public List<Passage> getPassagesByDay(LocalDate day) {
-        return List.of();
+        return passageRegistry.findByDate(day);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class StatisticsProvider implements AnalyticsProvider {
 
     @Override
     public int getTotalUniqueNumberOfPassages() {
-        return 0;
+        return (int) passageRegistry.findTodayPassages().stream().distinct().count();
     }
     @Override
     public int getNbActiveForfaitsForDay(LocalDate day){
