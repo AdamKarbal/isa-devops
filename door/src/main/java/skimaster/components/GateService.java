@@ -1,5 +1,6 @@
 package skimaster.components;
 
+import fr.univcotedazur.skimaster.gate.components.Portier;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,13 @@ import java.util.Objects;
 @Service
 public class GateService {
     private final Gate gate;
+    private Portier portier;
     public GateService(@Value("${gate.id}") String gateId,
-                       @Value("${gate.alert-threshold}") int alertThreshold) {
+                       @Value("${gate.alert-threshold}") int alertThreshold, Portier portier) {
         this.gate = new Gate(gateId, GateStatus.OPEN, alertThreshold);
+        this.portier = portier;
     }
+
     public PassageResponseDTO processPassage(@Valid PassageRequestDTO requestDTO){
         boolean accepted = gate.getStatus() == GateStatus.OPEN && requestDTO.accepted();
         gate.registerPassage(new Passage(requestDTO.nfcCardId(),accepted, Instant.now()));
@@ -31,6 +35,7 @@ public class GateService {
     public void openGate(){
         if(gate.getStatus() == GateStatus.OPEN) throw new AlreadyOpenGateException("Portique déjà ouvert.");
         gate.setStatus(GateStatus.OPEN);
+
     }
 
     public void closeGate(){
