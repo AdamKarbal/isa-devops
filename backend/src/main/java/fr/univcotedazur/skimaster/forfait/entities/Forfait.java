@@ -24,7 +24,7 @@ public class Forfait {
     private Long customerId;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "offer_id", nullable = false)
     private ForfeitOffer offer;
 
