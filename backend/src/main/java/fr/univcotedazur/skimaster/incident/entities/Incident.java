@@ -22,22 +22,25 @@ public class Incident {
     @NotNull
     private LocalDateTime time;
     private boolean resolved;
+    @NotNull
+    private boolean closes;
 
-    public Incident(IncidentType type, IncidentTargetType targetType, String targetCode, String description, LocalDateTime time) {
+    public Incident(IncidentType type, IncidentTargetType targetType, String targetCode, String description, LocalDateTime time, Boolean closes) {
         this.type = type;
         this.targetType = targetType;
         this.targetCode = targetCode;
         this.description = description;
         this.time = LocalDateTime.now();
         this.resolved = false;
+        this.closes = closes;
     }
 
-    public Incident(IncidentType type, String description) {
-        this(type, IncidentTargetType.PISTE, "UNKNOWN", description, LocalDateTime.now());
+    public Incident(IncidentType type, String description, Boolean closes) {
+        this(type, IncidentTargetType.PISTE, "UNKNOWN", description, LocalDateTime.now(), closes);
     }
 
-    public Incident(IncidentType type, String description, LocalDateTime time) {
-        this(type, IncidentTargetType.PISTE, "UNKNOWN", description, time);
+    public Incident(IncidentType type, String description, LocalDateTime time, Boolean closes) {
+        this(type, IncidentTargetType.PISTE, "UNKNOWN", description, time, closes);
     }
 
     public Incident() {
@@ -90,8 +93,21 @@ public class Incident {
         return this.resolved;
     }
 
+    public Boolean isClosing(){
+        return this.closes;
+    }
+
     @Override
     public String toString(){
-        return "Incident à " + this.targetCode + " : " + this.type + " - " + this.description;
+        StringBuilder sb = new StringBuilder();
+        if(this.isClosing()) sb.append("[FERMANT]");
+        else sb.append("[NON FERMANT]");
+        sb.append("Incident à ")
+                .append(this.targetCode)
+                .append(" : ")
+                .append(this.type)
+                .append(" - ")
+                .append(this.description);
+        return sb.toString();
     }
 }
