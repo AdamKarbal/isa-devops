@@ -3,6 +3,8 @@ package fr.univcotedazur.skimaster.gate.connectors;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateSyncDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO;
+import fr.univcotedazur.skimaster.gate.entities.Passage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -37,6 +39,15 @@ public class TurnstileProxy {
         } catch (Exception e) {
             System.out.println(e);
             return null;
+        }
+    }
+
+    public long syncOpeningTimeByGate(String gateId) {
+        try{
+            return restClient.build().get().uri("/gate/opening-time/{gateId}", gateId).retrieve().body(Long.class);
+        }catch (Exception e) {
+            System.out.println(e);
+            return -1;
         }
     }
 

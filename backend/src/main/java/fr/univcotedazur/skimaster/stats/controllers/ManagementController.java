@@ -41,8 +41,8 @@ public class ManagementController {
     }
 
     @GetMapping("/opening-time/{gateId}")
-    public Date getOpeningTimeByGate(@PathVariable String gateId) {
-        return analyticsProvider.getOpeningTimeByGate(gateId);
+    public String getOpeningTimeByGate(@PathVariable String gateId) {
+        return analyticsProducer.aggregateOpeningTimeByGate(gateId);
     }
 
     @GetMapping("/unique-passages")
