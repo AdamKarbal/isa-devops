@@ -20,15 +20,13 @@ public class TurnstileProxy {
         this.restClient = builder.baseUrl(gateHost).build();
     }
 
-    public void syncAuthorizedCards(List<Long> cardIds) {
-        try {
-            restClient.post()
-                    .uri("/gate/sync")
-                    .body(new GateSyncDTO(cardIds))
-                    .retrieve()
-                    .toBodilessEntity();
-        } catch (Exception e) {
-        }
+    public void syncAuthorizedCards(List<Long> authorizedIds) {
+        GateSyncDTO dto = new GateSyncDTO(authorizedIds);
+        restClient.post()
+                .uri("/gate/sync")
+                .body(dto)
+                .retrieve()
+                .toBodilessEntity();
     }
     public List<PassageDTO> getPassagesofToday() {
         try{

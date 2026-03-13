@@ -56,7 +56,8 @@ public class ForfaitController {
                 f.getCustomerId(),
                 f.getPassType().name(),
                 f.getAgeCategory().name(),
-                f.getValidDate()
+                f.getValidDate(),
+                f.getBeep()
                 );
     }
 

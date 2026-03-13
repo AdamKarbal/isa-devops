@@ -43,58 +43,50 @@ class AccessHandlerTest {
 
     @Autowired
     private WhiteListCache whiteListCache;
+
     @Autowired
-    private ForfaitRepository ForfaitRepository;
+    private ForfaitRepository forfaitRepository;
+
     private Customer returned;
     private ForfeitOffer adultForfait;
     private ForfeitOffer childForfait;
-    private Product childProduct;
-    private Product adultProduct;
 
     @BeforeEach
     void setup() throws AlreadyExistingCustomerException {
+        whiteListCache.getForfeitList().clear();
         adultForfait = new ForfeitOffer(AgeCategory.ADULT, PassType.FULL, 10.0);
         childForfait = new ForfeitOffer(AgeCategory.CHILD, PassType.FULL, 5.0);
-
         adultForfait = forfaitOfferRepository.save(adultForfait);
         childForfait = forfaitOfferRepository.save(childForfait);
-
-        childProduct = new Product(List.of(childForfait));
-        adultProduct = new Product(List.of(adultForfait));
-
-        productRepository.save(childProduct);
-        productRepository.save(adultProduct);
-
-        String name = "John";
-        String creditCard = "1234567890";
-        returned = customerRegistration.register(name, creditCard);
+        productRepository.save(new Product(List.of(childForfait)));
+        productRepository.save(new Product(List.of(adultForfait)));
+        returned = customerRegistration.register("John", "1234567890");
     }
 
     @Test
-    void testChildBeep(){
-        Forfait forfaitChild = new Forfait(returned.getId(), LocalDate.now().plusDays(1),childForfait);
-        ForfaitRepository.save(forfaitChild);
-        BeepContext beepChild = new BeepContext(forfaitChild.getId(),12L, LocalDateTime.now());
+    void testComputeWhiteListWithChildForfait(){
+        Forfait forfaitChild = new Forfait(returned.getId(), LocalDate.now().plusDays(1), childForfait);
+        forfaitRepository.save(forfaitChild);
         accessHandler.computeWhiteList();
-        assertEquals(forfaitChild.getId(),accessHandler.processCurrentPassage(beepChild).forfeitId());
-        assertEquals(BeepSignal.CHILD_BEEP,accessHandler.processCurrentPassage(beepChild).beepSignal());
-        assertTrue(accessHandler.processCurrentPassage(beepChild).isAuthorized());
         assertEquals(1, whiteListCache.getForfeitList().size());
-        assertEquals(forfaitChild.getId(),whiteListCache.getValidForfeitIds().getFirst());
-
+        assertEquals(forfaitChild.getId(), whiteListCache.getValidForfeitIds().get(0));
+        assertEquals(AgeCategory.CHILD, whiteListCache.getForfeitList().get(0).getAgeCategory());
     }
 
     @Test
-    void testAdultBeep(){
-        Forfait forfaitAdult = new Forfait(returned.getId(), LocalDate.now().plusDays(1),adultForfait);
-        ForfaitRepository.save(forfaitAdult);
-        BeepContext beepAdult = new BeepContext(forfaitAdult.getId(),14L, LocalDateTime.now());
+    void testComputeWhiteListWithAdultForfait(){
+        Forfait forfaitAdult = new Forfait(returned.getId(), LocalDate.now().plusDays(1), adultForfait);
+        forfaitRepository.save(forfaitAdult);
         accessHandler.computeWhiteList();
-        assertEquals(forfaitAdult.getId(),accessHandler.processCurrentPassage(beepAdult).forfeitId());
-        assertEquals(BeepSignal.STANDARD_BEEP,accessHandler.processCurrentPassage(beepAdult).beepSignal());
-        assertTrue(accessHandler.processCurrentPassage(beepAdult).isAuthorized());
         assertEquals(1, whiteListCache.getForfeitList().size());
-        assertEquals(forfaitAdult.getId(),whiteListCache.getValidForfeitIds().getFirst());
+        assertEquals(forfaitAdult.getId(), whiteListCache.getValidForfeitIds().get(0));
     }
 
+    @Test
+    void testComputeWhiteListFiltersExpiredForfait(){
+        Forfait expired = new Forfait(returned.getId(), LocalDate.now().minusDays(1), adultForfait);
+        forfaitRepository.save(expired);
+        accessHandler.computeWhiteList();
+        assertTrue(whiteListCache.getForfeitList().isEmpty(), "Le forfait expiré ne doit pas être dans la whitelist");
+    }
 }

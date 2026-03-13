@@ -20,17 +20,23 @@ import java.util.Optional;
 @Service
 public class GateService {
     private final Gate gate;
+    private List<Long> whitelist = new ArrayList<>();
     public GateService(@Value("${gate.id}") String gateId,
                        @Value("${gate.alert-threshold}") int alertThreshold) {
         this.gate = new Gate(gateId, GateStatus.OPEN, alertThreshold);
     }
-    public Optional<PassageResponseDTO> processPassage(@Valid PassageRequestDTO requestDTO){
-        boolean accepted = gate.getStatus() == GateStatus.OPEN && requestDTO.accepted();
-        if(!accepted){
+    public void updateWhitelist(List<Long> authorizedIds) {
+        this.whitelist = authorizedIds;
+    }
+    public Optional<PassageResponseDTO> processPassage(@Valid PassageRequestDTO requestDTO) {
+        boolean isAuthorized = whitelist.contains(requestDTO.nfcCardId());
+        boolean accepted = (gate.getStatus() == GateStatus.OPEN) && isAuthorized;
+        if (!accepted) {
             return Optional.empty();
         }
-        gate.registerPassage(new Passage(requestDTO.nfcCardId(),accepted, LocalDateTime.now()));
-        return Optional.of(new PassageResponseDTO(accepted,gate.getStatus()));
+
+        gate.registerPassage(new Passage(requestDTO.nfcCardId(), accepted, LocalDateTime.now()));
+        return Optional.of(new PassageResponseDTO(accepted, gate.getStatus()));
     }
 
     public void openGate(){
@@ -58,6 +64,13 @@ public class GateService {
 
     public List<PassageDTO> getAllPassages() {
         return gate.getPassages().stream().map(x->new PassageDTO(x.getNfcCardId(), LocalDateTime.now(),gate.getGateId())).toList();
+    }
+
+    public List<PassageDTO> getTodayPassages() {
+        return gate.getPassages().stream()
+                .filter(Passage::isAccepted)
+                .map(p -> new PassageDTO(p.getNfcCardId(), p.getTimestamp(), gate.getGateId()))
+                .toList();
     }
 
 //    public List<PassageDTO> getAllPassagesOfToday(){

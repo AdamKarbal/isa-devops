@@ -4,6 +4,7 @@ import fr.univcotedazur.skimaster.cart.entities.Product;
 import fr.univcotedazur.skimaster.cashier.entites.Invoice;
 import fr.univcotedazur.skimaster.cashier.exceptions.PaymentException;
 import fr.univcotedazur.skimaster.cashier.interfaces.InvoiceCreator;
+import fr.univcotedazur.skimaster.cashier.interfaces.InvoiceFinder;
 import fr.univcotedazur.skimaster.cashier.interfaces.Payment;
 import fr.univcotedazur.skimaster.cashier.repositories.InvoiceRepository;
 import fr.univcotedazur.skimaster.common.helpers.Converter;
@@ -22,10 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class InvoiceHandler implements InvoiceCreator {
+public class InvoiceHandler implements InvoiceCreator, InvoiceFinder {
 
     private static final Logger LOG = LoggerFactory.getLogger(InvoiceHandler.class);
     private final Payment paymentService;
@@ -96,5 +98,15 @@ public class InvoiceHandler implements InvoiceCreator {
         }
         return orderRepository.findByIdWithItems(order.getOrderId())
                 .orElse(order);
+    }
+
+    @Override
+    public List<Invoice> findInvoicesByCustomerId(Long customerId) {
+        return invoiceRepository.findAll().stream()
+                .filter(i -> {
+                    Optional<Order> o = orderRepository.findById(i.getOrderRefId());
+                    return o.isPresent() && o.get().getCustomer().getId().equals(customerId);
+                })
+                .toList();
     }
 }

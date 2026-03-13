@@ -65,7 +65,8 @@ public class ForfaitFinder implements FFinder {
                 f.getCustomerId(),
                 f.getPassType().name(),
                 f.getAgeCategory().name(),
-                f.getValidDate()
+                f.getValidDate(),
+                f.getBeep()
         );
     }
 }

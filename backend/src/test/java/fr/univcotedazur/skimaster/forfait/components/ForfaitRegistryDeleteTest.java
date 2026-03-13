@@ -3,6 +3,7 @@ package fr.univcotedazur.skimaster.forfait.components;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
 import fr.univcotedazur.skimaster.forfait.exceptions.ForfaitIdNotFoundException;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
+import fr.univcotedazur.skimaster.gate.components.BeepStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,11 +22,14 @@ class ForfaitRegistryDeleteTest {
     @Mock
     private ForfaitRepository forfaitRepository;
 
+    @Mock
+    private BeepStrategy beepStrategy;
+
     private ForfaitRegistry forfaitRegistry;
 
     @BeforeEach
     void setUp() {
-        forfaitRegistry = new ForfaitRegistry(forfaitRepository);
+        forfaitRegistry = new ForfaitRegistry(forfaitRepository, beepStrategy);
     }
 
     @Test

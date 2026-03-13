@@ -1,6 +1,8 @@
 package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.cashier.interfaces.InvoiceCreator;
+import fr.univcotedazur.skimaster.cashier.interfaces.InvoiceFinder;
+import fr.univcotedazur.skimaster.cashier.entites.Invoice;
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
@@ -11,19 +13,11 @@ import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
 import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessTreatment;
 import fr.univcotedazur.skimaster.gate.repositories.PassageRepository;
+import fr.univcotedazur.skimaster.forfait.entities.Forfait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import fr.univcotedazur.skimaster.customer.components.CustomerRegistry;
-import fr.univcotedazur.skimaster.forfait.entities.Forfait;
-import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
-import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
-import fr.univcotedazur.skimaster.gate.interfaces.BeepInformation;
-
-import java.util.Objects;
-import java.util.Optional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,44 +30,44 @@ public class PassService implements AccessTreatment {
     private static final Logger LOG = LoggerFactory.getLogger(PassService.class);
 
     private final FFinder forfaitFinder;
+    private final InvoiceFinder invoiceFinder;
     private final CustomerFinder customerFinder;
     private final InvoiceCreator invoiceCreator;
     private final OrderRepository orderRepository;
     private final PassageRepository passageRepository;
     private final TurnstileProxy turnstileProxy;
-    private final BeepInformation beepInformation;
-    private final CustomerRegistry customerRegistry;
-    private final WhiteListCache whiteListCache;
 
-    public PassService(FFinder forfaitFinder, CustomerFinder customerFinder,
-                       InvoiceCreator invoiceCreator, OrderRepository orderRepository,
-                       PassageRepository passageRepository, TurnstileProxy turnstileProxy,
-                      BeepInformation beepInformation, CustomerRegistry customerRegistry, WhiteListCache whiteListCache) {
+    public PassService(FFinder forfaitFinder,
+                       InvoiceFinder invoiceFinder,
+                       CustomerFinder customerFinder,
+                       InvoiceCreator invoiceCreator,
+                       OrderRepository orderRepository,
+                       PassageRepository passageRepository,
+                       TurnstileProxy turnstileProxy) {
         this.forfaitFinder = forfaitFinder;
+        this.invoiceFinder = invoiceFinder;
         this.customerFinder = customerFinder;
         this.invoiceCreator = invoiceCreator;
         this.orderRepository = orderRepository;
         this.passageRepository = passageRepository;
         this.turnstileProxy = turnstileProxy;
-        this.beepInformation = beepInformation;
-        this.customerRegistry = customerRegistry;
-        this.whiteListCache = whiteListCache;
     }
 
     @Override
     public void pushAuthorizedBadges() {
         List<Long> authorizedIds = forfaitFinder.findAllForfaits().stream()
                 .filter(f -> !f.getValidDate().isBefore(LocalDate.now()))
-                .map(f -> f.getCustomerId())
+                .map(Forfait::getCustomerId)
+                .distinct()
                 .toList();
+        LOG.info("Pushing whitelist of {} users to gates", authorizedIds.size());
         turnstileProxy.syncAuthorizedCards(authorizedIds);
     }
-
 
     @Override
     @Transactional
     public void processReceivedPassages(List<Long> nfcCardIds) {
-        LOG.info("START: Processing {} passages", nfcCardIds.size());
+        LOG.info("START: Processing {} passages from collector", nfcCardIds.size());
         for (Long id : nfcCardIds) {
             processIncomingPassage(id);
         }
@@ -83,58 +77,38 @@ public class PassService implements AccessTreatment {
     private void processIncomingPassage(Long nfcCardId) {
         LocalDateTime now = LocalDateTime.now();
         passageRepository.save(new Passage(nfcCardId, now));
-
         try {
             Customer customer = customerFinder.retrieveCustomer(nfcCardId);
-            LOG.info("Customer found: {} (SuperCarte: {})", customer.getName(), customer.isHasSuperCarte());
-
             if (customer.isHasSuperCarte()) {
-                handleSuperCarteBilling(customer);
-            } else {
-                LOG.info("No SuperCarte for {}", customer.getName());
+                LocalDateTime oneHourAgo = now.minusHours(1);
+                boolean hasInvoiceRecently = invoiceFinder.findInvoicesByCustomerId(customer.getId()).stream()
+                        .filter(inv -> inv.getAmount() == 15.0)
+                        .anyMatch(inv -> inv.getPaymentDate().isAfter(oneHourAgo));
+                boolean hasOrderRecently = orderRepository.findAll().stream()
+                        .filter(o -> o.getCustomer().getId().equals(customer.getId()))
+                        .filter(o -> o.getPrice() == 15.0)
+                        .anyMatch(o -> true);
+
+                if (!hasInvoiceRecently && !hasOrderRecently) {
+                    handleSuperCarteBilling(customer);
+                    LOG.info("SUPERCARTE: Facturation déclenchée pour {}", customer.getName());
+                } else {
+                    LOG.info("SUPERCARTE: Passage déjà traité ou facturé pour {}", customer.getName());
+                }
             }
         } catch (CustomerIdNotFoundException e) {
-            LOG.error("{} unknown in system", nfcCardId);
+            LOG.error("Client inconnu : {}", nfcCardId);
         }
+    }
+
+
+    private void handleSuperCarteBilling(Customer customer) {
+        Order superOrder = new Order(customer, new HashSet<>(), 15.0);
+        superOrder = orderRepository.save(superOrder);
+        invoiceCreator.processOrderPayment(superOrder);
     }
 
     public void processPassages(List<Long> nfcCardIds) {
-        for (Long id : nfcCardIds) {
-            processIncomingPassage(id);
-        }
-    }
-
-    //MODIFI2 MIEU HANDLE COMPARER PAR HEURE ET FAIRE UNE ORDER AVEC PRODUCT PAS UN PRIX FIXE
-    private void handleSuperCarteBilling(Customer customer) {
-        boolean alreadyBilled = orderRepository.findAll().stream()
-                .anyMatch(o -> o.getCustomer().getId().equals(customer.getId()) && o.getPrice() == 15.0);
-
-        if (!alreadyBilled) {
-            Order superOrder = new Order(customer, new HashSet<>(), 15.0);
-            superOrder = orderRepository.save(superOrder);
-            invoiceCreator.processOrderPayment(superOrder);
-            LOG.info("SUPERCARTE: Commande de 15 euros créée pour {}", customer.getName());
-        }
-    }
-
-    private void handleSuperCarteLogic(Customer customer, LocalDateTime now) {
-        List<Passage> todaysPassages = passageRepository.findByCustomerIdAndDate(customer.getId(), now.toLocalDate());
-        LocalDateTime firstPassageTime = todaysPassages.get(0).getOccurrenceDate();
-        handleSuperCarteBilling(customer);
-
-    }
-
-    public AccessRequest validateAndRegisterPassage(BeepContext beepContext) throws CustomerIdNotFoundException {
-        Optional<Forfait> forfeitOpt = whiteListCache.getForfeitList().stream()
-                .filter(forfeit -> Objects.equals(forfeit.getId(), beepContext.cardId()))
-                .findFirst();
-        if (forfeitOpt.isPresent()) {
-            Optional<Customer> customer = customerRegistry.findById(forfeitOpt.get().getCustomerId());
-            //register into PassageRepo
-            if (customer.isPresent()) {
-                return beepInformation.assignAuthorizationBeep(beepContext, forfeitOpt.get().getAgeCategory());
-            }
-        }
-        return beepInformation.assignForbiddenBeep(beepContext);
+        processReceivedPassages(nfcCardIds);
     }
 }

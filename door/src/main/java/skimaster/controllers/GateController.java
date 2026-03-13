@@ -64,4 +64,14 @@ public class GateController {
     public List<PassageDTO> getAllPassageIds() {
         return gateService.getAllPassages();
     }
+    @PostMapping("/sync")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void syncWhitelist(@RequestBody GateSyncDTO dto) {
+        gateService.updateWhitelist(dto.authorizedCardIds());
+    }
+
+    @GetMapping("/passages/today")
+    public List<PassageDTO> getPassagesOfToday() {
+        return gateService.getTodayPassages();
+    }
 }
