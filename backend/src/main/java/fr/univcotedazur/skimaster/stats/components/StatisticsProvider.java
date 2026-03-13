@@ -2,6 +2,7 @@ package fr.univcotedazur.skimaster.stats.components;
 
 import fr.univcotedazur.skimaster.forfait.components.ForfaitRegistry;
 import fr.univcotedazur.skimaster.gate.components.PassageRegistry;
+import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
 import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.stats.interfaces.AnalyticsProvider;
 import org.springframework.stereotype.Component;
@@ -13,9 +14,11 @@ import java.util.List;
 public class StatisticsProvider implements AnalyticsProvider {
     private final ForfaitRegistry forfaitRegistry;
     private final PassageRegistry passageRegistry;
-    public StatisticsProvider(ForfaitRegistry forfaitRegistry,PassageRegistry passageRegistry){
+    private final TurnstileProxy turnstileProxy;
+    public StatisticsProvider(ForfaitRegistry forfaitRegistry,PassageRegistry passageRegistry,TurnstileProxy turnstileProxy) {
         this.forfaitRegistry=forfaitRegistry;
         this.passageRegistry = passageRegistry;
+        this.turnstileProxy = turnstileProxy;
     }
     @Override
     public List<Passage> getDailyPassages() {
@@ -28,8 +31,8 @@ public class StatisticsProvider implements AnalyticsProvider {
     }
 
     @Override
-    public Date getOpeningTimeByGate(String gateId) {
-        return null;
+    public long getOpeningTimeByGate(String gateId) {
+        return turnstileProxy.syncOpeningTimeByGate(gateId);
     }
 
     @Override

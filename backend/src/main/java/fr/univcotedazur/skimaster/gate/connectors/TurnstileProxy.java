@@ -44,6 +44,16 @@ public class TurnstileProxy {
         }
     }
 
+    public long syncOpeningTimeByGate(String gateId) {
+        try{
+            return restClientBuilder.baseUrl("blabla").build().get().uri("/gate/opening-time/{gateId}", gateId).retrieve().body(Long.class);//TODO
+        }catch (Exception e) {
+            System.out.println(e);
+            return -1;
+        }
+    }
+
+
     public void sendOrder(String baseUrl, String order) {
         restClientBuilder.baseUrl(baseUrl).build()
                 .post()
@@ -59,4 +69,5 @@ public class TurnstileProxy {
                 .retrieve()
                 .body(GateStatusResponseDTO.class);
     }
+
 }

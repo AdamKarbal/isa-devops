@@ -10,7 +10,7 @@ public interface AnalyticsProvider {
 
     List<Passage> getDailyPassages();
     List<Passage> getPassagesByDay(LocalDate day);
-    Date getOpeningTimeByGate(String gateId);
+    long getOpeningTimeByGate(String gateId);
     int getTotalUniqueNumberOfPassages();
     int getNbActiveForfaitsForDay(LocalDate date);
 }

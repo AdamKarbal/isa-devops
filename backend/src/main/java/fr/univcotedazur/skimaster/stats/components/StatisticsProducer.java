@@ -6,6 +6,7 @@ import fr.univcotedazur.skimaster.stats.interfaces.AnalyticsProducer;
 import fr.univcotedazur.skimaster.stats.interfaces.AnalyticsProvider;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,5 +28,17 @@ public class StatisticsProducer implements AnalyticsProducer {
         int activeForfaits = analyticsProvider.getNbActiveForfaitsForDay(day);
 
         return new DailyReportDTO(day, totalPassages, uniqueSkiers, activeForfaits);
+    }
+
+    public String aggregateOpeningTimeByGate(String gateId){
+        long time = analyticsProvider.getOpeningTimeByGate(gateId);
+        Duration duration = Duration.ofSeconds(time);
+
+        long hours = duration.toHours();
+        long minutes = duration.minusHours(hours).toMinutes();
+        long seconds = duration.minusMinutes(minutes).toSeconds();
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+
     }
 }
