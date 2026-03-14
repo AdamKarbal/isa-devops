@@ -1,8 +1,8 @@
 package fr.univcotedazur.skimaster.cli.commands;
 
-import fr.univcotedazur.skimaster.incident.dto.IncidentDTO;
-import fr.univcotedazur.skimaster.incident.entities.IncidentTargetType;
-import fr.univcotedazur.skimaster.incident.entities.IncidentType;
+import fr.univcotedazur.skimaster.cli.model.IncidentTargetType;
+import fr.univcotedazur.skimaster.cli.model.IncidentType;
+import fr.univcotedazur.skimaster.cli.model.IncidentDTO;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
