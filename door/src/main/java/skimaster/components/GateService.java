@@ -13,30 +13,33 @@ import skimaster.exceptions.AlreadyOpenGateException;
 
 import java.time.*;
 import java.util.ArrayList;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.*;
 import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.Optional;
 
 @Service
 public class GateService {
     private final Gate gate;
-    private Portier portier;
     private final List<LocalTime> openingTimes = new ArrayList<>();
     private final List<LocalTime> closingTimes = new ArrayList<>();
+
     private static final Logger LOG = LoggerFactory.getLogger(GateService.class);
     private List<Long> whitelist = new ArrayList<>();
+
     public GateService(@Value("${gate.id}") String gateId,
-                       @Value("${gate.alert-threshold}") int alertThreshold, Portier portier) {
-        this.gate = new Gate(gateId, GateStatus.OPEN, alertThreshold);
-        this.portier = portier;
                        @Value("${gate.alert-threshold}") int alertThreshold) {
         this.gate = new Gate(gateId, GateStatus.OPEN, alertThreshold, LocalTime.of(7,0),LocalTime.of(17,30));
         openingTimes.add(this.gate.getStartTime());
@@ -47,6 +50,7 @@ public class GateService {
         this.whitelist = authorizedIds;
         LOG.info("GATE DEBUG: Whitelist mise à jour. Nouveaux IDs autorisés: {}", this.whitelist);
     }
+
     public Optional<PassageResponseDTO> processPassage(@Valid PassageRequestDTO requestDTO) {
         Long cardId = requestDTO.nfcCardId(); // Correction : on définit cardId ici
         boolean isAuthorized = whitelist.contains(cardId);
@@ -105,11 +109,10 @@ public class GateService {
         closingTimes.clear();
     }
 
-    public long getLastOpeningDuration(){
+    public long getLastOpeningDuration(String gateId){
 
         List<Long> sumDuration = new ArrayList<>();
         int size = Math.min(openingTimes.size(), closingTimes.size());
-
         if (openingTimes.size()>closingTimes.size()){
             LocalTime lastOpening = openingTimes.getLast();
             sumDuration.add(Duration.between(lastOpening,Instant.now()).getSeconds());
