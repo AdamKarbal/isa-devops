@@ -69,6 +69,28 @@ public class AdminCommands {
         System.out.println("Problème résolu et portique réouvert.");
     }
 
+    //TODO: A compléter
+    @ShellMethod(key = "Consulter les statistiques globales de fréquentation en temps réel.", value = "monitor-all")
+    public void monitorAll(){
+        this.restClient.get()
+                .uri(BASE_URI + "/monitorAll")
+                .retrieve()
+                .body();
+
+
+    }
+
+    //TODO: A compléter
+    @ShellMethod(key = "Consulter les statistiques de fréquentation d'un portique en temps réel. (Ex: monitor-gate code)", value = "monitor-gate")
+    public void monitor(String code){
+        this.restClient.get()
+                .uri(BASE_URI + "/monitor/" + code)
+                .retrieve()
+                .body();
+
+
+    }
+
     @ShellMethod(key = "Consulter les incidents", value = "healthcheck")
     public void checkGates(){
         List<String> iList = this.restClient.get()
