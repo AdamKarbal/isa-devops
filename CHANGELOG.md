@@ -1,5 +1,31 @@
 # Changelog
 
+# [2.2.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.1.0...v2.2.0) (2026-03-16)
+
+
+### Bug Fixes
+
+* **backend:** test suite au merge ([3cb0c7e](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/3cb0c7e7c46311fa210cc1ad154f20b49befd93e))
+* **ci/cd:** removed a comment ([4b93420](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/4b9342046a52af8f97157865dcf01709e6cd2c4c))
+
+
+### Features
+
+* **back:** added a DailyReportDTO ([b3d6755](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/b3d6755f6dff0dfb9e62a9ddaa716cc11086c5e9))
+* **back:** added interfaces methods ([6148794](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/6148794cc1ed3b76b18dbd912c9adf6b14a15e87))
+* **back:** added some PassageRegistry queries ([e17acb1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/e17acb1e87b7ddc468b3cb6da84dfa3a85c20b28))
+* **backend:** forfait(nfccard) beeper register, passage update repository, retrieve passage payment ([01106fe](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/01106fec2ceefaaaeaf9a43eeeb90efc8858add1))
+* **back:** forfait is now registered in the repository when bought ([b5f25da](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/b5f25da705cac51c3867f2362766c2f51acbed65))
+* **back:** forfait is now registered in the repository when bought ([e594988](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/e5949884ceefc5d997b559d40fbc62dda7838da9))
+* **back:** implemented the interfaces ([515f296](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/515f296dab63e320f8a39d38f015add1b88ec6cc))
+* **back:** implemented the managementController ([29a0f7c](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/29a0f7c7d7fb868044caabcb91fc69a58a957545))
+* **ci/cd:** added a passageFinder to fetch Passages from the repo ([5f0bf2e](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/5f0bf2e07c07486b0d8b0a13d48a880986ecac89))
+* **ci/cd:** added queries by date ([23d8ce2](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/23d8ce25b83796f3c66e70dbfadf3ad332bdec51))
+* **ci/cd:** begginging ([00e3271](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/00e327119fa89456ec641af62beb7cff7b6df041))
+* **cli:** demo à jour, adaptation door ([a08fcd4](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/a08fcd4d3ad30ed05f99321e97a1c45686f2bf2d))
+* **stats:** added skelet of interfaces and components ([33f22ad](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/33f22adec1d731939791d281285f2c3d11495ea0))
+* **stats:** refactoring PassageDTO and adding new components ([167d4db](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/167d4dbf259a69310c85fc58b9922440a96aff5c))
+
 # [2.1.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.6...v2.1.0) (2026-03-08)
 
 
