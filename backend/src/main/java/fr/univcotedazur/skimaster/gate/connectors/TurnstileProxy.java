@@ -21,15 +21,6 @@ public class TurnstileProxy {
         this.restClientBuilder = builder;
     }
 
-    public void syncAuthorizedCards(String baseUrl, List<Long> authorizedIds) {
-        GateSyncDTO dto = new GateSyncDTO(authorizedIds);
-        restClientBuilder.baseUrl(baseUrl).build()
-                .post()
-                .uri("/gate/sync")
-                .body(dto)
-                .retrieve()
-                .toBodilessEntity();
-    }
 
     public List<PassageDTO> getPassagesofToday(String baseUrl) {
         try {
@@ -39,17 +30,28 @@ public class TurnstileProxy {
                     .retrieve()
                     .body(PassageDTO[].class);
             return (response != null) ? Arrays.asList(response) : List.of();
-        } catch (Exception e) {
+            }catch (Exception e){
             return List.of();
         }
+        }
+    public void syncAuthorizedCards(String targetUrl, List<Long> cardIds) {
+        try {
+            restClientBuilder.baseUrl(targetUrl).build()
+                    .post()
+                    .uri("/gate/sync")
+                    .body(new GateSyncDTO(cardIds))
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (Exception e) {
+            System.err.println("Échec de synchronisation pour la porte : " + targetUrl);
+        }
     }
-
-    public long syncOpeningTimeByGate(String gateId) {
+    public List<PassageDTO> getPassagesofToday() {
         try{
-            return restClientBuilder.baseUrl("blabla").build().get().uri("/gate/opening-time/{gateId}", gateId).retrieve().body(Long.class);//TODO
-        }catch (Exception e) {
+            return Arrays.stream(Objects.requireNonNull(restClientBuilder.build().get().uri("/gate/passages/today").retrieve().body(PassageDTO[].class))).toList();
+        } catch (Exception e) {
             System.out.println(e);
-            return -1;
+            return null;
         }
     }
 
@@ -69,5 +71,16 @@ public class TurnstileProxy {
                 .retrieve()
                 .body(GateStatusResponseDTO.class);
     }
+
+    public long syncOpeningTimeByGate(String gateId) {
+        try{
+            return restClientBuilder.build().get().uri("/gate/opening-time/{gateId}", gateId).retrieve().body(Long.class);
+        }catch (Exception e) {
+            System.out.println(e);
+            return -1;
+        }
+    }
+
+
 
 }
