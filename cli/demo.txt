@@ -36,38 +36,46 @@ pay-order 2
 echo ===_7._Final_check_of_all_orders_===
 orders
 
-echo ===_PARTIE_2_:PASSAGE_GATE_===
+echo ===_PARTIE_2_:_PASSAGE_ET_SMART_GATE_===
 
-echo ===_8._SUPERCARTE_SETUP_===
+echo ===_8._CUSTOMERS_SETUP_===
 register SuperJulien 1238969831
 set-supercarte SuperJulien true
+add-to-cart SuperJulien 1 1
+validate SuperJulien
+pay-order 3
+update-customers
+register Intrus 0000000000
 update-customers
 
-echo ===_9._AUTONOMY:_PUSH_AUTHORIZED_BADGES_===
+echo ===_9._AUTONOMY:_PUSH_WHITELIST_TO_GATE_===
 sync-gates
 
-echo ===_10._SIMULATION:_FIRST_PASSAGE_AND_BILLING_===
-echo Simulant-premier-passage-ID-3
-door-pass 3 true
-echo Declenchement-collecte-facturation
+echo ===_10._SIMULATION:_SUCCESSFUL_PASSAGE_===
+door-pass 3
+echo ===_10.a_COLLECT_AND_BILLING_===
 collect-passages
 update-customers
-echo ===_CHECK_BILLING_AFTER_FIRST_PASSAGE_===
+echo ===_CHECK_ORDER_CREATED_FOR_ID_3_===
 orders 3
 
-echo ===_11._SIMULATION:_SECOND_PASSAGE_SAME_DAY_===
-echo Simulant-deuxieme-passage-ID-3
-door-pass 3 true
+echo ===_11._SIMULATION:_SECOND_PASSAGE_IDEMPOTENCY_===
+# SuperJulien (ID 3) repasse 5 minutes après
+door-pass 3
 collect-passages
 update-customers
-echo ===_CHECK_NO_NEW_BILL_===
+echo ===_CHECK_NO_NEW_ORDER_CREATED_ (Idempotence 1h) ===
 orders 3
 
-echo ===_12._SIMULATION:_PASSAGE_FAIL_===
-echo Simulant-passage-inconnu-999
-door-pass 999 false
+echo ===_12._SIMULATION:_FORBIDDEN_PASSAGE_===
+# L'Intrus (ID 4) essaie de passer mais n'a pas de forfait valide
+# La porte doit répondre FORBIDDEN (403) car il n'est pas dans la Whitelist
+door-pass 4
 collect-passages
 update-customers
+echo ===_CHECK_NO_ORDER_FOR_INTRUS_===
+orders 4
 
-echo ===_13._FINAL_VERIFICATION_OF_INVOICES_===
+echo ===_13._FINAL_VERIFICATION_===
+echo Verification que seul SuperJulien a été facturé une seule fois
 orders

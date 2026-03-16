@@ -6,6 +6,7 @@ import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import skimaster.components.GateService;
 import skimaster.dtos.*;
+import skimaster.dtos.GateSyncDTO;
 
 import java.util.List;
 import java.util.Optional;

@@ -28,18 +28,21 @@ public class GateSyncCommands {
     }
 
     @ShellMethod(value = "Simulate a physical passage at the door", key = "door-pass")
-    public String doorPass(Long cardId, boolean accepted) {
-        // On tape directement sur le service externe (autonomie)
-        try{
+    public String doorPass(Long cardId) {
+        try {
             doorRestClient.post()
                     .uri("/gate/pass")
-                    .body(new PassageRequestDTO(accepted, cardId))
+                    .body(new PassageRequestDTO(true, cardId))
                     .retrieve()
                     .toBodilessEntity();
+
             return "SUCCESS: Card " + cardId + " badged at the door.";
         }
-        catch(ErrorResponseException e){
-            return e.getMessage();
+        catch (ErrorResponseException e) {
+            return "DENIED: " + e.getDetailMessageCode();
+        }
+        catch (Exception e) {
+            return "ERROR: " + e.getMessage();
         }
     }
 

@@ -60,8 +60,10 @@ public class PassService implements AccessTreatment {
                 .map(Forfait::getCustomerId)
                 .distinct()
                 .toList();
-        LOG.info("Pushing whitelist of {} users to gates", authorizedIds.size());
-        turnstileProxy.syncAuthorizedCards(authorizedIds);
+        LOG.info("DEBUG WHITELIST: Forfaits trouvés en BD pour les IDs clients suivants: {}", authorizedIds);
+        if (authorizedIds.isEmpty()) {
+            LOG.warn("DEBUG WHITELIST: Attention, la liste est VIDE. Aucun forfait valide n'a été trouvé.");
+        }        turnstileProxy.syncAuthorizedCards(authorizedIds);
     }
 
     @Override

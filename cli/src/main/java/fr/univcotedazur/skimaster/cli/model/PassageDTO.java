@@ -2,5 +2,5 @@ package fr.univcotedazur.skimaster.cli.model;
 
 import java.time.LocalDateTime;
 
-public record PassageDTO(Long nfcCardId, LocalDateTime timestamp, String gateId) {
+public record PassageDTO(Long nfcCardId, LocalDateTime timestamp) {
 }
