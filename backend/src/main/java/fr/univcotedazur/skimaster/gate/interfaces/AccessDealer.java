@@ -6,6 +6,5 @@ import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 
 public interface AccessDealer {
 
-    AccessRequest processCurrentPassage(BeepContext beepContext) throws CustomerIdNotFoundException;
     void computeWhiteList();
 }

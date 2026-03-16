@@ -1,6 +1,7 @@
 package fr.univcotedazur.skimaster.forfait.entities;
 
 import fr.univcotedazur.skimaster.customer.entities.Customer;
+import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -23,8 +24,11 @@ public class Forfait {
     @Column(name = "customer_id", nullable = false)
     private Long customerId;
 
+    @Column (name = "beeper")
+    private BeepSignal beep;
+
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "offer_id", nullable = false)
     private ForfeitOffer offer;
 
@@ -32,12 +36,20 @@ public class Forfait {
         this.customerId = customerId;
         this.validDate = vDate;
         this.offer = offer;
+        this.beep=BeepSignal.ACCESS_DENIED;
     }
 
     public Forfait(Customer customer, LocalDate vDate, ForfeitOffer offer) {
         this(customer.getId(), vDate, offer);
     }
 
+    public BeepSignal getBeep(){
+        return this.beep;
+    }
+
+    public void setBeep(BeepSignal beep){
+        this.beep=beep;
+    }
     public Forfait() {}
 
     public Long getCustomerId() {

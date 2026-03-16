@@ -27,13 +27,6 @@ public class AccessHandler implements AccessDealer {
         this.whiteListCache = whiteListCache;
     }
 
-    // --- Logique issue du premier fichier (Gestion des passages unitaires) ---
-
-    @Override
-    public AccessRequest processCurrentPassage(BeepContext beepContext) throws CustomerIdNotFoundException {
-        return passService.validateAndRegisterPassage(beepContext);
-    }
-
     @Override
     public void computeWhiteList() {
         List<Forfait> forfaits = forfaitRegistry.findAllForfaits().stream()
@@ -42,7 +35,6 @@ public class AccessHandler implements AccessDealer {
         whiteListCache.addForfeits(forfaits);
     }
 
-    // --- Logique issue du second fichier (Synchronisation externe et collecte) ---
 
     public void synchronizeExternalSystems() {
         passService.pushAuthorizedBadges();

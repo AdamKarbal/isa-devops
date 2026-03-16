@@ -1,8 +1,10 @@
 package fr.univcotedazur.skimaster.cli.commands;
 
+import fr.univcotedazur.skimaster.cli.model.PassageDTO;
 import fr.univcotedazur.skimaster.cli.model.PassageRequestDTO;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.web.ErrorResponseException;
 import org.springframework.web.client.RestClient;
 
 import java.util.Arrays;
@@ -26,36 +28,46 @@ public class GateSyncCommands {
     }
 
     @ShellMethod(value = "Simulate a physical passage at the door", key = "door-pass")
-    public String doorPass(Long cardId, boolean accepted) {
-        // On tape directement sur le service externe (autonomie)
-        doorRestClient.post()
-                .uri("/gate/pass")
-                .body(new PassageRequestDTO(accepted, cardId))
-                .retrieve()
-                .toBodilessEntity();
-        return "SUCCESS: Card " + cardId + " badged at the door.";
+    public String doorPass(Long cardId) {
+        try {
+            doorRestClient.post()
+                    .uri("/gate/pass")
+                    .body(new PassageRequestDTO(true, cardId))
+                    .retrieve()
+                    .toBodilessEntity();
+
+            return "SUCCESS: Card " + cardId + " badged at the door.";
+        }
+        catch (ErrorResponseException e) {
+            return "DENIED: " + e.getDetailMessageCode();
+        }
+        catch (Exception e) {
+            return "ERROR: " + e.getMessage();
+        }
     }
 
     @ShellMethod(key = "collect-passages", value = "Collect passages from door and push to backend")
     public String collectPassages() {
         try {
-            Long[] idsArray = doorRestClient.get()
+            PassageDTO[] passagesArray = doorRestClient.get()
                     .uri("/gate/passages")
                     .retrieve()
-                    .body(Long[].class);
-            if (idsArray == null || idsArray.length == 0) {
+                    .body(PassageDTO[].class);
+
+            if (passagesArray == null || passagesArray.length == 0) {
                 return "SUCCESS: No new passages to collect at the door.";
             }
-            List<Long> collectedIds = Arrays.asList(idsArray);
+            List<PassageDTO> collectedPassages = Arrays.asList(passagesArray);
+            List<Long> ids = collectedPassages.stream().map(PassageDTO::nfcCardId).toList();
             restClient.post()
                     .uri("/gatesync/collect")
-                    .body(collectedIds)
+                    .body(ids)
                     .retrieve()
                     .toBodilessEntity();
-
-            return "SUCCESS: Collected " + collectedIds.size() + " passage(s) from door and pushed to backend: " + collectedIds;
+            return "SUCCESS: Collected " + ids.size() + " passage(s) and pushed to backend.";
         } catch (Exception e) {
-            return "ERROR: Communication failed. Check if Door and Backend are up. Details: " + e.getMessage();
+            return "ERROR: " + e.getMessage();
         }
     }
+
 }

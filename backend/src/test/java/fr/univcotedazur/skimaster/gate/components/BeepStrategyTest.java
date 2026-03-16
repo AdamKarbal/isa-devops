@@ -1,38 +1,48 @@
 package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
-import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
 import fr.univcotedazur.skimaster.gate.interfaces.PortierInformation;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class BeepStrategyTest {
-    @InjectMocks
+
     private BeepStrategy beepStrategy;
 
     @Mock
     private PortierInformation portierInformation;
 
+    @BeforeEach
+    void setUp() {
+        beepStrategy = new BeepStrategy(portierInformation);
+    }
+
     @Test
-    void integrationTestChildBeep() {
-        BeepContext context = new BeepContext(1L, "gate-1", LocalDateTime.now());
-        beepStrategy.assignAuthorizationBeep(context, AgeCategory.CHILD);
-        verify(portierInformation).authorizePassage(context.gateId(), context.cardId(), BeepSignal.CHILD_BEEP);
+    void testChildBeep() {
+        BeepSignal result = beepStrategy.processBeepInformation(AgeCategory.CHILD);
+        assertEquals(BeepSignal.CHILD_BEEP, result);
+    }
+
+    @Test
+    void testAdultBeep() {
+        BeepSignal resultReal = beepStrategy.processBeepInformation(AgeCategory.ADULT);
+        assertEquals(BeepSignal.STANDARD_BEEP, resultReal);
     }
 
     @Test
     void integrationTestAdultBeep() {
-        BeepContext context = new BeepContext(5L, "gate-1", LocalDateTime.now());
-        beepStrategy.assignAuthorizationBeep(context, AgeCategory.ADULT);
-        verify(portierInformation).authorizePassage(context.gateId(), context.cardId(), BeepSignal.STANDARD_BEEP);
+        assertEquals(BeepSignal.STANDARD_BEEP, beepStrategy.processBeepInformation(AgeCategory.ADULT));
+    }
+
+    @Test
+    void integrationTestChildBeep() {
+        assertEquals(BeepSignal.CHILD_BEEP, beepStrategy.processBeepInformation(AgeCategory.CHILD));
     }
 }

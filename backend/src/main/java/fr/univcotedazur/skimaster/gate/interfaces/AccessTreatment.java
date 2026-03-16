@@ -7,7 +7,6 @@ import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 
 public interface AccessTreatment {
 
-    AccessRequest validateAndRegisterPassage(BeepContext beepContext) throws CustomerIdNotFoundException;
     void pushAuthorizedBadges();
     void processReceivedPassages(List<Long> nfcCardIds);
 }

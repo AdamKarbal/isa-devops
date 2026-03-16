@@ -1,6 +1,7 @@
 package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
+import fr.univcotedazur.skimaster.forfait.entities.Forfait;
 import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
 import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
@@ -18,13 +19,8 @@ public class BeepStrategy implements BeepInformation {
     }
 
     @Override
-    public AccessRequest assignAuthorizationBeep(BeepContext beep, AgeCategory age) {
-        BeepSignal signalSend = age.equals(AgeCategory.CHILD)?BeepSignal.CHILD_BEEP:BeepSignal.STANDARD_BEEP;
-        return portierInformation.authorizePassage(String.valueOf(beep.gateId()), beep.cardId(), signalSend);
+    public BeepSignal processBeepInformation(AgeCategory age) {
+         return  age.equals(AgeCategory.CHILD)?BeepSignal.CHILD_BEEP:BeepSignal.STANDARD_BEEP;
     }
 
-    @Override
-    public AccessRequest assignForbiddenBeep(BeepContext beep) {
-        return portierInformation.denyPassage(String.valueOf(beep.gateId()));
-    }
 }
