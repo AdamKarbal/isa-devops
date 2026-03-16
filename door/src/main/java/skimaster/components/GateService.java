@@ -1,5 +1,4 @@
 package skimaster.components;
-
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -45,6 +44,7 @@ public class GateService {
         openingTimes.add(this.gate.getStartTime());
         closingTimes.add(this.gate.getEndTime());
     }
+
     public void updateWhitelist(List<Long> authorizedIds) {
 
         this.whitelist = authorizedIds;
@@ -109,7 +109,7 @@ public class GateService {
         closingTimes.clear();
     }
 
-    public long getLastOpeningDuration(String gateId){
+    public long getLastOpeningDuration(){
 
         List<Long> sumDuration = new ArrayList<>();
         int size = Math.min(openingTimes.size(), closingTimes.size());

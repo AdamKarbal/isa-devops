@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
+import fr.univcotedazur.skimaster.gate.exceptions.NoGateExistentException;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -17,13 +21,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.*;
 
 @Component
 public class TurnstileProxy {
 
     private final RestClient.Builder restClientBuilder;
-    private final PassageRepository passageRepository;
     private final Map<String, String> gateUrls;
+    private final PassageRepository passageRepository;
 
     public TurnstileProxy(RestClient.Builder builder, PassageRepository passageRepository, Environment environment) {
         this.restClientBuilder = builder;
@@ -89,8 +94,8 @@ public class TurnstileProxy {
             if (doorPassages != null) {
                 List<Passage> passagesToSave = Arrays.stream(doorPassages)
                         .map(dto ->{
-                                System.out.println("DTO reçu -> ID: " + dto.nfcCardId() + " Date: " + dto.timestamp());
-                                return new Passage(dto.nfcCardId(), dto.timestamp(),gateId);
+                            System.out.println("DTO reçu -> ID: " + dto.nfcCardId() + " Date: " + dto.timestamp());
+                            return new Passage(dto.nfcCardId(), dto.timestamp(),gateId);
                         }).toList();
 
                 // Note: You might want to check for duplicates before saving
@@ -99,13 +104,9 @@ public class TurnstileProxy {
             }
         }catch(Exception e){
             System.out.println(e);
+        }
     }
-    }
-
-    public void syncAllGates(List<Long> cardIds){
-        gateUrls.values().forEach(url -> syncAuthorizedCards(url, cardIds));
-    }
-
+    
     public List<PassageDTO> getPassagesofToday() {
         try{
             return Arrays.stream(Objects.requireNonNull(restClientBuilder.build().get().uri("/gate/passages/today").retrieve().body(PassageDTO[].class))).toList();
@@ -116,6 +117,10 @@ public class TurnstileProxy {
     }
 
 
+    public void syncAllGates(List<Long> cardIds){
+        gateUrls.values().forEach(url -> syncAuthorizedCards(url, cardIds));
+    }
+
     public void sendOrder(String baseUrl, String order) {
         restClientBuilder.baseUrl(baseUrl).build()
                 .post()
@@ -124,8 +129,10 @@ public class TurnstileProxy {
                 .toBodilessEntity();
     }
 
-    public GateStatusResponseDTO getGateStatus(String baseUrl) {
-        return restClientBuilder.baseUrl(baseUrl).build()
+    public GateStatusResponseDTO getGateStatus(String code){
+        String targetUrl = getUrl(code);
+
+        return restClientBuilder.baseUrl(targetUrl).build()
                 .get()
                 .uri("/gate/status")
                 .retrieve()
@@ -154,5 +161,8 @@ public class TurnstileProxy {
         }
     }
 
+    public void sendOrderAll(String order){
+        gateUrls.values().forEach(url -> sendOrder(url, order));
+    }
 
 }
