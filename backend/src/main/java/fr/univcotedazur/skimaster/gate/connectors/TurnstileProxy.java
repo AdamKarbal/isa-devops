@@ -15,43 +15,48 @@ import java.util.Objects;
 @Component
 public class TurnstileProxy {
 
-    private final RestClient.Builder restClient;
+    private final RestClient.Builder restClientBuilder;
 
     public TurnstileProxy(RestClient.Builder builder) {
-        this.restClient = builder;
+        this.restClientBuilder = builder;
     }
 
-    public void syncAuthorizedCards(List<Long> authorizedIds) {
+    public void syncAuthorizedCards(String baseUrl, List<Long> authorizedIds) {
         GateSyncDTO dto = new GateSyncDTO(authorizedIds);
-        restClient.post()
+        restClientBuilder.baseUrl(baseUrl).build()
+                .post()
                 .uri("/gate/sync")
                 .body(dto)
                 .retrieve()
                 .toBodilessEntity();
     }
-    public List<PassageDTO> getPassagesofToday() {
-        try{
-            return Arrays.stream(Objects.requireNonNull(restClient.get().uri("/gate/passages/today").retrieve().body(PassageDTO[].class))).toList();
+
+    public List<PassageDTO> getPassagesofToday(String baseUrl) {
+        try {
+            PassageDTO[] response = restClientBuilder.baseUrl(baseUrl).build()
+                    .get()
+                    .uri("/gate/passages/today")
+                    .retrieve()
+                    .body(PassageDTO[].class);
+            return (response != null) ? Arrays.asList(response) : List.of();
         } catch (Exception e) {
-            System.out.println(e);
-            return null;
+            return List.of();
         }
     }
-  
-      public void sendOrder(String baseUrl, String order){
-        restClient.baseUrl(baseUrl).build()
+
+    public void sendOrder(String baseUrl, String order) {
+        restClientBuilder.baseUrl(baseUrl).build()
                 .post()
                 .uri("/gate" + order)
                 .retrieve()
                 .toBodilessEntity();
     }
 
-    public GateStatusResponseDTO getGateStatus(String baseUrl){
-        return restClient.baseUrl(baseUrl).build()
+    public GateStatusResponseDTO getGateStatus(String baseUrl) {
+        return restClientBuilder.baseUrl(baseUrl).build()
                 .get()
                 .uri("/gate/status")
                 .retrieve()
                 .body(GateStatusResponseDTO.class);
     }
-
 }

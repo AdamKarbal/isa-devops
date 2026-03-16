@@ -30,6 +30,7 @@ public class PassService implements AccessTreatment {
     private static final Logger LOG = LoggerFactory.getLogger(PassService.class);
 
     private final FFinder forfaitFinder;
+    private final Portier portier;
     private final InvoiceFinder invoiceFinder;
     private final CustomerFinder customerFinder;
     private final InvoiceCreator invoiceCreator;
@@ -37,7 +38,7 @@ public class PassService implements AccessTreatment {
     private final PassageRepository passageRepository;
     private final TurnstileProxy turnstileProxy;
 
-    public PassService(FFinder forfaitFinder,
+    public PassService(FFinder forfaitFinder, Portier portier,
                        InvoiceFinder invoiceFinder,
                        CustomerFinder customerFinder,
                        InvoiceCreator invoiceCreator,
@@ -45,6 +46,7 @@ public class PassService implements AccessTreatment {
                        PassageRepository passageRepository,
                        TurnstileProxy turnstileProxy) {
         this.forfaitFinder = forfaitFinder;
+        this.portier = portier;
         this.invoiceFinder = invoiceFinder;
         this.customerFinder = customerFinder;
         this.invoiceCreator = invoiceCreator;
@@ -60,11 +62,9 @@ public class PassService implements AccessTreatment {
                 .map(Forfait::getCustomerId)
                 .distinct()
                 .toList();
-        LOG.info("DEBUG WHITELIST: Forfaits trouvés en BD pour les IDs clients suivants: {}", authorizedIds);
-        if (authorizedIds.isEmpty()) {
-            LOG.warn("DEBUG WHITELIST: Attention, la liste est VIDE. Aucun forfait valide n'a été trouvé.");
-        }        
-      turnstileProxy.syncAuthorizedCards(authorizedIds);
+
+        LOG.info("DEBUG WHITELIST: Pushing to all gates: {}", authorizedIds);
+        portier.syncAllGates(authorizedIds);
     }
 
     @Override
