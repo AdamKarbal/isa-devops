@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import skimaster.components.GateService;
 import skimaster.dtos.*;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,8 +60,8 @@ public class GateController {
         return gateService.getAllPassages();
     }
 
-    @GetMapping("/opening-time/{gateId}")
-    public long getOpeningTime(@PathVariable("gateId") String gateId) {
-        return gateService.getLastOpeningDuration(gateId);
+    @GetMapping("/opening-time")
+    public long getOpeningTime() {
+        return gateService.getLastOpeningDuration();
     }
 }

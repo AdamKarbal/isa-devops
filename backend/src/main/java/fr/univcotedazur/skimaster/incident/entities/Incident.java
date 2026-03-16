@@ -30,7 +30,7 @@ public class Incident {
         this.targetType = targetType;
         this.targetCode = targetCode;
         this.description = description;
-        this.time = LocalDateTime.now();
+        this.time = time;
         this.resolved = false;
         this.closes = closes;
     }
@@ -41,6 +41,10 @@ public class Incident {
 
     public Incident(IncidentType type, String description, LocalDateTime time, Boolean closes) {
         this(type, IncidentTargetType.PISTE, "UNKNOWN", description, time, closes);
+    }
+
+    public Incident(IncidentType type, IncidentTargetType targetType, String targetCode, String description, Boolean closes) {
+        this(type, targetType, targetCode, description, LocalDateTime.now(), closes);
     }
 
     public Incident() {
