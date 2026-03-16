@@ -63,7 +63,8 @@ public class PassService implements AccessTreatment {
         LOG.info("DEBUG WHITELIST: Forfaits trouvés en BD pour les IDs clients suivants: {}", authorizedIds);
         if (authorizedIds.isEmpty()) {
             LOG.warn("DEBUG WHITELIST: Attention, la liste est VIDE. Aucun forfait valide n'a été trouvé.");
-        }        turnstileProxy.syncAuthorizedCards(authorizedIds);
+        }        
+      turnstileProxy.syncAuthorizedCards(authorizedIds);
     }
 
     @Override

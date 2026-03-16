@@ -1,5 +1,30 @@
 # Changelog
 
+# [2.1.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.6...v2.1.0) (2026-03-08)
+
+
+### Bug Fixes
+
+* **back:** classe admin décommentée et relié au Portier ([78becdf](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/78becdf79e43a0c8d9c1213548011af78b907510))
+* **backend:** import defaillant retiré ([0b0343b](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/0b0343bad5e809f6ac538b292e8115010405a33c))
+* **backend:** modif mapping des instances gate dans portier ([ddf09fc](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/ddf09fc5a64f7b0d07b75aff5b57610d757c8cae))
+* **back:** refactor de turnstile, Portier, et fonctionnement des door ([c96fdd4](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/c96fdd49f05cf5a1f6f7d95553bdc4a661260971))
+* **cli:** suppression de cligate et corrections sur gatecommands ([8c40ef9](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/8c40ef9e685cde5c771041543c40c63126edccc1))
+
+
+### Features
+
+* **back:** ajout de l'admin et du portier ([792a69d](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/792a69de3dc204743a54d8a2a5af4056b194bc5f))
+* **back:** ajout de l'admin et du portier ([4dac482](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/4dac482c63cbc739783131d079054d34668d7e6d))
+* **backend:** ajout de l'entité Incident et de tous les outils nécessaires ([033e0af](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/033e0af478ba03a6e1c4c357607bb259594ef8bb))
+* **back:** implémentation des Gate ([bdea61c](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/bdea61c5641912de07a0eac6c72f64ac1b9ecc1f))
+* **back:** implémentation des Gate ([78eb802](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/78eb8023dca5ffebb984dae2e681b178050977ff))
+* **back:** test unitaires pour l'entité, le repo et le service des incidents ([d54da40](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/d54da40d46dbadd5eb2beb24858ec442cde76723))
+* **cli:** ajout d'une cli pour gestion etat de portique et d'un GateCli ([c748e1b](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/c748e1b7b1a49f81d169665f2c4e1c8a5a0efe9a))
+* **cli:** ajout d'une commande pour récupérer le dernier (temps) incident ([c05fdbf](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/c05fdbfd80e37f72dda0574a8cdff9ea2c15fe3c))
+* **cli:** ajout de incidentCommands pour la CLI ([fde57d6](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/fde57d619d645e9a0c2d0268549a6c587241cf6d))
+* implémentation des displays et connection entre lenvoie de lincident et son affichage ([cd41c34](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/cd41c34a3ad27fff3699a16617aeeea3337bbb96))
+
 ## [2.0.6](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.0.5...v2.0.6) (2026-03-05)
 
 

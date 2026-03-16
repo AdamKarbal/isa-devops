@@ -1,5 +1,6 @@
 package fr.univcotedazur.skimaster.gate.connectors;
 
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateSyncDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO;
 import fr.univcotedazur.skimaster.gate.entities.Passage;
@@ -14,10 +15,10 @@ import java.util.Objects;
 @Component
 public class TurnstileProxy {
 
-    private final RestClient restClient;
+    private final RestClient.Builder restClient;
 
-    public TurnstileProxy(@Value("${gate.host.baseurl}") String gateHost, RestClient.Builder builder) {
-        this.restClient = builder.baseUrl(gateHost).build();
+    public TurnstileProxy(RestClient.Builder builder) {
+        this.restClient = builder;
     }
 
     public void syncAuthorizedCards(List<Long> authorizedIds) {
@@ -35,6 +36,22 @@ public class TurnstileProxy {
             System.out.println(e);
             return null;
         }
+    }
+  
+      public void sendOrder(String baseUrl, String order){
+        restClient.baseUrl(baseUrl).build()
+                .post()
+                .uri("/gate" + order)
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+    public GateStatusResponseDTO getGateStatus(String baseUrl){
+        return restClient.baseUrl(baseUrl).build()
+                .get()
+                .uri("/gate/status")
+                .retrieve()
+                .body(GateStatusResponseDTO.class);
     }
 
 }

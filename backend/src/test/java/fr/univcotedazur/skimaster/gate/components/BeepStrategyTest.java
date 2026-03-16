@@ -12,14 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
-@Transactional
+@ExtendWith(MockitoExtension.class)
 class BeepStrategyTest {
 
     @Autowired
     private BeepStrategy beepStrategy;
 
-    @MockitoBean
+    @Mock
     private PortierInformation portierInformation;
 
     @Test

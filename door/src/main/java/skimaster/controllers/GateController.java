@@ -56,11 +56,6 @@ public class GateController {
         return gateService.getPassagesById(cardId);
     }
 
-    @PostMapping("/incident")
-    @ResponseStatus(HttpStatus.CREATED)
-    public IncidentDTO reportIncident(@RequestBody IncidentRequestDTO request) {
-        return gateService.addIncident(request);
-    }
     @GetMapping("/passages")
     public List<PassageDTO> getAllPassageIds() {
         return gateService.getAllPassages();

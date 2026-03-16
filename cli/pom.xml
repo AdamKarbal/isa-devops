@@ -43,6 +43,12 @@
             <artifactId>spring-shell-starter</artifactId>
             <version>3.4.1</version>
         </dependency>
+        <dependency>
+            <groupId>fr.univ-cotedazur</groupId>
+            <artifactId>skimaster</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

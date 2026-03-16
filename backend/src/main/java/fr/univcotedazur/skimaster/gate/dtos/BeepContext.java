@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public record BeepContext (
 
      Long cardId,
-     Long gateId,
+     String gateId,
      LocalDateTime beepTime
 )
 {}
