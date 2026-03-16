@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.2.0...v2.2.1) (2026-03-16)
+
+
+### Bug Fixes
+
+* **cd:** removal of a line in pom.xml in cli ([0409339](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/040933960d45dc63a65c1cc1c8ff9f18bda5b699))
+
 # [2.2.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.1.0...v2.2.0) (2026-03-16)
 
 
