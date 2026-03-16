@@ -30,7 +30,7 @@ public class TurnstileProxy {
                     .retrieve()
                     .body(PassageDTO[].class);
             return (response != null) ? Arrays.asList(response) : List.of();
-            }catch (Exception e){
+        } catch (Exception e){
             return List.of();
         }
         }
@@ -74,10 +74,11 @@ public class TurnstileProxy {
 
     public long syncOpeningTimeByGate(String gateId) {
         try{
-            return restClientBuilder.build().get().uri("/gate/opening-time/{gateId}", gateId).retrieve().body(Long.class);
+            Long res = restClientBuilder.build().get().uri("/gate/opening-time/"+ gateId).retrieve().body(Long.class);
+            return (res != null) ? res : -1L;
         }catch (Exception e) {
             System.out.println(e);
-            return -1;
+            return -1L;
         }
     }
 

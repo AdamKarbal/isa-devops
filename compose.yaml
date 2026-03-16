@@ -58,6 +58,7 @@ services:
     container_name: cli
     environment:
       - SERVER_WITH_PORT=tcf-server:8080
+      - DOOR_WITH_PORT=door-1:8082
     depends_on:
       tcf-server:
         condition: service_healthy
