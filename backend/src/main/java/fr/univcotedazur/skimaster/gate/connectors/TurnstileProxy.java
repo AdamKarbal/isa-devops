@@ -144,7 +144,7 @@ public class TurnstileProxy {
         try {
             Long result = restClientBuilder.baseUrl(targetUrl)
                     .build()
-                    .get()
+                    .get()  
                     .uri("/gate/opening-time")
                     .retrieve()
                     .body(Long.class);

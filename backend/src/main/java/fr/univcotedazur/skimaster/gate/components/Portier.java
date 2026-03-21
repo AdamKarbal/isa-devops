@@ -25,6 +25,7 @@ public class Portier implements ManualGateControl {
        turnstileProxy.syncAllGates(cardIds);
     }
 
+    /*
     public List<Passage> collectPassagesFromAllGates(){
         return gateUrls.entrySet().stream()
                 .flatMap(entry -> {
@@ -34,7 +35,7 @@ public class Portier implements ManualGateControl {
                             .map(dto -> new Passage(dto.nfcCardId(), dto.timestamp(), gateId));
                 })
                 .toList();
-    }
+    }*/
 
     @Override
     public void closeGate(String code){

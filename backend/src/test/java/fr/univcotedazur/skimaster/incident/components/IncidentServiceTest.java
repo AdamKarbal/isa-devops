@@ -22,15 +22,9 @@ import java.util.Optional;
 
 import static fr.univcotedazur.skimaster.incident.entities.IncidentType.AVALANCHE;
 import static fr.univcotedazur.skimaster.incident.entities.IncidentType.WEATHER;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class IncidentServiceTest {
@@ -48,12 +42,14 @@ class IncidentServiceTest {
     private IncidentService incidentService;
 
     private Incident mockIncident;
+    private IncidentDTO mockIncidentDTO;
     private final IncidentType mockType = WEATHER;
     private final IncidentType mockType2 = AVALANCHE;
 
     @BeforeEach
     void setUp() {
-        mockIncident = new Incident(mockType, IncidentTargetType.PISTE, "P-1", "Piste verglacee", LocalDateTime.now());
+        mockIncident = new Incident(mockType, IncidentTargetType.PISTE, "P-1", "Piste verglacee", true);
+        mockIncidentDTO = new IncidentDTO(null, mockType, "Piste verglacee", LocalDateTime.now(), IncidentTargetType.PISTE, "P-1", true);
     }
 
     @Test
@@ -69,17 +65,27 @@ class IncidentServiceTest {
 
     @Test
     void shouldSaveIncident() {
-        incidentService.saveIncident(mockIncident);
+        incidentService.reportIncident(mockIncidentDTO);
 
-        verify(incidentRepository, times(1)).save(mockIncident);
+        ArgumentCaptor<Incident> incidentCaptor = ArgumentCaptor.forClass(Incident.class);
+        verify(incidentRepository, times(1)).save(incidentCaptor.capture());
+
+        Incident savedIncident = incidentCaptor.getValue();
+        assertEquals("P-1", savedIncident.getTargetCode());
+        assertEquals(mockType, savedIncident.getType());
+
+        assertFalse(savedIncident.isResolved(), "L'incident devrait être non résolu par défaut");
+
+        assertTrue(savedIncident.isClosing(), "L'incident devrait être marqué comme fermant");
     }
 
     @Test
     void shouldFindAllIncidents() {
         List<Incident> expectedIncidents = Arrays.asList(
                 mockIncident,
-                new Incident(mockType2, "Avalanche secteur nord")
+                new Incident(mockType2, IncidentTargetType.PORTIQUE, "P-2", "Avalanche secteur nord", true)
         );
+
         when(incidentRepository.findAll()).thenReturn(expectedIncidents);
 
         List<Incident> result = incidentService.findAllIncidents();
@@ -92,36 +98,38 @@ class IncidentServiceTest {
     @Test
     void shouldFindIncidentsByType() {
         List<Incident> expectedIncidents = List.of(mockIncident);
-        when(incidentRepository.findByType(any())).thenReturn(expectedIncidents);
+        when(incidentRepository.findByType(mockType)).thenReturn(expectedIncidents);
 
         List<Incident> result = incidentService.findIncidentByType(mockType);
 
         assertFalse(result.isEmpty());
         assertEquals(expectedIncidents, result);
-        verify(incidentRepository, times(1)).findByType(any());
+        verify(incidentRepository, times(1)).findByType(mockType);
     }
 
     @Test
     void shouldReportIncidentAndCloseTargetGateWhenTargetIsPortique() {
+
         IncidentDTO dto = new IncidentDTO(
                 null,
                 IncidentType.EQUIPMENT_FAILURE,
                 "Portique en panne",
                 LocalDateTime.now(),
                 IncidentTargetType.PORTIQUE,
-                "G-NORD-01"
+                "gate-1",
+                true
         );
 
         incidentService.reportIncident(dto);
 
         verify(incidentRepository, times(1)).save(any(Incident.class));
-        verify(manualGateControl, times(1)).closeGate("G-NORD-01");
+        verify(manualGateControl, times(1)).closeGate("gate-1");
         ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> gateCodeCaptor = ArgumentCaptor.forClass(String.class);
         verify(displayNotifier, times(1)).publishIncidentAlert(messageCaptor.capture(), gateCodeCaptor.capture());
-        assertEquals("G-NORD-01", gateCodeCaptor.getValue());
+        assertEquals("gate-1", gateCodeCaptor.getValue());
         assertTrue(messageCaptor.getValue().contains("EQUIPMENT_FAILURE"));
-        assertTrue(messageCaptor.getValue().contains("PORTIQUE G-NORD-01"));
+        assertTrue(messageCaptor.getValue().contains("PORTIQUE gate-1"));
     }
 
     @Test
@@ -132,7 +140,8 @@ class IncidentServiceTest {
                 "Obstacle piste verte",
                 LocalDateTime.now(),
                 IncidentTargetType.PISTE,
-                "P-VERTE-2"
+                "P-VERTE-2",
+                false
         );
 
         incidentService.reportIncident(dto);
