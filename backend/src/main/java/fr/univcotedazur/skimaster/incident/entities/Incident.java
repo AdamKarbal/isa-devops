@@ -22,8 +22,9 @@ public class Incident {
     @NotNull
     private LocalDateTime time;
     private boolean resolved;
+
     @NotNull
-    private boolean closes;
+    private Boolean closes;
 
     public Incident(IncidentType type, IncidentTargetType targetType, String targetCode, String description, LocalDateTime time, Boolean closes) {
         this.type = type;
@@ -35,20 +36,11 @@ public class Incident {
         this.closes = closes;
     }
 
-    public Incident(IncidentType type, String description, Boolean closes) {
-        this(type, IncidentTargetType.PISTE, "UNKNOWN", description, LocalDateTime.now(), closes);
-    }
-
-    public Incident(IncidentType type, String description, LocalDateTime time, Boolean closes) {
-        this(type, IncidentTargetType.PISTE, "UNKNOWN", description, time, closes);
-    }
-
     public Incident(IncidentType type, IncidentTargetType targetType, String targetCode, String description, Boolean closes) {
         this(type, targetType, targetCode, description, LocalDateTime.now(), closes);
     }
 
     public Incident() {
-
     }
 
     public @NotNull IncidentType getType() {
@@ -76,17 +68,22 @@ public class Incident {
     }
 
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Incident)) return false;
 
         Incident incident = (Incident) o;
-        return time != null && Objects.equals(time, incident.time);
+
+        return type == incident.getType() &&
+                targetType == incident.getTargetType() &&
+                Objects.equals(targetCode, incident.getTargetCode()) &&
+                Objects.equals(time, incident.getTime());
     }
 
-    @Override public int hashCode(){
-        return Objects.hash(time);
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, targetType, targetCode, time);
     }
 
     public void resolve(){

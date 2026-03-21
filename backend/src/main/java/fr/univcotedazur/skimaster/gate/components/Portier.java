@@ -1,14 +1,9 @@
 package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
-import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
-import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
-import fr.univcotedazur.skimaster.gate.exceptions.GateClosedException;
 import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
-import fr.univcotedazur.skimaster.gate.interfaces.PortierInformation;
 import org.springframework.stereotype.Component;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 public class Portier implements ManualGateControl {
