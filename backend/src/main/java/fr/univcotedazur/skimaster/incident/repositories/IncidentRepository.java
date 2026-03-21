@@ -11,4 +11,6 @@ public interface IncidentRepository extends JpaRepository<Incident, Long> {
     Optional<Incident> findFirstByOrderByTimeDesc();
     List<Incident> findByResolvedFalse();
     List<Incident> findByTargetCodeAndResolvedFalse(String targetCode);
+    List<Incident> findByTargetCodeAndResolvedFalseAndClosesTrue(String targetCode);
+    List<Incident> findByResolvedFalseAndClosesTrue();
 }

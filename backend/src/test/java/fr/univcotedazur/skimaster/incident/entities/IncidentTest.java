@@ -1,33 +1,32 @@
 package fr.univcotedazur.skimaster.incident.entities;
 
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class IncidentTest {
 
     @Test
     void shouldCreateIncidentWithCorrectValues() {
-        // Arrange & Act
-        Incident incident = new Incident(IncidentType.AVALANCHE, "Piste bloquée");
+        Incident incident = new Incident(IncidentType.AVALANCHE, IncidentTargetType.PISTE, "P-1", "Avalanche", false);
 
-        // Assert
         assertEquals(IncidentType.AVALANCHE, incident.getType());
-        assertEquals("Piste bloquée", incident.getDescription());
+        assertEquals("Avalanche", incident.getDescription());
         assertNotNull(incident.getTime());
         assertNull(incident.getId());
+        assertFalse(incident.isClosing());
     }
 
     @Test
-    void equalsAndHashCodeShouldWorkBasedOnTime() throws InterruptedException {
-        Incident incident1 = new Incident(IncidentType.AVALANCHE, "Desc 1");
+    void equalsAndHashCodeShouldWorkBasedOnBusinessKey() {
+        LocalDateTime now = LocalDateTime.now();
 
-        Thread.sleep(10);
+        Incident incident1 = new Incident(IncidentType.AVALANCHE, IncidentTargetType.PISTE, "P-1", "Coulée", now, false);
+        Incident incident2 = new Incident(IncidentType.AVALANCHE, IncidentTargetType.PISTE, "P-1", "Autre description on s'en fiche", now, false);
 
-        Incident incident2 = new Incident(IncidentType.INJURY, "Desc 2");
-
-        assertNotEquals(incident1, incident2);
-        assertNotEquals(incident1.hashCode(), incident2.hashCode());
-
-        assertEquals(incident1, incident1);
+        assertEquals(incident1, incident2);
+        assertEquals(incident1.hashCode(), incident2.hashCode());
     }
 }

@@ -8,7 +8,6 @@ import fr.univcotedazur.skimaster.incident.interfaces.DisplayNotifier;
 import fr.univcotedazur.skimaster.incident.repositories.IncidentRepository;
 import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import jakarta.transaction.Transactional;
-import org.hibernate.validator.internal.constraintvalidators.bv.time.futureorpresent.FutureOrPresentValidatorForCalendar;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,13 +19,11 @@ public class IncidentService {
     private final IncidentRepository repository;
     private final ManualGateControl manualGateControl;
     private final DisplayNotifier displayNotifier;
-    private final FutureOrPresentValidatorForCalendar futureOrPresentValidatorForCalendar;
 
-    public IncidentService(IncidentRepository repository, ManualGateControl manualGateControl, DisplayNotifier displayNotifier, FutureOrPresentValidatorForCalendar futureOrPresentValidatorForCalendar) {
+    public IncidentService(IncidentRepository repository, ManualGateControl manualGateControl, DisplayNotifier displayNotifier) {
         this.repository = repository;
         this.manualGateControl = manualGateControl;
         this.displayNotifier = displayNotifier;
-        this.futureOrPresentValidatorForCalendar = futureOrPresentValidatorForCalendar;
     }
 
     public Optional<Incident> findFirstByOrderByTimeDesc() {
@@ -37,10 +34,10 @@ public class IncidentService {
     public void reportIncident(IncidentDTO dto) {
         IncidentTargetType targetType = dto.targetType() == null ? IncidentTargetType.PISTE : dto.targetType();
         String targetCode = (dto.targetCode() == null || dto.targetCode().isBlank()) ? "UNKNOWN" : dto.targetCode();
-        Incident incident = new Incident(dto.type(), targetType, targetCode, dto.description(), dto.time());
+        Incident incident = new Incident(dto.type(), targetType, targetCode, dto.description(), dto.time(), dto.closes());
         repository.save(incident);
 
-        if (targetType == IncidentTargetType.PORTIQUE && !"UNKNOWN".equals(targetCode)) {
+        if (targetType == IncidentTargetType.PORTIQUE && !"UNKNOWN".equals(targetCode) && incident.isClosing()) {
             manualGateControl.closeGate(targetCode);
         }
 
@@ -65,6 +62,11 @@ public class IncidentService {
     @Transactional
     public boolean hasUnresolvedIncidents(String code) {
         return !repository.findByTargetCodeAndResolvedFalse(code).isEmpty();
+    }
+
+    @Transactional
+    public boolean hasUnresolvedClosingIncidents(String code) {
+        return !repository.findByTargetCodeAndResolvedFalseAndClosesTrue(code).isEmpty();
     }
 
     private String buildDisplayMessage(Incident incident) {

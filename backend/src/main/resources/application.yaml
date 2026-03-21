@@ -28,7 +28,7 @@ spring:
     username: postgresuser
     # POSTGRES_PASSWORD
     password: postgrespass
-    url: jdbc:postgresql://${POSTGRES_HOST}/tcf-db
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost:5432}/tcf-db
     driver-class-name: org.postgresql.Driver
 
   jpa:

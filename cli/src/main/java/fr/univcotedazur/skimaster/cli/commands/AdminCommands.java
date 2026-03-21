@@ -1,9 +1,7 @@
 package fr.univcotedazur.skimaster.cli.commands;
 
 import fr.univcotedazur.skimaster.cli.CliContext;
-import fr.univcotedazur.skimaster.incident.entities.Incident;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.shell.component.view.control.ListView;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.web.client.RestClient;
@@ -61,7 +59,6 @@ public class AdminCommands {
         System.out.println("Tous les portiques ont été fermés.");
     }
 
-
     @ShellMethod(key = "Résoudre un incident sur un portique (ex : resolve gate-1)", value = "resolve")
     public void resolve(String code){
         this.restClient.post()
@@ -72,6 +69,28 @@ public class AdminCommands {
         System.out.println("Problème résolu et portique réouvert.");
     }
 
+    //TODO: A compléter
+    @ShellMethod(key = "Consulter les statistiques globales de fréquentation en temps réel.", value = "monitor-all")
+    public void monitorAll(){
+        this.restClient.get()
+                .uri(BASE_URI + "/monitorAll")
+                .retrieve()
+                .body();
+
+
+    }
+
+    //TODO: A compléter
+    @ShellMethod(key = "Consulter les statistiques de fréquentation d'un portique en temps réel. (Ex: monitor-gate code)", value = "monitor-gate")
+    public void monitor(String code){
+        this.restClient.get()
+                .uri(BASE_URI + "/monitor/" + code)
+                .retrieve()
+                .body();
+
+
+    }
+
     @ShellMethod(key = "Consulter les incidents", value = "healthcheck")
     public void checkGates(){
         List<String> iList = this.restClient.get()
@@ -80,6 +99,7 @@ public class AdminCommands {
                 .body(new ParameterizedTypeReference<List<String>>() {});
 
         StringBuilder stringBuilder = new StringBuilder();
+        assert iList != null;
         for(String s : iList){
             stringBuilder.append(s);
             stringBuilder.append("\n");

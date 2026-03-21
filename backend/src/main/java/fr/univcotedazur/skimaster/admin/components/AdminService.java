@@ -7,8 +7,6 @@ import fr.univcotedazur.skimaster.inbox.interfaces.MessageInput;
 import fr.univcotedazur.skimaster.incident.components.IncidentService;
 import fr.univcotedazur.skimaster.incident.entities.Incident;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,8 +26,8 @@ public class AdminService implements AdminOperations {
     @Override
     public void setStatus(String code, String status) {
         if (Objects.equals(status, "OPEN")) {
-            if (incidentService.hasUnresolvedIncidents(code)) {
-                throw new StillUnresolvedIncident("Le portique " + code + " a encore un incident non résolu. Résoudre l'incident avant de réouvir.");
+            if (incidentService.hasUnresolvedClosingIncidents(code)) {
+                throw new StillUnresolvedIncident("Le portique " + code + " a encore un incident fermant non résolu. Résoudre l'incident avant de réouvir.");
             }
             manualGateControl.openGate(code);
 
