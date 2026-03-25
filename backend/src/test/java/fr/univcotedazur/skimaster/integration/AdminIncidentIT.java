@@ -3,7 +3,6 @@ package fr.univcotedazur.skimaster.integration;
 import fr.univcotedazur.skimaster.admin.components.AdminService;
 import fr.univcotedazur.skimaster.admin.exceptions.StillUnresolvedIncident;
 import fr.univcotedazur.skimaster.gate.components.Portier;
-import fr.univcotedazur.skimaster.gate.interfaces.PortierInformation;
 import fr.univcotedazur.skimaster.incident.components.IncidentService;
 import fr.univcotedazur.skimaster.incident.dto.IncidentDTO;
 import fr.univcotedazur.skimaster.incident.entities.IncidentTargetType;
@@ -36,10 +35,6 @@ public class AdminIncidentIT {
 
     @MockitoBean
     private Portier portier;
-
-    //TODO: A revoir avec adamoStark 
-    @MockitoBean
-    private PortierInformation portierInformation;
 
     private final String TARGET_GATE = "gate-1";
 

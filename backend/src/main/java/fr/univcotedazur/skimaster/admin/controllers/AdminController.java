@@ -1,9 +1,19 @@
 package fr.univcotedazur.skimaster.admin.controllers;
 
 import fr.univcotedazur.skimaster.admin.components.AdminService;
+import fr.univcotedazur.skimaster.admin.dto.AdminDisplayMessageDTO;
+import fr.univcotedazur.skimaster.admin.dto.DisplayAlertDTO;
 import fr.univcotedazur.skimaster.incident.entities.Incident;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,53 +23,83 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping(path = AdminController.BASE_URI, produces = APPLICATION_JSON_VALUE)
 public class AdminController {
-    private final AdminService adminService;
-    public final static String BASE_URI = "/admin";
+    public static final String BASE_URI = "/admin";
 
-    public AdminController(AdminService adminService){
+    private final AdminService adminService;
+
+    public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
 
     @PostMapping("/{code}/close")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void closeGate(@PathVariable String code){
+    public void closeGate(@PathVariable String code) {
         this.adminService.setStatus(code, "CLOSE");
     }
 
     @PostMapping("/{code}/open")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void openGate(@PathVariable String code){
+    public void openGate(@PathVariable String code) {
         this.adminService.setStatus(code, "OPEN");
     }
 
     @PostMapping("/openAll")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void openAllGates(){
+    public void openAllGates() {
         this.adminService.openAllGates();
     }
 
     @PostMapping("/closeAll")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void closeAllGates(){
+    public void closeAllGates() {
         this.adminService.closeAllGates();
     }
 
     @GetMapping("/alerts")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<String> getPendingIncidents(){
+    public List<String> getPendingIncidents() {
         List<String> incidents = new ArrayList<>();
-        List<Incident> incidents1List = this.adminService.getPendingIncidents();
-        for(Incident i : incidents1List){
-            incidents.add(i.toString());
+        List<Incident> incidentList = this.adminService.getPendingIncidents();
+        for (Incident incident : incidentList) {
+            incidents.add(incident.toString());
         }
         return incidents;
     }
 
     @PostMapping("/resolve/{code}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void resolveIncidentsForGate(@PathVariable String code){
+    public void resolveIncidentsForGate(@PathVariable String code) {
         this.adminService.resolveIncidentsForGate(code);
     }
 
-    //TODO: Les méthodes pour sendMessage et ClearPannel restent à faire.
+    @PostMapping("/display/message")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void sendMessageToDisplay(@Valid @RequestBody AdminDisplayMessageDTO request) {
+        if (request.displayCode() == null || request.displayCode().isBlank()) {
+            this.adminService.sendMessage(request.message());
+            return;
+        }
+        this.adminService.sendMessage(request.message(), request.displayCode());
+    }
+
+    @DeleteMapping("/display/message")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void clearDisplay() {
+        this.adminService.clearPannel();
+    }
+
+    @GetMapping("/display/alerts")
+    public List<DisplayAlertDTO> getDisplayAlerts() {
+        return this.adminService.getDisplayAlerts();
+    }
+
+    @GetMapping("/display/alerts/{displayCode}")
+    public List<DisplayAlertDTO> getDisplayAlerts(@PathVariable String displayCode) {
+        return this.adminService.getDisplayAlerts(displayCode);
+    }
+
+    @GetMapping("/display/list")
+    public List<String> listDisplays() {
+        return this.adminService.getDisplayList();
+    }
 }

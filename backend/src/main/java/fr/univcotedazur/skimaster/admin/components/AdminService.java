@@ -2,6 +2,7 @@ package fr.univcotedazur.skimaster.admin.components;
 
 import fr.univcotedazur.skimaster.admin.exceptions.StillUnresolvedIncident;
 import fr.univcotedazur.skimaster.admin.interfaces.AdminOperations;
+import fr.univcotedazur.skimaster.admin.dto.DisplayAlertDTO;
 import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import fr.univcotedazur.skimaster.inbox.interfaces.MessageInput;
 import fr.univcotedazur.skimaster.incident.components.IncidentService;
@@ -18,11 +19,16 @@ public class AdminService implements AdminOperations {
     private final ManualGateControl manualGateControl;
     private final MessageInput messageInput;
     private final IncidentService incidentService;
+    private final DisplayAdminProxy displayAdminProxy;
 
-    public AdminService(ManualGateControl manualGateControl, MessageInput messageInput, IncidentService incidentService) {
+    public AdminService(ManualGateControl manualGateControl,
+                        MessageInput messageInput,
+                        IncidentService incidentService,
+                        DisplayAdminProxy displayAdminProxy) {
         this.manualGateControl = manualGateControl;
         this.messageInput = messageInput;
         this.incidentService = incidentService;
+        this.displayAdminProxy = displayAdminProxy;
     }
 
     @Override
@@ -44,6 +50,10 @@ public class AdminService implements AdminOperations {
         messageInput.sendMessage(msg);
     }
 
+    public void sendMessage(String msg, String displayCode) {
+        displayAdminProxy.sendMessage(msg, displayCode);
+    }
+
     @Override
     public void clearPannel() {
         messageInput.clearPannel();
@@ -63,9 +73,23 @@ public class AdminService implements AdminOperations {
         return this.incidentService.findPendingIncidents();
     }
 
+    public List<DisplayAlertDTO> getDisplayAlerts() {
+        return displayAdminProxy.getAlerts();
+    }
+
+    public List<DisplayAlertDTO> getDisplayAlerts(String displayCode) {
+        return displayAdminProxy.getAlerts(displayCode);
+    }
+
+    public List<String> getDisplayList() {
+        return displayAdminProxy.getDisplayList();
+    }
+
     @Override
     public void resolveIncidentsForGate(String code){
         this.incidentService.resolveIncidentsForGate(code);
         this.setStatus(code, "OPEN");
+        displayAdminProxy.clearForGate(code);
+        displayAdminProxy.sendMessage("[RESOLUTION] Portique " + code + " : incident resolu, portique de nouveau operationnel.", code);
     }
 }

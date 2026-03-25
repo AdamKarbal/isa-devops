@@ -19,6 +19,7 @@ services:
       - DOOR_3_WITH_PORT=door-3:8082
       - DOOR_4_WITH_PORT=door-4:8082
       - DISPLAY_WITH_PORT=display-service:8083
+      - DISPLAY_2_WITH_PORT=display-2:8083
     restart: always
     depends_on:
       postgres:
@@ -29,8 +30,10 @@ services:
         condition: service_healthy
       display-service:
         condition: service_healthy
+      display-2:
+        condition: service_healthy
       bank-system:
-        condition: service_started
+        condition: service_healthy
     healthcheck:
       test: "curl --silent --fail localhost:8080/actuator/health | grep UP || exit 1"
       interval: 5s
@@ -112,6 +115,7 @@ services:
     environment:
       - GATE_ID=gate-1
       - SERVER_PORT=8082
+      - DISPLAY_WITH_PORT=display-service:8083
 
   door-2:
     image: team-k/skimaster-door:local
@@ -130,6 +134,7 @@ services:
     environment:
       - GATE_ID=gate-2
       - SERVER_PORT=8082
+      - DISPLAY_WITH_PORT=display-2:8083
 
   door-3:
     image: skimaster-door:latest
@@ -169,6 +174,20 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8083:8083"
+    healthcheck:
+      test: "curl --silent --fail localhost:8083/display/alerts || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  display-2:
+    image: skimaster-display:latest
+    container_name: display-2
+    ports:
+      - "8085:8083"
+    environment:
+      - SERVER_PORT=8083
     healthcheck:
       test: "curl --silent --fail localhost:8083/display/alerts || exit 1"
       interval: 5s

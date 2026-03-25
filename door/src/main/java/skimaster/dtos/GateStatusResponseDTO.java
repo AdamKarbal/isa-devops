@@ -5,5 +5,5 @@ import skimaster.entities.Incident;
 
 import java.util.List;
 
-public record GateStatusResponseDTO(GateStatus status, int threshold, int currentPassages, List<Incident> incidents) {
+public record GateStatusResponseDTO(GateStatus status, int alertThreshold, int currentPassages, List<Incident> incidents) {
 }

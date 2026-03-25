@@ -1,5 +1,6 @@
 package fr.univcotedazur.skimaster.gate.connectors;
 
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateAlertThresholdUpdateDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateSyncDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO;
@@ -107,15 +108,6 @@ public class TurnstileProxy {
         }
     }
 
-    public List<PassageDTO> getPassagesofToday() {
-        try{
-            return Arrays.stream(Objects.requireNonNull(restClientBuilder.build().get().uri("/gate/passages/today").retrieve().body(PassageDTO[].class))).toList();
-        } catch (Exception e) {
-            System.out.println(e);
-            return null;
-        }
-    }
-
 
     public void syncAllGates(List<Long> cardIds){
         gateUrls.values().forEach(url -> syncAuthorizedCards(url, cardIds));
@@ -161,10 +153,43 @@ public class TurnstileProxy {
         }
     }
 
+    public void sendOrder(String code, String order){
+        String targetUrl = getUrl(code);
+        restClient.baseUrl(targetUrl).build()
+                .post()
+                .uri("/gate" + order)
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+    public GateStatusResponseDTO getGateStatus(String code){
+        String targetUrl = getUrl(code);
+
+        return restClient.baseUrl(targetUrl).build()
+                .get()
+                .uri("/gate/status")
+                .retrieve()
+                .body(GateStatusResponseDTO.class);
+    }
+
+    public void updateAlertThreshold(String code, int alertThreshold) {
+        String targetUrl = getUrl(code);
+
+        restClient.baseUrl(targetUrl).build()
+                .put()
+                .uri("/gate/alert-threshold")
+                .body(new GateAlertThresholdUpdateDTO(alertThreshold))
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+    public List<String> getConfiguredGateCodes() {
+        return gateUrls.keySet().stream().sorted().toList();
+    }
+
     public void sendOrderAll(String order){
         gateUrls.values().forEach(url -> sendOrder(url, order));
     }
-
 
     public void setAlertThreshold(String baseUrl, int alertThreshold) {
         restClientBuilder.baseUrl(baseUrl).build()
@@ -173,6 +198,12 @@ public class TurnstileProxy {
                 .body(new GateAlertThresholdUpdateDTO(alertThreshold))
                 .retrieve()
                 .toBodilessEntity();
+    }
+
+    private String getUrl(String code){
+        String url = gateUrls.get(code);
+        if (url == null) throw new NoGateExistentException("Code de porte inconnu : " + code);
+        return url;
     }
 
 }

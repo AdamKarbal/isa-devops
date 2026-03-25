@@ -26,4 +26,26 @@ public class DisplayService {
     public List<DisplayAlertDTO> getAlerts() {
         return alerts;
     }
+
+    public List<DisplayAlertDTO> getAlertsForGateCode(String gateCode) {
+        return alerts.stream()
+                .filter(alert -> alert.gateCode().equalsIgnoreCase(gateCode))
+                .toList();
+    }
+
+    public void clearAlerts() {
+        alerts.clear();
+    }
+
+    public void clearAlertsForGateCode(String gateCode) {
+        alerts.removeIf(alert -> alert.gateCode().equalsIgnoreCase(gateCode));
+    }
+
+    public List<String> getDistinctDisplayCodes() {
+        return alerts.stream()
+                .map(DisplayAlertDTO::gateCode)
+                .distinct()
+                .sorted()
+                .collect(java.util.stream.Collectors.toList());
+    }
 }

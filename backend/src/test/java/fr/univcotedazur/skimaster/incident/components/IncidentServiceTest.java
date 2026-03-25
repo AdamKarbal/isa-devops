@@ -155,4 +155,55 @@ class IncidentServiceTest {
         assertTrue(messageCaptor.getValue().contains("OBSTACLE"));
         assertTrue(messageCaptor.getValue().contains("PISTE P-VERTE-2"));
     }
+
+    @Test
+    void shouldFallbackMissingTargetDataAndStillNotifyDisplay() {
+        IncidentDTO dto = new IncidentDTO(
+                null,
+                IncidentType.WEATHER,
+                "Visibilite faible",
+                LocalDateTime.now(),
+                null,
+                "   ",
+                true
+        );
+
+        incidentService.reportIncident(dto);
+
+        ArgumentCaptor<Incident> incidentCaptor = ArgumentCaptor.forClass(Incident.class);
+        verify(incidentRepository).save(incidentCaptor.capture());
+        verify(manualGateControl, never()).closeGate(anyString());
+
+        Incident savedIncident = incidentCaptor.getValue();
+        assertEquals(IncidentTargetType.PISTE, savedIncident.getTargetType());
+        assertEquals("UNKNOWN", savedIncident.getTargetCode());
+
+        ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> gateCodeCaptor = ArgumentCaptor.forClass(String.class);
+        verify(displayNotifier).publishIncidentAlert(messageCaptor.capture(), gateCodeCaptor.capture());
+        assertEquals("AUCUNE", gateCodeCaptor.getValue());
+        assertTrue(messageCaptor.getValue().contains("PISTE UNKNOWN"));
+    }
+
+    @Test
+    void shouldNotCloseGateForNonClosingPortiqueIncident() {
+        IncidentDTO dto = new IncidentDTO(
+                null,
+                IncidentType.EQUIPMENT_FAILURE,
+                "Ralenti mais encore utilisable",
+                LocalDateTime.now(),
+                IncidentTargetType.PORTIQUE,
+                "gate-3",
+                false
+        );
+
+        incidentService.reportIncident(dto);
+
+        verify(incidentRepository).save(any(Incident.class));
+        verify(manualGateControl, never()).closeGate(anyString());
+
+        ArgumentCaptor<String> gateCodeCaptor = ArgumentCaptor.forClass(String.class);
+        verify(displayNotifier).publishIncidentAlert(anyString(), gateCodeCaptor.capture());
+        assertEquals("gate-3", gateCodeCaptor.getValue());
+    }
 }
