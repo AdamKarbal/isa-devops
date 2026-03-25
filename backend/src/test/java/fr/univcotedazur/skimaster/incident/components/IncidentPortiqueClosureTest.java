@@ -42,7 +42,8 @@ class IncidentPortiqueClosureTest {
                 "Portique bloque",
                 LocalDateTime.now(),
                 IncidentTargetType.PORTIQUE,
-                "gate-2"
+                "gate-2",
+                true
         );
 
         System.out.println("Declaring incident for gate: " + incident.targetCode());

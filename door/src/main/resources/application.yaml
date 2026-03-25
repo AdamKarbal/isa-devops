@@ -4,3 +4,7 @@ server:
 gate:
   id: ${GATE_ID:gate-1}
   alert-threshold: 50
+
+display:
+  host:
+    baseurl: http://${DISPLAY_WITH_PORT:localhost:8083}
