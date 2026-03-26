@@ -24,7 +24,10 @@ public class StatisticsProducer implements AnalyticsProducer {
     public DailyReportDTO aggregateStatsByDay(LocalDate day){
         List<Passage> passages = analyticsProvider.getPassagesByDay(day);
         int totalPassages = passages.size();
-        int uniqueSkiers = analyticsProvider.getTotalUniqueNumberOfPassages();
+        int uniqueSkiers = (int) passages.stream()
+                .map(Passage::getCustomerId)
+                .distinct()
+                .count();
         int activeForfaits = analyticsProvider.getNbActiveForfaitsForDay(day);
 
         return new DailyReportDTO(day, totalPassages, uniqueSkiers, activeForfaits);
@@ -35,8 +38,8 @@ public class StatisticsProducer implements AnalyticsProducer {
         Duration duration = Duration.ofSeconds(time);
 
         long hours = duration.toHours();
-        long minutes = duration.minusHours(hours).toMinutes();
-        long seconds = duration.minusMinutes(minutes).toSeconds();
+        long minutes = duration.toMinutesPart();
+        long seconds = duration.toSecondsPart();
 
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 

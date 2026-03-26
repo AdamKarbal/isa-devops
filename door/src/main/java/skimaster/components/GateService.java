@@ -107,6 +107,7 @@ public class GateService {
 
         List<Long> sumDuration = new ArrayList<>();
         int size = Math.min(openingTimes.size(), closingTimes.size());
+
         if (openingTimes.size()>closingTimes.size()){
             LocalTime lastOpening = openingTimes.getLast();
             sumDuration.add(Duration.between(lastOpening,Instant.now()).getSeconds());

@@ -4,6 +4,7 @@ import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponse
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateSyncDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO;
 import fr.univcotedazur.skimaster.gate.entities.Passage;
+import fr.univcotedazur.skimaster.gate.repositories.PassageRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -16,9 +17,13 @@ import java.util.Objects;
 public class TurnstileProxy {
 
     private final RestClient.Builder restClientBuilder;
+    private final PassageRepository passageRepository;
+    @Value("${DOOR_WITH_PORT}")
+    private String doorBaseUrl;
 
-    public TurnstileProxy(RestClient.Builder builder) {
+    public TurnstileProxy(RestClient.Builder builder, PassageRepository passageRepository) {
         this.restClientBuilder = builder;
+        this.passageRepository = passageRepository;
     }
 
 
@@ -45,6 +50,29 @@ public class TurnstileProxy {
         } catch (Exception e) {
             System.err.println("Échec de synchronisation pour la porte : " + targetUrl);
         }
+    }
+
+    public void syncTodayPassages() {
+        System.out.println("URL DOOR-1 : " + doorBaseUrl);
+        try {
+            String url = doorBaseUrl + "/gate/passages/today";
+
+            PassageDTO[] doorPassages = restClientBuilder.build().get().uri(url).retrieve().body(PassageDTO[].class);
+
+            if (doorPassages != null) {
+                List<Passage> passagesToSave = Arrays.stream(doorPassages)
+                        .map(dto ->{
+                                System.out.println("DTO reçu -> ID: " + dto.nfcCardId() + " Date: " + dto.timestamp());
+                                return new Passage(dto.nfcCardId(), dto.timestamp());
+                        }).toList();
+
+                // Note: You might want to check for duplicates before saving
+                // if you call this method multiple times a day!
+                passageRepository.saveAll(passagesToSave);
+            }
+        }catch(Exception e){
+            System.out.println(e);
+    }
     }
     public List<PassageDTO> getPassagesofToday() {
         try{
@@ -74,7 +102,8 @@ public class TurnstileProxy {
 
     public long syncOpeningTimeByGate(String gateId) {
         try{
-            Long res = restClientBuilder.build().get().uri("/gate/opening-time/"+ gateId).retrieve().body(Long.class);
+            String url = doorBaseUrl + "/gate/opening-time/";
+            Long res = restClientBuilder.build().get().uri(url+ gateId).retrieve().body(Long.class);
             return (res != null) ? res : -1L;
         }catch (Exception e) {
             System.out.println(e);

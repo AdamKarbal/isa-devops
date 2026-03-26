@@ -22,11 +22,13 @@ public class StatisticsProvider implements AnalyticsProvider {
     }
     @Override
     public List<Passage> getDailyPassages() {
+        turnstileProxy.syncTodayPassages();
         return passageRegistry.findTodayPassages();
     }
 
     @Override
     public List<Passage> getPassagesByDay(LocalDate day) {
+        turnstileProxy.syncTodayPassages();
         return passageRegistry.findByDate(day);
     }
 
