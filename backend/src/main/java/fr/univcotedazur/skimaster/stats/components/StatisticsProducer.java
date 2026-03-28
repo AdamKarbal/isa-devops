@@ -17,12 +17,12 @@ public class StatisticsProducer implements AnalyticsProducer {
         this.analyticsProvider = statisticsProvider;
     }
 
-    public DailyReportDTO aggregateTodayStats() {
-        return aggregateStatsByDay(LocalDate.now());
+    public DailyReportDTO aggregateTodayStats(String gateId) {
+        return aggregateStatsByDay(LocalDate.now(),gateId);
     }
 
-    public DailyReportDTO aggregateStatsByDay(LocalDate day){
-        List<Passage> passages = analyticsProvider.getPassagesByDay(day);
+    public DailyReportDTO aggregateStatsByDay(LocalDate day,String gateId){
+        List<Passage> passages = analyticsProvider.getGatePassages(day,gateId);
         int totalPassages = passages.size();
         int uniqueSkiers = (int) passages.stream()
                 .map(Passage::getCustomerId)

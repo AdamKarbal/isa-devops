@@ -62,9 +62,9 @@ public class GateController {
         return gateService.getAllPassages();
     }
 
-    @GetMapping("/opening-time/{gateId}")
-    public long getOpeningTime(@PathVariable("gateId") String gateId) {
-        return gateService.getLastOpeningDuration(gateId);
+    @GetMapping("/opening-time")
+    public long getOpeningTime() {
+        return gateService.getLastOpeningDuration();
     }
     @PostMapping("/sync")
     @ResponseStatus(HttpStatus.NO_CONTENT)

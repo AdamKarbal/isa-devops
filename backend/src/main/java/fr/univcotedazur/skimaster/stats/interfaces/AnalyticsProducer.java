@@ -5,5 +5,5 @@ import fr.univcotedazur.skimaster.stats.dtos.DailyReportDTO;
 import java.util.List;
 
 public interface AnalyticsProducer {
-    DailyReportDTO aggregateTodayStats();
+    DailyReportDTO aggregateTodayStats(String gateId);
 }

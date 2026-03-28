@@ -14,8 +14,8 @@ services:
       - BANK_WITH_PORT=bank-system:9090
       - POSTGRES_HOST=postgres:5432
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,mappings
-      - DOOR_WITH_PORT=http://door-1:8082
-      - DOOR_2_WITH_PORT=http://door-2:8082
+      - DOOR_WITH_PORT=door-1:8082
+      - DOOR_2_WITH_PORT=door-2:8082
       - DISPLAY_WITH_PORT=display-service:8083
     restart: always
     depends_on:

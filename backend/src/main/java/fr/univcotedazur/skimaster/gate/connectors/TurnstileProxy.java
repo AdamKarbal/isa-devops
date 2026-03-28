@@ -4,13 +4,18 @@ import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponse
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateSyncDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO;
 import fr.univcotedazur.skimaster.gate.entities.Passage;
+import fr.univcotedazur.skimaster.gate.exceptions.NoGateExistentException;
 import fr.univcotedazur.skimaster.gate.repositories.PassageRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Component
@@ -18,12 +23,14 @@ public class TurnstileProxy {
 
     private final RestClient.Builder restClientBuilder;
     private final PassageRepository passageRepository;
-    @Value("${DOOR_WITH_PORT}")
-    private String doorBaseUrl;
+    private final Map<String, String> gateUrls;
 
-    public TurnstileProxy(RestClient.Builder builder, PassageRepository passageRepository) {
+    public TurnstileProxy(RestClient.Builder builder, PassageRepository passageRepository, Environment environment) {
         this.restClientBuilder = builder;
         this.passageRepository = passageRepository;
+        this.gateUrls = Binder.get(environment)
+                .bind("gate.instances", Bindable.mapOf(String.class, String.class))
+                .orElseGet(Map::of);
     }
 
 
@@ -38,7 +45,25 @@ public class TurnstileProxy {
         } catch (Exception e){
             return List.of();
         }
+    }
+
+    public List<PassageDTO> getPassagesofTodayForGate(String code) {
+        String targetUrl = getUrl(code);
+
+        try{
+            return Arrays.stream(Objects.requireNonNull(restClientBuilder.baseUrl(targetUrl).build().get().uri("/gate/passages/today").retrieve().body(PassageDTO[].class))).toList();
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
         }
+    }
+
+    private String getUrl(String code){
+        String url = gateUrls.get(code);
+        if (url == null) throw new NoGateExistentException("Code de porte inconnu : " + code);
+        return url;
+    }
+
     public void syncAuthorizedCards(String targetUrl, List<Long> cardIds) {
         try {
             restClientBuilder.baseUrl(targetUrl).build()
@@ -52,12 +77,10 @@ public class TurnstileProxy {
         }
     }
 
-    public void syncTodayPassages() {
-        System.out.println("URL DOOR-1 : " + doorBaseUrl);
+    public void syncTodayPassages(String gateId) {
+        String targetUrl = getUrl(gateId);
         try {
-            String url = doorBaseUrl + "/gate/passages/today";
-
-            PassageDTO[] doorPassages = restClientBuilder.build().get().uri(url).retrieve().body(PassageDTO[].class);
+            PassageDTO[] doorPassages = restClientBuilder.build().get().uri(targetUrl + "/gate/passages/today").retrieve().body(PassageDTO[].class);
 
             if (doorPassages != null) {
                 List<Passage> passagesToSave = Arrays.stream(doorPassages)
@@ -74,6 +97,11 @@ public class TurnstileProxy {
             System.out.println(e);
     }
     }
+
+    public void syncAllGates(List<Long> cardIds){
+        gateUrls.values().forEach(url -> syncAuthorizedCards(url, cardIds));
+    }
+
     public List<PassageDTO> getPassagesofToday() {
         try{
             return Arrays.stream(Objects.requireNonNull(restClientBuilder.build().get().uri("/gate/passages/today").retrieve().body(PassageDTO[].class))).toList();
@@ -101,16 +129,26 @@ public class TurnstileProxy {
     }
 
     public long syncOpeningTimeByGate(String gateId) {
-        try{
-            String url = doorBaseUrl + "/gate/opening-time/";
-            Long res = restClientBuilder.build().get().uri(url+ gateId).retrieve().body(Long.class);
-            return (res != null) ? res : -1L;
-        }catch (Exception e) {
-            System.out.println(e);
+        String targetUrl = getUrl(gateId);
+        try {
+            Long result = restClientBuilder.baseUrl(targetUrl)
+                    .build()
+                    .get()
+                    .uri("/gate/opening-time")
+                    .retrieve()
+                    .body(Long.class);
+
+            if (result == null) {
+                System.err.println("Avertissement : Le corps de la réponse pour 'opening-time' est vide pour l'URL : " + targetUrl);
+                return -1L;
+            }
+
+            return result;
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la récupération du temps d'ouverture pour " + targetUrl + ": " + e.getMessage());
             return -1L;
         }
     }
-
 
 
 }

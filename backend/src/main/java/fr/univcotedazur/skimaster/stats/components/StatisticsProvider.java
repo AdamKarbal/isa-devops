@@ -21,14 +21,14 @@ public class StatisticsProvider implements AnalyticsProvider {
         this.turnstileProxy = turnstileProxy;
     }
     @Override
-    public List<Passage> getDailyPassages() {
-        turnstileProxy.syncTodayPassages();
+    public List<Passage> getDailyPassagesByGate(String gateId) {
+        turnstileProxy.syncTodayPassages(gateId);
         return passageRegistry.findTodayPassages();
     }
 
     @Override
-    public List<Passage> getPassagesByDay(LocalDate day) {
-        turnstileProxy.syncTodayPassages();
+    public List<Passage> getGatePassages(LocalDate day,String gateId) {
+        turnstileProxy.syncTodayPassages(gateId);
         return passageRegistry.findByDate(day);
     }
 

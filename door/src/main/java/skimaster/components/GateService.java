@@ -103,7 +103,7 @@ public class GateService {
         closingTimes.clear();
     }
 
-    public long getLastOpeningDuration(String gateId){
+    public long getLastOpeningDuration(){
 
         List<Long> sumDuration = new ArrayList<>();
         int size = Math.min(openingTimes.size(), closingTimes.size());

@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface AnalyticsProvider {
 
-    List<Passage> getDailyPassages();
-    List<Passage> getPassagesByDay(LocalDate day);
+    List<Passage> getDailyPassagesByGate(String gateId);
+    List<Passage> getGatePassages(LocalDate day,String gateId);
     long getOpeningTimeByGate(String gateId);
     int getTotalUniqueNumberOfPassages();
     int getNbActiveForfaitsForDay(LocalDate date);
