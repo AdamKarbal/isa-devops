@@ -14,4 +14,4 @@ tcf:
 
 door:
   host:
-    baseurl: http://${DOOR_WITH_PORT:door:8082}
+    baseurl: http://${DOOR_WITH_PORT:door-1:8082}
