@@ -71,3 +71,44 @@ update-customers
 
 echo ===_13._FINAL_VERIFICATION_OF_INVOICES_===
 orders
+
+echo NOTE-:_relancer_les_containers_avant_la_Partie_3_(docker_compose_restart_door-1_display-service_display-2)
+echo ===_PARTIE_3_:_ALERTES,_DISPLAYS_ET_FERMETURE_AUTOMATIQUE_===
+
+echo ===_A._ETAT_INITIAL_DES_PORTIQUES_===
+list-alert-thresholds
+
+echo ===_B._CONFIGURATION_SEUIL_ALERTE_A_3_PASSAGES_===
+set-alert-threshold gate-1 3
+list-alert-thresholds
+
+echo ===_C._PASSAGE_1_:_ACCEPTE,_PORTE_OUVERTE_===
+door-pass 3 true
+echo ===_C._PASSAGE_2_:_ACCEPTE,_PORTE_OUVERTE_===
+door-pass 3 true
+echo ===_C._PASSAGE_3_:_ACCEPTE,_SEUIL_ATTEINT_->_FERMETURE_AUTOMATIQUE_===
+door-pass 3 true
+
+echo ===_D._VERIF_DISPLAYS_:_ALERTE_SEUIL_DEPASSE_===
+display-show-all
+
+echo ===_E._SIGNALEMENT_INCIDENT_AVEC_FERMETURE_===
+report-problem EQUIPMENT_FAILURE PORTIQUE gate-1 "Moteur bloque par la neige" true
+
+echo ===_F._INCIDENTS_EN_ATTENTE_===
+healthcheck
+incidents-history
+
+echo ===_G._TENTATIVE_OUVERTURE_BLOQUEE_PAR_INCIDENT_NON_RESOLU_===
+open-gate gate-1
+
+echo ===_H._VERIF_DISPLAYS_:_ALERTE_INCIDENT_AJOUTEE_===
+display-show-all
+
+echo ===_I._RESOLUTION_ADMIN_:_INCIDENT_RESOLU_+_REOUVERTURE_===
+resolve gate-1
+
+echo ===_J._VERIF_FINALE_===
+list-alert-thresholds
+healthcheck
+display-show-all

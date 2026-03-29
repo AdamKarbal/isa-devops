@@ -49,6 +49,11 @@ public class DisplayController {
         displayService.clearAlertsForGateCode(gateCode);
     }
 
+    @GetMapping("/id")
+    public String getDisplayId() {
+        return displayService.getDisplayId();
+    }
+
     @GetMapping("/list")
     public List<String> listDisplays() {
         return displayService.getDistinctDisplayCodes();
