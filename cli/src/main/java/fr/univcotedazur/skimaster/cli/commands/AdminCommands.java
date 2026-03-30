@@ -21,7 +21,7 @@ public class AdminCommands {
         this.cliContext = cliContext;
     }
 
-    @ShellMethod(key = "Fermer un portique (close-gate + code)", value = "close-gate")
+    @ShellMethod(value = "Fermer un portique (close-gate + code)", key = "close-gate")
     public void closeGate(String code){
         this.restClient.post()
                 .uri(BASE_URI + "/" + code + "/close")
@@ -30,7 +30,7 @@ public class AdminCommands {
         System.out.println("Le portique a été fermé.");
     }
 
-    @ShellMethod(key = "Ouvrir un portique (open-gate + code)", value = "open-gate")
+    @ShellMethod(value = "Ouvrir un portique (open-gate + code)", key = "open-gate")
     public void openGate(String code){
         this.restClient.post()
                 .uri(BASE_URI + "/" + code + "/open")
@@ -40,7 +40,7 @@ public class AdminCommands {
         System.out.println("Le portique a été ouvert.");
     }
 
-    @ShellMethod(key = "Ouvrir tous les portiques", value = "open-all-gates")
+    @ShellMethod(value = "Ouvrir tous les portiques", key = "open-all-gates")
     public void openAllGate(){
         this.restClient.post()
                 .uri(BASE_URI + "/openAll")
@@ -49,7 +49,7 @@ public class AdminCommands {
         System.out.println("Tous les portiques ont été ouverts.");
     }
 
-    @ShellMethod(key = "Fermer tous les portiques", value = "close-all-gates")
+    @ShellMethod(value = "Fermer tous les portiques", key = "close-all-gates")
     public void closeAllGate(){
         this.restClient.post()
                 .uri(BASE_URI + "/closeAll")
@@ -59,7 +59,7 @@ public class AdminCommands {
         System.out.println("Tous les portiques ont été fermés.");
     }
 
-    @ShellMethod(key = "Résoudre un incident sur un portique (ex : resolve gate-1)", value = "resolve")
+    @ShellMethod(value = "Résoudre un incident sur un portique (ex : resolve gate-1)", key = "resolve")
     public void resolve(String code){
         this.restClient.post()
                 .uri(BASE_URI + "/resolve/" + code)
@@ -69,6 +69,7 @@ public class AdminCommands {
         System.out.println("Problème résolu et portique réouvert.");
     }
 
+    /*
     //TODO: A compléter
     @ShellMethod(key = "Consulter les statistiques globales de fréquentation en temps réel.", value = "monitor-all")
     public void monitorAll(){
@@ -90,22 +91,26 @@ public class AdminCommands {
 
 
     }
-
-    @ShellMethod(key = "Consulter les incidents", value = "healthcheck")
+*/
+    @ShellMethod(value = "Consulter les incidents", key = "healthcheck")
     public void checkGates(){
         List<String> iList = this.restClient.get()
                 .uri(BASE_URI + "/alerts")
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<String>>() {});
 
-        StringBuilder stringBuilder = new StringBuilder();
-        assert iList != null;
-        for(String s : iList){
-            stringBuilder.append(s);
-            stringBuilder.append("\n");
-        }
+        if(iList.isEmpty()) System.out.println("Aucun incident signalé pour le moment.");
+        else{
+            StringBuilder stringBuilder = new StringBuilder();
+            assert iList != null;
 
-        System.out.println(stringBuilder);
+            for(String s : iList){
+                stringBuilder.append(s);
+                stringBuilder.append("\n");
+            }
+
+            System.out.println(stringBuilder);
+        }
     }
 
 }

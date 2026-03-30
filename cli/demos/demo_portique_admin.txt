@@ -1,0 +1,46 @@
+echo ====_SCENARIO_INCIDENT/INTERVENTION_ADMIN_SUR_PORTIQUES_===
+
+echo ===_1._SIMULATION_DE_SIGNALEMENT_D'INCIDENT_FERMANT_SUR_PORTIQUE_1===
+report-problem EQUIPMENT_FAILURE PORTIQUE gate-1 "Panne matérielle du portique 1"
+
+echo ===_VERIFICATION_STATUT_PORTIQUE_1===
+healthcheck
+
+echo ===_VERIFICATION_HISTORIQUE_INCIDENTS===
+last-incident
+
+echo ===_2._SIMULATION_DE_SIGNALEMENT_D'INCIDENT_SUR_PORTIQUE_2===
+report-problem INJURY PORTIQUE gate-2 "Skieur tombé devant le portique 2"
+
+echo ===_VERIFICATION_STATUT_PORTIQUE_2===
+healthcheck
+
+echo ===_VERIFICATION_HISTORIQUE_DES_INCIDENTS===
+incidents-history
+
+echo ===_3._RESOLUTION_INCIDENT_PORTIQUE_1===
+resolve gate-1
+
+echo ===_VERIFICATION_RÉSOLUTION_INCIDENT_PORTIQUE_1===
+healthcheck
+
+echo ===_4._RESOLUTION_INCIDENT_PORTIQUE_2===
+resolve gate-2
+
+echo ===_VERIFICATION_RÉSOLUTION_INCIDENT_PORTIQUE_2===
+healthcheck
+
+echo ===_VERIFICATION_PERSISTANCE_HISTORIQUE===
+healthcheck
+
+echo ===5._TEST_FERMETURE_GLOBALE===
+close-all-gates
+
+echo ===_VERIFICATION_TOUS_PORTIQUES_FERMES===
+healthcheck
+
+echo ===_6._TEST_OUVERTURE_GLOBALE===
+open-all-gates
+
+echo ===_VERIFICATION_TOUS_PORTIQUES_OUVERTS===
+healthcheck

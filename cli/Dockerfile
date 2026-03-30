@@ -9,10 +9,11 @@ RUN ./mvnw -B verify
 
 FROM eclipse-temurin:21-jre-noble
 LABEL org.opencontainers.image.authors="Philippe Collet philippe.collet@univ-cotedazur.fr"
+#Cet ARG prend le mauvais .jar
 ARG JAR_FILE
 RUN addgroup dockergroup; adduser --ingroup dockergroup --disabled-password --system --shell /bin/false dockeruser
 WORKDIR /opt/app
-COPY --from=builder /opt/app/target/${JAR_FILE} ./app.jar
+COPY --from=builder /opt/app/target/cli-0.0.1-SNAPSHOT.jar ./app.jar
 RUN chown -R dockeruser:dockergroup /opt/app
 # Starting the service (shell form of ENTRYPOINT used for substitution)
 USER dockeruser

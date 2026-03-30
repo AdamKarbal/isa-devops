@@ -12,18 +12,23 @@ public class Incident {
     @Id
     @GeneratedValue
     private Long id;
-    @NotNull
-    private IncidentType type;
-    @NotNull
-    private IncidentTargetType targetType;
-    private String targetCode;
-    @NotNull
-    private String description;
-    @NotNull
-    private LocalDateTime time;
-    private boolean resolved;
 
     @NotNull
+    private IncidentType type;
+
+    @NotNull
+    private IncidentTargetType targetType;
+
+    private String targetCode;
+
+    @NotNull
+    private String description;
+
+    @NotNull
+    private LocalDateTime time;
+
+    private boolean resolved;
+
     private Boolean closes;
 
     public Incident(IncidentType type, IncidentTargetType targetType, String targetCode, String description, LocalDateTime time, Boolean closes) {

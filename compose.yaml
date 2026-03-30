@@ -65,12 +65,11 @@ services:
         JAR_FILE: cli-0.0.1-SNAPSHOT.jar
     environment:
       - SERVER_WITH_PORT=tcf-server:8080
-      - DOOR_WITH_PORT=door-1:8082
     depends_on:
       tcf-server:
         condition: service_healthy
     volumes:
-      - ./cli/demo.txt:/opt/app/demo.txt
+      - ./cli/demos:/opt/app/demos
     stdin_open: true
     tty: true
     healthcheck:
