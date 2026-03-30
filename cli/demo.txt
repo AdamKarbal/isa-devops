@@ -79,3 +79,4 @@ orders 4
 echo ===_13._FINAL_VERIFICATION_===
 echo Verification que seul SuperJulien a été facturé une seule fois
 orders
+echo "END OF SCENARIO"
