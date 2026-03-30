@@ -59,6 +59,8 @@ services:
     build:
        context: ./cli
        dockerfile: Dockerfile
+       args:
+         JAR_FILE: cli-0.0.1-SNAPSHOT.jar
     environment:
       - SERVER_WITH_PORT=tcf-server:8080
       - DOOR_WITH_PORT=door-1:8082
