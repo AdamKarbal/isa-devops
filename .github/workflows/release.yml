@@ -65,7 +65,7 @@ jobs:
   build-images:
     runs-on: self-hosted
     needs: release
-    if: github.event.pull_request.merged == true # TODO : rajouter && github.base_ref == 'prod' une fois les tests finis
+    if: github.event.pull_request.merged == true && github.base_ref == 'prod'
     steps:
       - name: Checkout
         uses: actions/checkout@v4

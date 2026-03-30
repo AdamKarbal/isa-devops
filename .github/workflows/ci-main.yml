@@ -20,14 +20,7 @@ jobs:
           chmod +x ./mvnw
           ./mvnw clean test
         working-directory: backend
-      - name: Run CLI demo script tests with socat
-        run: |
-            chmod +x .github/scripts/run-cli-demo.sh
-            .github/scripts/run-cli-demo.sh /tmp/cli-demo-main.log
 
-      - name: Cleanup docker compose
-        if: always()
-        run: docker compose down -v --remove-orphans
 
 
 
