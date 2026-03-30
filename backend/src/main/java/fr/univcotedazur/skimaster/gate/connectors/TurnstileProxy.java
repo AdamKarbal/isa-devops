@@ -64,6 +64,10 @@ public class TurnstileProxy {
         return url;
     }
 
+    public java.util.Set<String> getAllGateIds() {
+        return gateUrls.keySet();
+    }
+
     public void syncAuthorizedCards(String targetUrl, List<Long> cardIds) {
         try {
             restClientBuilder.baseUrl(targetUrl).build()
