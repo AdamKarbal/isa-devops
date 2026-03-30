@@ -4,8 +4,10 @@ bank:
 
 gate:
   instances:
-    "gate-1": "http://${DOOR_WITH_PORT:localhost:8082}"
-    "gate-2": "http://${DOOR_2_WITH_PORT:localhost:8084}"
+    "gate-1": "http://door-1:8082"
+    "gate-2": "http://door-2:8082"
+    "gate-3": "http://door-3:8082"
+    "gate-4": "http://door-4:8082"
 
 display:
   host:

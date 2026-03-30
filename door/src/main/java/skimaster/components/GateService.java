@@ -89,10 +89,13 @@ public class GateService {
     }
 
     public List<PassageDTO> getTodayPassages() {
-        return gate.getPassages().stream()
+        List<PassageDTO> passages = gate.getPassages().stream()
                 .filter(Passage::isAccepted)
                 .map(p -> new PassageDTO(p.getNfcCardId(), p.getTimestamp(), gate.getGateId()))
                 .toList();
+        gate.getPassages().clear();
+        LOG.info("GATE: {} passages collected and cleared from local memory", passages.size());
+        return passages;
     }
 
 //    public List<PassageDTO> getAllPassagesOfToday(){
