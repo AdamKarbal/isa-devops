@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.2](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.3.1...v2.3.2) (2026-03-30)
+
+
+### Bug Fixes
+
+* **ci/cd:** changed triggers to push & socat actions to merge in prod ([f5eb4a0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/f5eb4a0ca8e1e7b11eca6273d67c252979624868))
+
 ## [2.3.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.3.0...v2.3.1) (2026-03-30)
 
 
