@@ -45,7 +45,7 @@ class IncidentRepositoryTest {
         Optional<Incident> result = incidentRepository.findFirstByOrderByTimeDesc();
 
         assertTrue(result.isPresent());
-        assertEquals("Récent", result.get().getDescription());
+        assertEquals("Tourniquet cassé", result.get().getDescription());
     }
 
     @Test

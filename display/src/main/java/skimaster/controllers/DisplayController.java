@@ -31,4 +31,31 @@ public class DisplayController {
     public List<DisplayAlertDTO> getAlerts() {
         return displayService.getAlerts();
     }
+
+    @GetMapping("/alerts/{gateCode}")
+    public List<DisplayAlertDTO> getAlertsForGateCode(@PathVariable String gateCode) {
+        return displayService.getAlertsForGateCode(gateCode);
+    }
+
+    @DeleteMapping("/alerts")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void clearAlerts() {
+        displayService.clearAlerts();
+    }
+
+    @DeleteMapping("/alerts/{gateCode}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void clearAlertsForGateCode(@PathVariable String gateCode) {
+        displayService.clearAlertsForGateCode(gateCode);
+    }
+
+    @GetMapping("/id")
+    public String getDisplayId() {
+        return displayService.getDisplayId();
+    }
+
+    @GetMapping("/list")
+    public List<String> listDisplays() {
+        return displayService.getDistinctDisplayCodes();
+    }
 }

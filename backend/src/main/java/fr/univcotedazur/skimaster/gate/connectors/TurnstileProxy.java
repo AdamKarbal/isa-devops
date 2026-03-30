@@ -1,5 +1,6 @@
 package fr.univcotedazur.skimaster.gate.connectors;
 
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateAlertThresholdUpdateDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateSyncDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO;
@@ -56,7 +57,7 @@ public class TurnstileProxy {
     public List<PassageDTO> getPassagesofToday(){
         List<PassageDTO> passages = new ArrayList<>();
 
-        gateUrls.values().forEach(url -> passages.addAll(getPassagesofTodayForGate(url)));
+        gateUrls.keySet().forEach(code -> passages.addAll(getPassagesofTodayForGate(code)));
         return passages;
     }
 
@@ -103,8 +104,23 @@ public class TurnstileProxy {
                 .body(GateStatusResponseDTO.class);
     }
 
+    public void updateAlertThreshold(String code, int alertThreshold) {
+        String targetUrl = getUrl(code);
+
+        restClient.baseUrl(targetUrl).build()
+                .put()
+                .uri("/gate/alert-threshold")
+                .body(new GateAlertThresholdUpdateDTO(alertThreshold))
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+    public List<String> getConfiguredGateCodes() {
+        return gateUrls.keySet().stream().sorted().toList();
+    }
+
     public void sendOrderAll(String order){
-        gateUrls.values().forEach(url -> sendOrder(url, order));
+        gateUrls.keySet().forEach(code -> sendOrder(code, order));
     }
 
     private String getUrl(String code){

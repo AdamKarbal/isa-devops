@@ -8,8 +8,9 @@ gate:
     "gate-2": "http://${DOOR_2_WITH_PORT:localhost:8084}"
 
 display:
-  host:
-    baseurl: http://${DISPLAY_WITH_PORT:localhost:8083}
+  instances:
+    "display-1": "http://${DISPLAY_WITH_PORT:localhost:8083}"
+    "display-2": "http://${DISPLAY_2_WITH_PORT:localhost:8085}"
 
 # Property to set the visible level on all logs (OFF will turn off all of them)
 # logging:

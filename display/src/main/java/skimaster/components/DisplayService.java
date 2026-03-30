@@ -2,6 +2,7 @@ package skimaster.components;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import skimaster.dtos.DisplayAlertDTO;
 import skimaster.dtos.DisplayAlertRequestDTO;
@@ -15,6 +16,16 @@ public class DisplayService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DisplayService.class);
     private final List<DisplayAlertDTO> alerts = new CopyOnWriteArrayList<>();
+    private final String displayId;
+
+    public DisplayService(@Value("${display.id}") String displayId) {
+        this.displayId = displayId;
+        LOGGER.info("[DISPLAY] Instance démarrée : {}", displayId);
+    }
+
+    public String getDisplayId() {
+        return displayId;
+    }
 
     public void pushAlert(DisplayAlertRequestDTO request) {
         String gateCode = (request.gateCode() == null || request.gateCode().isBlank()) ? "AUCUNE" : request.gateCode();
@@ -25,5 +36,27 @@ public class DisplayService {
 
     public List<DisplayAlertDTO> getAlerts() {
         return alerts;
+    }
+
+    public List<DisplayAlertDTO> getAlertsForGateCode(String gateCode) {
+        return alerts.stream()
+                .filter(alert -> alert.gateCode().equalsIgnoreCase(gateCode))
+                .toList();
+    }
+
+    public void clearAlerts() {
+        alerts.clear();
+    }
+
+    public void clearAlertsForGateCode(String gateCode) {
+        alerts.removeIf(alert -> alert.gateCode().equalsIgnoreCase(gateCode));
+    }
+
+    public List<String> getDistinctDisplayCodes() {
+        return alerts.stream()
+                .map(DisplayAlertDTO::gateCode)
+                .distinct()
+                .sorted()
+                .collect(java.util.stream.Collectors.toList());
     }
 }

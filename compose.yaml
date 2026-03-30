@@ -17,6 +17,7 @@ services:
       - DOOR_WITH_PORT=door-1:8082
       - DOOR_2_WITH_PORT=door-2:8082
       - DISPLAY_WITH_PORT=display-service:8083
+      - DISPLAY_2_WITH_PORT=display-2:8083
     restart: always
     depends_on:
       postgres:
@@ -27,6 +28,10 @@ services:
         condition: service_healthy
       display-service:
         condition: service_healthy
+      display-2:
+        condition: service_healthy
+      #bank-system:
+        #condition: service_healthy
     healthcheck:
       test: "curl --silent --fail localhost:8080/actuator/health | grep UP || exit 1"
       interval: 5s
@@ -36,7 +41,7 @@ services:
 
   # the postgres DB to be connected to the backend (watch out: no volume specified, everything can be lost)
   postgres:
-    image: postgres:16
+    image: postgres:18.1
     container_name: db2
     environment:
       - POSTGRES_PASSWORD=postgrespass
@@ -116,20 +121,38 @@ services:
       test: "curl --silent --fail localhost:8082/gate/status || exit 1"
       interval: 5s
       timeout: 3s
-      retries: 3
-      start_period: 5s
+      retries: 5
+      start_period: 25s
     environment:
       - GATE_ID=gate-2
       - SERVER_PORT=8082
 
   display-service:
     image: skimaster-display:latest
-    container_name: display
+    container_name: display-1
     build:
       context: ./display
       dockerfile: Dockerfile
     ports:
       - "8083:8083"
+    environment:
+      - DISPLAY_ID=display-A
+      - SERVER_PORT=8083
+    healthcheck:
+      test: "curl --silent --fail localhost:8083/display/alerts || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 25s
+
+  display-2:
+    image: skimaster-display:latest
+    container_name: display-2
+    ports:
+      - "8085:8083"
+    environment:
+      - DISPLAY_ID=display-B
+      - SERVER_PORT=8083
     healthcheck:
       test: "curl --silent --fail localhost:8083/display/alerts || exit 1"
       interval: 5s

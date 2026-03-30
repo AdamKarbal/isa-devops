@@ -1,12 +1,17 @@
 package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
+import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
+import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
 import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
+import fr.univcotedazur.skimaster.gate.interfaces.PortierInformation;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 @Component
-public class Portier implements ManualGateControl {
+public class Portier implements ManualGateControl, PortierInformation {
 
     private final TurnstileProxy turnstileProxy;
 
@@ -15,16 +20,16 @@ public class Portier implements ManualGateControl {
     }
 
     public void syncAllGates(List<Long> cardIds) {
-       turnstileProxy.syncAllGates(cardIds);
+        turnstileProxy.syncAllGates(cardIds);
     }
 
     @Override
-    public void closeGate(String code){
+    public void closeGate(String code) {
         turnstileProxy.sendOrder(code, "/close");
     }
 
     @Override
-    public void openGate(String code){
+    public void openGate(String code) {
         turnstileProxy.sendOrder(code, "/open");
     }
 
@@ -38,7 +43,29 @@ public class Portier implements ManualGateControl {
         turnstileProxy.sendOrderAll("/close");
     }
 
-    public long getOpeningTime(String code){
+    public long getOpeningTime(String code) {
         return turnstileProxy.syncOpeningTimeByGate(code);
+    }
+
+    public GateStatusResponseDTO gateStatus(String code) {
+        return turnstileProxy.getGateStatus(code);
+    }
+
+    public void setAlertThreshold(String code, int alertThreshold) {
+        turnstileProxy.updateAlertThreshold(code, alertThreshold);
+    }
+
+    public List<String> getConfiguredGateCodes() {
+        return turnstileProxy.getConfiguredGateCodes();
+    }
+
+    @Override
+    public AccessRequest authorizePassage(String code, Long forfeitId, BeepSignal signal) {
+        return new AccessRequest(forfeitId, signal, true);
+    }
+
+    @Override
+    public AccessRequest denyPassage(String code) {
+        return new AccessRequest(null, BeepSignal.ACCESS_DENIED, false);
     }
 }
