@@ -38,7 +38,7 @@ services:
 
   # the postgres DB to be connected to the backend (watch out: no volume specified, everything can be lost)
   postgres:
-    image: postgres:18.1
+    image: postgres:18
     container_name: db2
     environment:
       - POSTGRES_PASSWORD=postgrespass
@@ -48,8 +48,8 @@ services:
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d tcf-db -U $$POSTGRES_USER" ]
       interval: 5s
-      timeout: 3s
-      retries: 3
+      timeout: 5s
+      retries: 10
       start_period: 5s
 
   # A simple java CLI
