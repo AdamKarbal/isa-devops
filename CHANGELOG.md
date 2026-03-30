@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.3.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.3.0...v2.3.1) (2026-03-30)
+
+
+### Bug Fixes
+
+* **ci/cd:** added some build context in docker compose for some images ([85136de](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/85136deec7846bc12dc33fd3b325024d89a0125a))
+* **ci/cd:** corrected the name of the built image to match the other ones ([9071b3b](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/9071b3bad0a9e8acd57ebc48b7804c0fd63ad8fb))
+* **cli:** added some bank and display images to build and push on release ([90a83eb](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/90a83eb39959da3521a8ba84fdc4b5095a6f3053))
+
+
+### Features
+
+* **ci/cd:** plugged socat ([68ca524](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/68ca524c6925f6833a78b3c42f2d357106fee3c2))
+* **cli:** added end of scenario at the end ([48908c1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/48908c18ef76a26b1707e6ffc6a5ce417969d4fd))
+
 # [2.3.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.2.1...v2.3.0) (2026-03-30)
 
 
