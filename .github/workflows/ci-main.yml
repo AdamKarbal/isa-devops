@@ -20,23 +20,3 @@ jobs:
           chmod +x ./mvnw
           ./mvnw clean test
         working-directory: backend
-  test-e2e:
-    name: End-to-End Tests
-    runs-on: self-hosted
-    needs: [test-backend]
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build and Start Infrastructure
-        run:
-          docker compose up --build -d
-
-      - name: Run E2E Script
-        run: |
-          chmod +x ./e2e.sh
-          ./e2e.sh
-
-      - name: Cleanup
-        if: always()
-        run: docker compose down

@@ -1,0 +1,33 @@
+name: E2E Demo
+
+on:
+  [pull_request]
+
+jobs:
+  e2e-demo:
+    name: Run E2E demo script
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and start infrastructure
+        run: docker compose up --build -d
+
+      - name: Execute E2E scenario
+        run: |
+          chmod +x ./e2e.sh
+          ./e2e.sh
+
+      - name: Upload E2E output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-output
+          path: output.log
+          if-no-files-found: ignore
+
+      - name: Cleanup
+        if: always()
+        run: docker compose down
