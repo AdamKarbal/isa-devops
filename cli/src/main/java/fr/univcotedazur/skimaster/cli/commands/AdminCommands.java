@@ -119,6 +119,16 @@ public class AdminCommands {
         return "Message envoye au display.";
     }
 
+    @ShellMethod(key = "display-message", value = "Envoyer un message sur tous les display (display-message \"MESSAGE\")")
+    public String sendDisplayMessage(String message) {
+        this.restClient.post()
+                .uri(BASE_URI + "/display/message")
+                .body(new AdminDisplayMessageDTO(message, null))
+                .retrieve()
+                .toBodilessEntity();
+        return "Message envoye au display.";
+    }
+
     @ShellMethod(key = "display-message-target", value = "Envoyer un message a un display precis (display-message-target DISPLAY_CODE \"MESSAGE\")")
     public String sendDisplayMessageTarget(String displayCode, String message) {
         this.restClient.post()
