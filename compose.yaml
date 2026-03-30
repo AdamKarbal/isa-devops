@@ -56,6 +56,9 @@ services:
   tcf-cli:
     image: team-k/tcf-spring-cli:local
     container_name: cli
+    build:
+       context: ./cli
+       dockerfile: Dockerfile
     environment:
       - SERVER_WITH_PORT=tcf-server:8080
       - DOOR_WITH_PORT=door-1:8082
@@ -75,7 +78,10 @@ services:
 
   # An external bank service in NestJs
   bank-system:
-    image: pcollet/tcf-bank-service
+    image: team-k/skimaster-bank:local
+    build:
+      context: ./bank
+      dockerfile: Dockerfile
     container_name: bank2
     ports:
       - "9090:9090"
@@ -107,6 +113,9 @@ services:
   door-2:
     image: team-k/skimaster-door:local
     container_name: door-2
+    build:
+      context: ./door
+      dockerfile: Dockerfile
     ports:
       - "8084:8082"
     healthcheck:
