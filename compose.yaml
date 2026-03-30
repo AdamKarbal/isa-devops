@@ -120,7 +120,7 @@ services:
       - SERVER_PORT=8082
 
   display-service:
-    image: skimaster-display:latest
+    image: team-k/skimaster-display:local
     container_name: display
     build:
       context: ./display
