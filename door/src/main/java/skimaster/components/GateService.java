@@ -13,10 +13,14 @@ import java.util.ArrayList;
 import skimaster.exceptions.AlreadyClosedGateException;
 import skimaster.exceptions.AlreadyOpenGateException;
 
+import java.time.*;
+import java.util.ArrayList;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,11 +30,15 @@ import org.slf4j.LoggerFactory;
 @Service
 public class GateService {
     private final Gate gate;
+    private final List<LocalTime> openingTimes = new ArrayList<>();
+    private final List<LocalTime> closingTimes = new ArrayList<>();
     private static final Logger LOG = LoggerFactory.getLogger(GateService.class);
     private List<Long> whitelist = new ArrayList<>();
     public GateService(@Value("${gate.id}") String gateId,
                        @Value("${gate.alert-threshold}") int alertThreshold) {
-        this.gate = new Gate(gateId, GateStatus.OPEN, alertThreshold);
+        this.gate = new Gate(gateId, GateStatus.OPEN, alertThreshold, LocalTime.of(7,0),LocalTime.of(17,30));
+        openingTimes.add(this.gate.getStartTime());
+        closingTimes.add(this.gate.getEndTime());
     }
     public void updateWhitelist(List<Long> authorizedIds) {
 
@@ -62,11 +70,13 @@ public class GateService {
     public void openGate(){
         if(gate.getStatus() == GateStatus.OPEN) throw new AlreadyOpenGateException("Portique déjà ouvert.");
         gate.setStatus(GateStatus.OPEN);
+        openingTimes.add(LocalTime.now());
     }
 
     public void closeGate(){
         if(gate.getStatus() == GateStatus.CLOSED) throw new AlreadyClosedGateException("Portique déjà fermé.");
         gate.setStatus(GateStatus.CLOSED);
+        closingTimes.add(LocalTime.now());
     }
 
     public GateStatusResponseDTO getStatus(){
@@ -87,6 +97,29 @@ public class GateService {
     public List<PassageDTO> getAllPassages() {
         return gate.getPassages().stream().map(x->new PassageDTO(x.getNfcCardId(), LocalDateTime.now(),gate.getGateId())).toList();
     }
+
+    public void clearTimesList() {
+        openingTimes.clear();
+        closingTimes.clear();
+    }
+
+    public long getLastOpeningDuration(){
+
+        List<Long> sumDuration = new ArrayList<>();
+        int size = Math.min(openingTimes.size(), closingTimes.size());
+
+        if (openingTimes.size()>closingTimes.size()){
+            LocalTime lastOpening = openingTimes.getLast();
+            sumDuration.add(Duration.between(lastOpening,Instant.now()).getSeconds());
+        }
+        for (int i=0;i<size;i++){
+
+            long duration = Duration.between(openingTimes.get(i),closingTimes.get(i)).getSeconds();
+            sumDuration.add(duration);
+        }
+        return sumDuration.stream().mapToLong(Long::longValue).sum();
+    }
+
 
     public List<PassageDTO> getTodayPassages() {
         return gate.getPassages().stream()

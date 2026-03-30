@@ -3,17 +3,20 @@ package fr.univcotedazur.skimaster.gate.repositories;
 import fr.univcotedazur.skimaster.gate.entities.Passage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import java.time.LocalDate;
+import org.springframework.data.repository.query.Param;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PassageRepository extends JpaRepository<Passage, Long> {
 
-    @Query("SELECT p FROM Passage p WHERE p.customerId = ?1 AND CAST(p.occurrenceDate AS date) = ?2 ORDER BY p.occurrenceDate ASC")
-    List<Passage> findByCustomerIdAndDate(Long customerId, LocalDate date);
+    @Query("SELECT p FROM Passage p WHERE p.customerId = :customerId AND p.occurrenceDate >= :startOfDay AND p.occurrenceDate < :endOfDay ORDER BY p.occurrenceDate ASC")
+    List<Passage> findByCustomerIdAndDateRange(@Param("customerId") Long customerId, @Param("startOfDay") LocalDateTime startOfDay, @Param("endOfDay") LocalDateTime endOfDay);
 
     @Query("SELECT p FROM Passage p WHERE p.customerId = ?1 ORDER BY p.occurrenceDate ASC")
     List<Passage> findByCustomerId(Long customerId);
 
-    @Query("SELECT p FROM Passage p WHERE CAST(p.occurrenceDate AS date) = ?1 ORDER BY p.occurrenceDate ASC")
-    List<Passage> findByDate(LocalDate localDate);
+    @Query("SELECT p FROM Passage p WHERE p.occurrenceDate >= :startOfDay AND p.occurrenceDate < :endOfDay ORDER BY p.occurrenceDate ASC")
+    List<Passage> findByDateRange(@Param("startOfDay") LocalDateTime startOfDay, @Param("endOfDay") LocalDateTime endOfDay);
 }
+
+
