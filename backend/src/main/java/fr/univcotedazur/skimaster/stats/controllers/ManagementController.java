@@ -60,4 +60,9 @@ public class ManagementController {
         return analyticsProducer.aggregateStatsByDay(day,gateId);
     }
 
+    @GetMapping("/reports/daily/{day}")
+    public DailyReportDTO getGlobalDailyReport(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day) {
+        return analyticsProducer.aggregateGlobalStats(day);
+    }
+
 }

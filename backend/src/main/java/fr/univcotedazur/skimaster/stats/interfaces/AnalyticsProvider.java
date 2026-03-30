@@ -5,6 +5,7 @@ import fr.univcotedazur.skimaster.gate.entities.Passage;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public interface AnalyticsProvider {
 
@@ -13,4 +14,5 @@ public interface AnalyticsProvider {
     long getOpeningTimeByGate(String gateId);
     int getTotalUniqueNumberOfPassages();
     int getNbActiveForfaitsForDay(LocalDate date);
+    Set<String> getAllGateIds();
 }
