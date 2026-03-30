@@ -14,8 +14,8 @@ services:
       - BANK_WITH_PORT=bank-system:9090
       - POSTGRES_HOST=postgres:5432
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,mappings
-      - DOOR_WITH_PORT=http://door-1:8082
-      - DOOR_2_WITH_PORT=http://door-2:8082
+      - DOOR_WITH_PORT=door-1:8082
+      - DOOR_2_WITH_PORT=door-2:8082
       - DISPLAY_WITH_PORT=display-service:8083
     restart: always
     depends_on:
@@ -27,8 +27,6 @@ services:
         condition: service_healthy
       display-service:
         condition: service_healthy
-      bank-system:
-        condition: service_healthy
     healthcheck:
       test: "curl --silent --fail localhost:8080/actuator/health | grep UP || exit 1"
       interval: 5s
@@ -38,7 +36,7 @@ services:
 
   # the postgres DB to be connected to the backend (watch out: no volume specified, everything can be lost)
   postgres:
-    image: postgres:18.1
+    image: postgres:16
     container_name: db2
     environment:
       - POSTGRES_PASSWORD=postgrespass
@@ -56,13 +54,16 @@ services:
   tcf-cli:
     image: team-k/tcf-spring-cli:local
     container_name: cli
+    build:
+      context: ./cli
+      dockerfile: Dockerfile
     environment:
       - SERVER_WITH_PORT=tcf-server:8080
     depends_on:
       tcf-server:
         condition: service_healthy
     volumes:
-      - ./cli/demo.txt:/opt/app/demo.txt
+      - ./cli/demos:/opt/app/demos
     stdin_open: true
     tty: true
     healthcheck:
@@ -73,20 +74,20 @@ services:
       start_period: 5s
 
   # An external bank service in NestJs
-  bank-system:
-    image: pcollet/tcf-bank-service
-    container_name: bank2
-    ports:
-      - "9090:9090"
-    healthcheck:
-      test: [ "CMD", "/nodejs/bin/node" , "healthcheck.js" ]
-      interval: 5s
-      timeout: 3s
-      retries: 3
-      start_period: 5s
+    #bank-system:
+    #image: pcollet/tcf-bank-service
+    #container_name: bank2
+        #ports:
+      # - "9090:9090"
+      #healthcheck:
+      #  test: [ "CMD", "/nodejs/bin/node" , "healthcheck.js" ]
+      #  interval: 5s
+      #  timeout: 3s
+      #  retries: 3
+    #  start_period: 5s
 
   door-1:
-    image: skimaster-door:latest
+    image: skimaster-door-1:latest
     container_name: door-1
     build :
       context : ./door
@@ -104,8 +105,11 @@ services:
       - SERVER_PORT=8082
 
   door-2:
-    image: skimaster-door:latest
+    image: skimaster-door-2:latest
     container_name: door-2
+    build:
+      context: ./door
+      dockerfile: Dockerfile
     ports:
       - "8084:8082"
     healthcheck:

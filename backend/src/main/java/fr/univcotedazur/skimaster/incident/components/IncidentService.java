@@ -37,7 +37,7 @@ public class IncidentService {
         Incident incident = new Incident(dto.type(), targetType, targetCode, dto.description(), dto.time(), dto.closes());
         repository.save(incident);
 
-        if (targetType == IncidentTargetType.PORTIQUE && !"UNKNOWN".equals(targetCode) && incident.isClosing()) {
+        if (targetType == IncidentTargetType.PORTIQUE && !"UNKNOWN".equals(targetCode) && Boolean.TRUE.equals(incident.isClosing())) {
             manualGateControl.closeGate(targetCode);
         }
 
