@@ -111,6 +111,11 @@ jobs:
 
           docker build --build-arg JAR_FILE=cli-0.0.1-SNAPSHOT.jar \
             -t ismakhil/tcf-spring-cli:latest ./cli
+          
+          docker build -t ismakhil/skimaster-bank:latest ./bank
+          
+          docker build --build-arg JAR_FILE=display-0.0.1-SNAPSHOT.jar \
+            -t ismakhil/skimaster-display:latest ./display
 
       - name: Tag images (sha + version)
         shell: bash
@@ -121,7 +126,9 @@ jobs:
           for img in \
             ismakhil/skimaster-door \
             ismakhil/tcf-spring-backend \
-            ismakhil/tcf-spring-cli
+            ismakhil/tcf-spring-cli \
+            ismakhil/skimaster-bank \
+            ismakhil/skimaster-display
           do
             docker tag "${img}:latest" "${img}:${VERSION_TAG}"
           done
@@ -136,7 +143,9 @@ jobs:
           for img in \
             ismakhil/skimaster-door \
             ismakhil/tcf-spring-backend \
-            ismakhil/tcf-spring-cli
+            ismakhil/tcf-spring-cli \
+            ismakhil/skimaster-bank \
+            ismakhil/skimaster-display
           do
             docker push "${img}:latest"
             docker push "${img}:${VERSION_TAG}"
