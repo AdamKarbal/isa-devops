@@ -10,6 +10,10 @@ RUN ./mvnw -B verify
 FROM eclipse-temurin:21-jre-noble
 LABEL org.opencontainers.image.authors="Philippe Collet philippe.collet@univ-cotedazur.fr"
 ARG JAR_FILE
+RUN apt-get update \
+    && apt-get install -y socat \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN addgroup dockergroup; adduser --ingroup dockergroup --disabled-password --system --shell /bin/false dockeruser
 WORKDIR /opt/app
 COPY --from=builder /opt/app/target/${JAR_FILE} ./app.jar
