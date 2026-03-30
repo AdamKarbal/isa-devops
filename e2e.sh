@@ -7,7 +7,7 @@ done
 
 > output.log
 
-docker compose run --rm -T tcf-cli socat - TCP:tcf-server:8080 < cli/demo.txt >> output.log
+cat cli/demo.txt | docker exec -i cli socat - TCP:tcf-server:8080 >> output.log
 
 if grep -q "END OF SCENARIO" output.log; then
   echo "Tests E2E réussis"
