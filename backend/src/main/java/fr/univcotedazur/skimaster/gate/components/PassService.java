@@ -111,7 +111,7 @@ public class PassService implements AccessTreatment {
         invoiceCreator.processOrderPayment(superOrder);
     }
 
-    public void processPassages(List<Long> nfcCardIds) {
-        processReceivedPassages(nfcCardIds);
+    public void processPassages(List<Long> nfcCardIds,String gateId) {
+        processReceivedPassages(nfcCardIds,gateId);
     }
 }

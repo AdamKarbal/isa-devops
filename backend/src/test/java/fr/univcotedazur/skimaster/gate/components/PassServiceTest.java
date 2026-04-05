@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional 
 public class PassServiceTest {
 
+
+    private static final String GATE_ID = "gate-1";
     @Autowired
     private PassService passService;
 
@@ -50,7 +52,7 @@ public class PassServiceTest {
 
     @Test
     void testSuperCarteBillingOnPassage() {
-        passService.processReceivedPassages(List.of(superJulien.getId()));
+        passService.processReceivedPassages(List.of(superJulien.getId()),GATE_ID);
         assertEquals(1, passageRepository.findAll().size());
         List<Order> orders = orderRepository.findAllByCustomerIdWithItems(superJulien.getId());
         assertEquals(1, orders.size());
@@ -59,8 +61,8 @@ public class PassServiceTest {
 
     @Test
     void testIdempotencySuperCarte() {
-        passService.processReceivedPassages(List.of(superJulien.getId()));
-        passService.processReceivedPassages(List.of(superJulien.getId()));
+        passService.processReceivedPassages(List.of(superJulien.getId()),GATE_ID);
+        passService.processReceivedPassages(List.of(superJulien.getId()),GATE_ID);
         assertEquals(2, passageRepository.findAll().size());
         List<Order> orders = orderRepository.findAllByCustomerIdWithItems(superJulien.getId());
         assertEquals(1, orders.size());

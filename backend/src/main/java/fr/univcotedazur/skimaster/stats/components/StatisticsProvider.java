@@ -7,6 +7,7 @@ import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.stats.interfaces.AnalyticsProvider;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.LinkOption;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +26,7 @@ public class StatisticsProvider implements AnalyticsProvider {
     @Override
     public List<Passage> getDailyPassagesByGate(String gateId) {
         turnstileProxy.syncTodayPassages(gateId);
-        return passageRegistry.findTodayPassages();
+        return passageRegistry.findTodayPassages(gateId);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class StatisticsProvider implements AnalyticsProvider {
     @Override
     public List<Passage> getGatePassages(LocalDate day,String gateId) {
         turnstileProxy.syncTodayPassages(gateId);
-        return passageRegistry.findByDate(day);
+        return passageRegistry.findByDate(day,gateId);
     }
 
     @Override
@@ -47,7 +48,13 @@ public class StatisticsProvider implements AnalyticsProvider {
 
     @Override
     public int getTotalUniqueNumberOfPassages() {
-        return (int) passageRegistry.findTodayPassages().stream().distinct().count();
+        Set<String> allGateIds = getAllGateIds();
+
+        List<Passage> allPassages = allGateIds.stream().flatMap(id->getGatePassages(LocalDate.now(),id).stream()).toList();
+
+        return (int) allPassages.stream()
+                .map(Passage::getCustomerId)
+                .distinct().count();
     }
     @Override
     public int getNbActiveForfaitsForDay(LocalDate day){
