@@ -15,10 +15,12 @@ public class GateSyncCommands {
 
     private final RestClient restClient; // Backend (8080)
     private final RestClient doorRestClient; // Door (8082)
+    private final RestClient.Builder restClientBuilder;
 
-    public GateSyncCommands(RestClient restClient, RestClient doorRestClient) {
+    public GateSyncCommands(RestClient restClient, RestClient doorRestClient, RestClient.Builder restClientBuilder) {
         this.restClient = restClient;
         this.doorRestClient = doorRestClient;
+        this.restClientBuilder = restClientBuilder;
     }
 
     @ShellMethod(value = "Push authorized badges to Gates", key = "sync-gates")
@@ -27,46 +29,45 @@ public class GateSyncCommands {
         return "SUCCESS: Authorized badges pushed.";
     }
 
-    @ShellMethod(value = "Simulate a physical passage at the door", key = "door-pass")
-    public String doorPass(Long cardId) {
+    @ShellMethod(value = "Simulate passage at a specific gate", key = "door-pass")
+    public String doorPass(Long cardId, String gateServiceName) {
+        String targetUrl = "http://" + gateServiceName + ":8082";
+
         try {
-            doorRestClient.post()
+            restClientBuilder.baseUrl(targetUrl).build()
+                    .post()
                     .uri("/gate/pass")
                     .body(new PassageRequestDTO(true, cardId))
                     .retrieve()
                     .toBodilessEntity();
 
-            return "SUCCESS: Card " + cardId + " badged at the door.";
-        }
-        catch (ErrorResponseException e) {
-            return "DENIED: " + e.getDetailMessageCode();
-        }
-        catch (Exception e) {
-            return "ERROR: " + e.getMessage();
+            return "SUCCESS: Card " + cardId + " badged at " + gateServiceName + " (" + targetUrl + ")";
+        } catch (Exception e) {
+            return "ERROR: Could not reach " + gateServiceName + ". " + e.getMessage();
         }
     }
 
-    @ShellMethod(key = "collect-passages", value = "Collect passages from door and push to backend")
+    @ShellMethod(key = "collect-passages", value = "Trigger backend to collect passages")
     public String collectPassages() {
         try {
-            PassageDTO[] passagesArray = doorRestClient.get()
-                    .uri("/gate/passages")
-                    .retrieve()
-                    .body(PassageDTO[].class);
-
-            if (passagesArray == null || passagesArray.length == 0) {
-                return "SUCCESS: No new passages to collect at the door.";
-            }
-            List<PassageDTO> collectedPassages = Arrays.asList(passagesArray);
-            List<Long> ids = collectedPassages.stream().map(PassageDTO::nfcCardId).toList();
-            restClient.post()
+            Long[] idsArray = restClient.post()
                     .uri("/gatesync/collect")
-                    .body(ids)
                     .retrieve()
-                    .toBodilessEntity();
-            return "SUCCESS: Collected " + ids.size() + " passage(s) and pushed to backend.";
+                    .body(Long[].class);
+            if (idsArray == null || idsArray.length == 0) {
+                return "COLLECT: No new passages found on any gate.";
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("COLLECTED PASSAGES FROM GATES: \n");
+            for (Long id : idsArray) {
+                sb.append(" - Customer ID: ").append(id).append("\n");
+            }
+            sb.append("Total: ").append(idsArray.length).append(" passage(s) sent to billing logic.");
+
+            return sb.toString();
         } catch (Exception e) {
-            return "ERROR: " + e.getMessage();
+            return "ERROR during collection: " + e.getMessage();
         }
     }
 

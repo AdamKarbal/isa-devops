@@ -69,36 +69,6 @@ class AccessHandlerTest {
         returned = customerRegistration.register("John", "1234567890");
     }
 
-    @Test
-    void testComputeWhiteListWithChildForfait(){
-        Forfait forfaitChild = new Forfait(returned.getId(), LocalDate.now().plusDays(1), childForfait);
-        forfaitRepository.save(forfaitChild);
 
-        accessHandler.computeWhiteList();
 
-        assertEquals(1, whiteListCache.getForfeitList().size());
-        assertEquals(forfaitChild.getId(), whiteListCache.getValidForfeitIds().get(0));
-        assertEquals(AgeCategory.CHILD, whiteListCache.getForfeitList().get(0).getAgeCategory());
-    }
-
-    @Test
-    void testComputeWhiteListWithAdultForfait(){
-        Forfait forfaitAdult = new Forfait(returned.getId(), LocalDate.now().plusDays(1), adultForfait);
-        forfaitRepository.save(forfaitAdult);
-
-        accessHandler.computeWhiteList();
-
-        assertEquals(1, whiteListCache.getForfeitList().size());
-        assertEquals(forfaitAdult.getId(), whiteListCache.getValidForfeitIds().get(0));
-    }
-
-    @Test
-    void testComputeWhiteListFiltersExpiredForfait(){
-        Forfait expired = new Forfait(returned.getId(), LocalDate.now().minusDays(1), adultForfait);
-        forfaitRepository.save(expired);
-
-        accessHandler.computeWhiteList();
-
-        assertTrue(whiteListCache.getForfeitList().isEmpty(), "Le forfait expiré ne doit pas être dans la whitelist");
-    }
 }

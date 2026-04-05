@@ -63,8 +63,14 @@ public class PassService implements AccessTreatment {
                 .distinct()
                 .toList();
 
-        LOG.info("DEBUG WHITELIST: Pushing to all gates: {}", authorizedIds);
+        LOG.info("LOGIC: Pushing {} IDs to Portier for broadcast", authorizedIds.size());
         portier.syncAllGates(authorizedIds);
+    }
+
+    public void collectAndProcessAllPassages() {
+        List<Long> allNfcIds = portier.collectPassagesFromAllGates();
+        LOG.info("LOGIC: Received {} total passages from Portier", allNfcIds.size());
+        processReceivedPassages(allNfcIds);
     }
 
     @Override
@@ -111,7 +117,4 @@ public class PassService implements AccessTreatment {
         invoiceCreator.processOrderPayment(superOrder);
     }
 
-    public void processPassages(List<Long> nfcCardIds) {
-        processReceivedPassages(nfcCardIds);
-    }
 }

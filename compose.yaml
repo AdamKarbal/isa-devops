@@ -16,6 +16,8 @@ services:
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,mappings
       - DOOR_WITH_PORT=door-1:8082
       - DOOR_2_WITH_PORT=door-2:8082
+      - DOOR_3_WITH_PORT=door-3:8082
+      - DOOR_4_WITH_PORT=door-4:8082
       - DISPLAY_WITH_PORT=display-service:8083
     restart: always
     depends_on:
@@ -28,7 +30,7 @@ services:
       display-service:
         condition: service_healthy
       bank-system:
-        condition: service_healthy
+        condition: service_started
     healthcheck:
       test: "curl --silent --fail localhost:8080/actuator/health | grep UP || exit 1"
       interval: 5s
@@ -128,6 +130,36 @@ services:
       start_period: 5s
     environment:
       - GATE_ID=gate-2
+      - SERVER_PORT=8082
+
+  door-3:
+    image: skimaster-door:latest
+    container_name: door-3
+    ports:
+      - "8085:8082"
+    healthcheck:
+      test: "curl --silent --fail localhost:8082/gate/status || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    environment:
+      - GATE_ID=gate-3
+      - SERVER_PORT=8082
+
+  door-4:
+    image: skimaster-door:latest
+    container_name: door-4
+    ports:
+      - "8086:8082"
+    healthcheck:
+      test: "curl --silent --fail localhost:8082/gate/status || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    environment:
+      - GATE_ID=gate-4
       - SERVER_PORT=8082
 
   display-service:

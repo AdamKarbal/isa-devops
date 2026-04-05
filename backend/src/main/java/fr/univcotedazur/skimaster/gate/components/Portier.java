@@ -35,6 +35,15 @@ public class Portier implements ManualGateControl, PortierInformation {
         });
     }
 
+    public List<Long> collectPassagesFromAllGates(){
+        return gateUrls.values().stream()
+                .flatMap(url -> turnstileProxy.getPassagesofToday(url).stream())
+                .map(fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO::forfeitId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+    }
+
     @Override
     public void closeGate(String code){
         String url = getUrl(code);
