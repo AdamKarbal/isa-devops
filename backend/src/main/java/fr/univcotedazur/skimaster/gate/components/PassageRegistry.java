@@ -19,15 +19,16 @@ public class PassageRegistry implements PassageFinder {
         return passageRepository.findByCustomerId(customerId);
     }
 
-    public List<Passage> findByDate(LocalDate localDate){
-        return passageRepository.findByDateRange(
+    public List<Passage> findByDate(LocalDate localDate,String gateId){
+        return passageRepository.findByGateIdAndDateRange(
+                gateId,
                 localDate.atStartOfDay(),
                 localDate.plusDays(1).atStartOfDay()
         );
     }
 
-    public List<Passage> findTodayPassages(){
-        return findByDate(LocalDate.now());
+    public List<Passage> findTodayPassages(String gateId){
+        return findByDate(LocalDate.now(),gateId);
     }
 
 }

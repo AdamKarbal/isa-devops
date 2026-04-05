@@ -2,6 +2,7 @@ package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.forfait.components.ForfaitRegistry;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
+import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessDealer;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessTreatment;
 import org.springframework.stereotype.Component;
@@ -34,8 +35,9 @@ public class AccessHandler implements AccessDealer {
     }
     @Override
     public List<Long> handleIncomingData() { // Change void en List<Long>
-        List<Long> allNfcCardIds = portier.collectPassagesFromAllGates();
-        passService.processReceivedPassages(allNfcCardIds);
+        List<Passage> allPassengers = portier.collectPassagesFromAllGates();
+        List<Long> allNfcCardIds = allPassengers.stream().map(Passage::getCustomerId).toList();
+        passService.processReceivedPassages(allPassengers);
         return allNfcCardIds; // Retourne la liste à la CLI
     }
 }

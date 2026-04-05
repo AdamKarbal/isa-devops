@@ -1,7 +1,9 @@
 package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO;
 import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
+import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
 import fr.univcotedazur.skimaster.gate.exceptions.GateClosedException;
 import fr.univcotedazur.skimaster.gate.exceptions.NoGateExistentException;
@@ -35,12 +37,14 @@ public class Portier implements ManualGateControl, PortierInformation {
         });
     }
 
-    public List<Long> collectPassagesFromAllGates(){
-        return gateUrls.values().stream()
-                .flatMap(url -> turnstileProxy.getPassagesofToday(url).stream())
-                .map(fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO::forfeitId)
-                .filter(Objects::nonNull)
-                .distinct()
+    public List<Passage> collectPassagesFromAllGates(){
+        return gateUrls.entrySet().stream()
+                .flatMap(entry -> {
+                    String gateId = entry.getKey();
+                    String url = entry.getValue();
+                    return turnstileProxy.getPassagesofToday(url).stream()
+                            .map(dto -> new Passage(dto.nfcCardId(), dto.timestamp(), gateId));
+                })
                 .toList();
     }
 
