@@ -2,6 +2,7 @@ package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.repositories.CustomerRepository;
+import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.order.entities.Order;
 import fr.univcotedazur.skimaster.order.repositories.OrderRepository;
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
@@ -13,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,17 +55,17 @@ public class PassServiceTest {
 
     @Test
     void testSuperCarteBillingOnPassage() {
-        passService.processReceivedPassages(List.of(superJulien.getId()),GATE_ID);
+        passService.processReceivedPassages(List.of(new Passage(superJulien.getId(), LocalDateTime.now(),GATE_ID)));
         assertEquals(1, passageRepository.findAll().size());
         List<Order> orders = orderRepository.findAllByCustomerIdWithItems(superJulien.getId());
         assertEquals(1, orders.size());
-        assertEquals(15.0, orders.get(0).getPrice());
+        assertEquals(15.0, orders.getFirst().getPrice());
     }
 
     @Test
     void testIdempotencySuperCarte() {
-        passService.processReceivedPassages(List.of(superJulien.getId()),GATE_ID);
-        passService.processReceivedPassages(List.of(superJulien.getId()),GATE_ID);
+        passService.processReceivedPassages(List.of(new Passage(superJulien.getId(), LocalDateTime.now(),GATE_ID)));
+        passService.processReceivedPassages(List.of(new Passage(superJulien.getId(), LocalDateTime.now(),GATE_ID)));
         assertEquals(2, passageRepository.findAll().size());
         List<Order> orders = orderRepository.findAllByCustomerIdWithItems(superJulien.getId());
         assertEquals(1, orders.size());

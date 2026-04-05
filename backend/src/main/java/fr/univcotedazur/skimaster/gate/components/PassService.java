@@ -7,6 +7,7 @@ import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
 import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO;
 import fr.univcotedazur.skimaster.order.entities.Order;
 import fr.univcotedazur.skimaster.order.repositories.OrderRepository;
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
@@ -67,36 +68,34 @@ public class PassService implements AccessTreatment {
         portier.syncAllGates(authorizedIds);
     }
 
+    @Transactional
     public void collectAndProcessAllPassages() {
-        List<Long> allNfcIds = portier.collectPassagesFromAllGates();
-        LOG.info("LOGIC: Received {} total passages from Portier", allNfcIds.size());
-        processReceivedPassages(allNfcIds);
+        List<Passage> allPassengers = portier.collectPassagesFromAllGates();
+        LOG.info("LOGIC: Received {} total passages from Portier", allPassengers.size());
+        processReceivedPassages(allPassengers);
     }
 
     @Override
     @Transactional
-    public void processReceivedPassages(List<Long> nfcCardIds) {
-        LOG.info("START: Processing {} passages from collector", nfcCardIds.size());
-        for (Long id : nfcCardIds) {
-            processIncomingPassage(id);
+    public void processReceivedPassages(List<Passage> passages) {
+        LOG.info("START: Processing {} passages from collector", passages.size());
+        for (Passage passage : passages) {
+            processIncomingPassage(passage);
         }
         LOG.info("END: Processing passages finished");
     }
 
-    private void processIncomingPassage(Long nfcCardId) {
+    private void processIncomingPassage(Passage passage) {
         LocalDateTime now = LocalDateTime.now();
-        passageRepository.save(new Passage(nfcCardId, now));
+        passageRepository.save(new Passage(passage.getCustomerId(), now,passage.getGatePassedBy()));
         try {
-            Customer customer = customerFinder.retrieveCustomer(nfcCardId);
+            Customer customer = customerFinder.retrieveCustomer(passage.getCustomerId());
             if (customer.isHasSuperCarte()) {
                 LocalDateTime oneHourAgo = now.minusHours(1);
                 boolean hasInvoiceRecently = invoiceFinder.findInvoicesByCustomerId(customer.getId()).stream()
                         .filter(inv -> inv.getAmount() == 15.0)
                         .anyMatch(inv -> inv.getPaymentDate().isAfter(oneHourAgo));
-                boolean hasOrderRecently = orderRepository.findAll().stream()
-                        .filter(o -> o.getCustomer().getId().equals(customer.getId()))
-                        .filter(o -> o.getPrice() == 15.0)
-                        .anyMatch(o -> true);
+                boolean hasOrderRecently = orderRepository.existsRecentOrderForSuperCarte(customer.getId(), 15.0);
 
                 if (!hasInvoiceRecently && !hasOrderRecently) {
                     handleSuperCarteBilling(customer);
@@ -106,7 +105,7 @@ public class PassService implements AccessTreatment {
                 }
             }
         } catch (CustomerIdNotFoundException e) {
-            LOG.error("Client inconnu : {}", nfcCardId);
+            LOG.error("Client inconnu : {}", passage.getCustomerId());
         }
     }
 
@@ -115,9 +114,5 @@ public class PassService implements AccessTreatment {
         Order superOrder = new Order(customer, new HashSet<>(), 15.0);
         superOrder = orderRepository.save(superOrder);
         invoiceCreator.processOrderPayment(superOrder);
-    }
-
-    public void processPassages(List<Long> nfcCardIds) {
-        processReceivedPassages(nfcCardIds);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,4 +42,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         where o.orderId = :orderId
     """)
     Optional<Order> findByIdWithItems(@Param("orderId") Long orderId);
+
+    @Query("SELECT COUNT(o) > 0 FROM Order o WHERE o.customer.id = :customerId " +
+            "AND o.price = :price")
+    boolean existsRecentOrderForSuperCarte(
+            @Param("customerId") Long customerId,
+            @Param("price") double price
+    );
 }

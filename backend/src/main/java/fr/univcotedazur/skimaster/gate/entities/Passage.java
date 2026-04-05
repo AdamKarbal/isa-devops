@@ -30,4 +30,5 @@ public class Passage {
 
     public Long getCustomerId() { return customerId; }
     public LocalDateTime getOccurrenceDate() { return occurrenceDate; }
+    public String getGatePassedBy() { return gatePassedBy; }
 }
