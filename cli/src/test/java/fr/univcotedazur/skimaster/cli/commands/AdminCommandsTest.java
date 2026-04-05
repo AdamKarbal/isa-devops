@@ -31,7 +31,7 @@ class AdminCommandsTest {
         mockServer = MockRestServiceServer.bindTo(builder).build();
         RestClient restClient = builder.build();
 
-        adminCommands = new AdminCommands(restClient, cliContext);
+        adminCommands = new AdminCommands(restClient);
     }
 
     @Test

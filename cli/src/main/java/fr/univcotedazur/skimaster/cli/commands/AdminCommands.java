@@ -1,14 +1,7 @@
 package fr.univcotedazur.skimaster.cli.commands;
 
-import fr.univcotedazur.skimaster.cli.CliContext;
-import fr.univcotedazur.skimaster.cli.model.AdminDisplayMessageDTO;
-import fr.univcotedazur.skimaster.cli.model.DailyReportDTO;
-import fr.univcotedazur.skimaster.cli.model.DisplayAlertDTO;
-import fr.univcotedazur.skimaster.cli.model.GateAlertThresholdRequestDTO;
-import fr.univcotedazur.skimaster.cli.model.GateMonitoringStatusDTO;
-import fr.univcotedazur.skimaster.incident.entities.Incident;
+import fr.univcotedazur.skimaster.cli.model.*;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.shell.component.view.control.ListView;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.web.client.RestClient;
@@ -23,9 +16,8 @@ public class AdminCommands {
 
     private final RestClient restClient;
 
-    public AdminCommands(RestClient restClient, CliContext cliContext) {
+    public AdminCommands(RestClient restClient) {
         this.restClient = restClient;
-        this.cliContext = cliContext;
     }
 
     @ShellMethod(key = "close-gate", value = "Fermer un portique (close-gate CODE)")
@@ -34,7 +26,8 @@ public class AdminCommands {
                 .uri(BASE_URI + "/" + code + "/close")
                 .retrieve()
                 .toBodilessEntity();
-        System.out.println("Le portique a été fermé.");
+
+        return "Le portique a été fermé.";
     }
 
     @ShellMethod(key = "open-gate", value = "Ouvrir un portique (open-gate CODE)")
@@ -119,30 +112,15 @@ public class AdminCommands {
         return "Message envoye au display.";
     }
 
-    @ShellMethod(key = "display-message", value = "Envoyer un message sur tous les display (display-message \"MESSAGE\")")
-    public String sendDisplayMessage(String message) {
-        this.restClient.post()
-                .uri(BASE_URI + "/display/message")
-                .body(new AdminDisplayMessageDTO(message, null))
-                .retrieve()
-                .toBodilessEntity();
-        return "Message envoye au display.";
-    }
-
     @ShellMethod(key = "display-message-target", value = "Envoyer un message a un display precis (display-message-target DISPLAY_CODE \"MESSAGE\")")
     public String sendDisplayMessageTarget(String displayCode, String message) {
         this.restClient.post()
                 .uri(BASE_URI + "/display/message")
-                .body(new AdminDisplayMessageDTO(message, displayCode));
-    }
-
-    @ShellMethod(value = "Consulter les incidents", key = "healthcheck")
-    public void checkGates(){
-        List<String> iList = this.restClient.get()
-                .uri(BASE_URI + "/alerts")
+                .body(new AdminDisplayMessageDTO(message, displayCode))
                 .retrieve()
                 .toBodilessEntity();
-        return "Message envoye au display " + displayCode + ".";
+
+        return "Message envoyé au display.";
     }
 
     @ShellMethod(key = "display-clear", value = "Effacer les messages des displays")
@@ -223,14 +201,10 @@ public class AdminCommands {
             return "Aucune statistique disponible.";
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
-        assert iList != null;
-        for(String s : iList){
-            stringBuilder.append(s);
-            stringBuilder.append("\n");
-        }
-
-        System.out.println(stringBuilder);
+        return "Date: " + report.date() + "\n" +
+                "Nombre total de passages: " + report.totalPassages() + "\n" +
+                "Nombre de skieurs total: " + report.uniqueSkiers() + "\n" +
+                "Nombre de forfaits actifs" + report.activeForfaits() + "\n";
     }
 
         @ShellMethod(key = "monitor-gate", value = "Consulter les statistiques de frequentation d'un portique (monitor-gate CODE)")

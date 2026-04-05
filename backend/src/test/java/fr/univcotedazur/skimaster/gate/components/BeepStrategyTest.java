@@ -21,7 +21,7 @@ class BeepStrategyTest {
 
     @BeforeEach
     void setUp() {
-        beepStrategy = new BeepStrategy(portierInformation);
+        beepStrategy = new BeepStrategy();
     }
 
     @Test

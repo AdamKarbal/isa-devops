@@ -58,16 +58,6 @@ public class IncidentService {
     }
 
     @Transactional
-    public List<Incident> findPendingIncidents(){
-        return repository.findByResolvedFalse();
-    }
-
-    @Transactional
-    public boolean hasUnresolvedIncidents(String code) {
-        return !repository.findByTargetCodeAndResolvedFalse(code).isEmpty();
-    }
-
-    @Transactional
     public boolean hasUnresolvedClosingIncidents(String code) {
         return !repository.findByTargetCodeAndResolvedFalseAndClosesTrue(code).isEmpty();
     }

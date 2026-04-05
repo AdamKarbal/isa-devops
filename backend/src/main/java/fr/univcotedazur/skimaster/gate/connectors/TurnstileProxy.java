@@ -7,11 +7,6 @@ import fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO;
 import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.gate.exceptions.NoGateExistentException;
 import fr.univcotedazur.skimaster.gate.repositories.PassageRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.bind.Bindable;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.core.env.Environment;
-import fr.univcotedazur.skimaster.gate.exceptions.NoGateExistentException;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
@@ -22,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.*;
 
 @Component
 public class TurnstileProxy {
@@ -53,6 +47,17 @@ public class TurnstileProxy {
         }
     }
 
+    public List<Passage> collectPassagesFromAllGates(){
+        return gateUrls.entrySet().stream()
+                .flatMap(entry -> {
+                    String gateId = entry.getKey();
+                    String url = entry.getValue();
+                    return getPassagesofToday(url).stream()
+                            .map(dto -> new Passage(dto.nfcCardId(), dto.timestamp(), gateId));
+                })
+                .toList();
+    }
+
     public List<PassageDTO> getPassagesofTodayForGate(String code) {
         String targetUrl = getUrl(code);
 
@@ -62,12 +67,6 @@ public class TurnstileProxy {
             System.out.println(e);
             return null;
         }
-    }
-
-    private String getUrl(String code){
-        String url = gateUrls.get(code);
-        if (url == null) throw new NoGateExistentException("Code de porte inconnu : " + code);
-        return url;
     }
 
     public java.util.Set<String> getAllGateIds() {
@@ -153,29 +152,10 @@ public class TurnstileProxy {
         }
     }
 
-    public void sendOrder(String code, String order){
-        String targetUrl = getUrl(code);
-        restClient.baseUrl(targetUrl).build()
-                .post()
-                .uri("/gate" + order)
-                .retrieve()
-                .toBodilessEntity();
-    }
-
-    public GateStatusResponseDTO getGateStatus(String code){
-        String targetUrl = getUrl(code);
-
-        return restClient.baseUrl(targetUrl).build()
-                .get()
-                .uri("/gate/status")
-                .retrieve()
-                .body(GateStatusResponseDTO.class);
-    }
-
     public void updateAlertThreshold(String code, int alertThreshold) {
         String targetUrl = getUrl(code);
 
-        restClient.baseUrl(targetUrl).build()
+        restClientBuilder.baseUrl(targetUrl).build()
                 .put()
                 .uri("/gate/alert-threshold")
                 .body(new GateAlertThresholdUpdateDTO(alertThreshold))
