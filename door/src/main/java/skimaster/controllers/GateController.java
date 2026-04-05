@@ -8,6 +8,7 @@ import skimaster.components.GateService;
 import skimaster.dtos.*;
 import skimaster.dtos.GateSyncDTO;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,6 +60,11 @@ public class GateController {
     @GetMapping("/passages")
     public List<PassageDTO> getAllPassageIds() {
         return gateService.getAllPassages();
+    }
+
+    @GetMapping("/opening-time")
+    public long getOpeningTime() {
+        return gateService.getLastOpeningDuration();
     }
     @PostMapping("/sync")
     @ResponseStatus(HttpStatus.NO_CONTENT)

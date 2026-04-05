@@ -1,5 +1,65 @@
 # Changelog
 
+## [2.3.2](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.3.1...v2.3.2) (2026-03-30)
+
+
+### Bug Fixes
+
+* **ci/cd:** changed triggers to push & socat actions to merge in prod ([f5eb4a0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/f5eb4a0ca8e1e7b11eca6273d67c252979624868))
+
+## [2.3.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.3.0...v2.3.1) (2026-03-30)
+
+
+### Bug Fixes
+
+* **ci/cd:** added some build context in docker compose for some images ([85136de](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/85136deec7846bc12dc33fd3b325024d89a0125a))
+* **ci/cd:** corrected the name of the built image to match the other ones ([9071b3b](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/9071b3bad0a9e8acd57ebc48b7804c0fd63ad8fb))
+* **cli:** added some bank and display images to build and push on release ([90a83eb](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/90a83eb39959da3521a8ba84fdc4b5095a6f3053))
+
+
+### Features
+
+* **ci/cd:** plugged socat ([68ca524](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/68ca524c6925f6833a78b3c42f2d357106fee3c2))
+* **cli:** added end of scenario at the end ([48908c1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/48908c18ef76a26b1707e6ffc6a5ce417969d4fd))
+
+# [2.3.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.2.1...v2.3.0) (2026-03-30)
+
+
+### Bug Fixes
+
+* **back:** fixed docker compose ENV variables ([9b5320f](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/9b5320f41e32a785420d92825d6b47e31515aa78))
+* **back:** fixed docker compose ENV variables ([4d8b957](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/4d8b95735e004cff78d2f7836468e1dc61ba0b94))
+* **docker:** fix docker compose ([d9856c2](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/d9856c25ef5388ec8af6fa733cff8cad1cb328d1))
+* **docker:** rename docker image ([608529b](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/608529b4786a68f4ed8e1fae62d43e78764d2dff))
+* **docker:** rename docker image ([8723a74](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/8723a746b6bc9d5bad7c93d958beac8964d8f7a1))
+
+
+### Features
+
+* **back:** added a DailyReportDTO ([dbd0e42](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/dbd0e42bd5e5ae9a31b4c167b1f96b856eb470cc))
+* **back:** added interfaces methods ([27c597a](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/27c597ae8b41a80bc7ce4006c10d36f5660fcdaa))
+* **back:** added some PassageRegistry queries ([7d7ab87](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/7d7ab8790a31580bcbb2ec62443e4b7c36ce56f7))
+* **back:** forfait is now registered in the repository when bought ([95ca3cd](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/95ca3cdabe19f6f9b308c2458bbd6013c742cb16))
+* **back:** forfait is now registered in the repository when bought ([4c25552](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/4c255523a8e0f7d9cfa1d45bc86a1166ad24033c))
+* **back:** implemented the interfaces ([b63492f](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/b63492fa2b11911b75078abd88664b6da5636bb5))
+* **back:** implemented the interfaces ([673fe69](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/673fe6997c31b7e1539a3724a6e3094dedeec116))
+* **back:** implemented the managementController ([81d0656](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/81d065665a27ba12d0df42bf1a30f0accd1a13b4))
+* **ci/cd:** added a passageFinder to fetch Passages from the repo ([d8f83b2](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/d8f83b26a658d8d8c436eb264bf3dc5cd2c3b284))
+* **ci/cd:** added queries by date ([5a79349](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/5a793493175b14e8ed8cccb2941f0d50ff8166e7))
+* **ci/cd:** begginging ([091624e](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/091624edcedede82b1d1101e8582619537a542a7))
+* **ci/cd:** begginging ([763e28d](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/763e28d39b6dc8a4776ab218b12e1d8744a021ad))
+* **cli:** added ManagementCommands ([6932540](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/69325404cd8a17c032b75c67063abbee2e2b6a11))
+* **stat:** added new signature for CliDailyReport ([6be9d17](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/6be9d1796f8f2026c4fd4e5ef4ff342eaa66c27d))
+* **stats:** added skelet of interfaces and components ([d50f6a9](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/d50f6a96547b0112fd269e6dcf8c455b19fdc893))
+* **stats:** added skelet of interfaces and components ([93018a1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/93018a1bbcded2f903ff4448fcd532a42661f2d2))
+* **stats:** fix ManagementController, daily reports statistics produced for gate-1 ([066adba](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/066adba6625a07d871efc92179df129a2b799d47))
+* **stats:** implemented global stats ([47053c6](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/47053c6a5e2a80788dffddb7a4793d7b52917008))
+* **stats:** implemented method getOpeningTimeByGate ([89a7543](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/89a7543221f7bb209c4009c6645e22ad12031ed2))
+* **stats:** implemented method getOpeningTimeByGate ([e10ab84](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/e10ab846fa52580cc68ceb7c35808334a54c19e4))
+* **stats:** implemented stats for multiple doors ([b656689](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/b6566890fb38d1f0a9e41c707017b1e904c36853))
+* **stats:** refactoring PassageDTO and adding new components ([ea8f797](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/ea8f7975b92a312b0fe99ef8876d903078eb2ef3))
+* **stats:** refactoring PassageDTO and adding new components ([2091434](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/209143499685494c2ffbb7f07875e053c14ed777))
+
 ## [2.2.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.2.0...v2.2.1) (2026-03-16)
 
 

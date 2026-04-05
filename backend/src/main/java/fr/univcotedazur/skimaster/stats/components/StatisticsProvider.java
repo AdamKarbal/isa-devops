@@ -2,6 +2,7 @@ package fr.univcotedazur.skimaster.stats.components;
 
 import fr.univcotedazur.skimaster.forfait.components.ForfaitRegistry;
 import fr.univcotedazur.skimaster.gate.components.PassageRegistry;
+import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
 import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.stats.interfaces.AnalyticsProvider;
 import org.springframework.stereotype.Component;
@@ -9,27 +10,39 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 @Component
 public class StatisticsProvider implements AnalyticsProvider {
     private final ForfaitRegistry forfaitRegistry;
     private final PassageRegistry passageRegistry;
-    public StatisticsProvider(ForfaitRegistry forfaitRegistry,PassageRegistry passageRegistry){
+    private final TurnstileProxy turnstileProxy;
+    public StatisticsProvider(ForfaitRegistry forfaitRegistry,PassageRegistry passageRegistry,TurnstileProxy turnstileProxy) {
         this.forfaitRegistry=forfaitRegistry;
         this.passageRegistry = passageRegistry;
+        this.turnstileProxy = turnstileProxy;
     }
     @Override
-    public List<Passage> getDailyPassages() {
+    public List<Passage> getDailyPassagesByGate(String gateId) {
+        turnstileProxy.syncTodayPassages(gateId);
         return passageRegistry.findTodayPassages();
     }
 
     @Override
-    public List<Passage> getPassagesByDay(LocalDate day) {
+    public Set<String> getAllGateIds() {
+        return turnstileProxy.getAllGateIds();
+    }
+
+
+    @Override
+    public List<Passage> getGatePassages(LocalDate day,String gateId) {
+        turnstileProxy.syncTodayPassages(gateId);
         return passageRegistry.findByDate(day);
     }
 
     @Override
-    public Date getOpeningTimeByGate(String gateId) {
-        return null;
+    public long getOpeningTimeByGate(String gateId) {
+        return turnstileProxy.syncOpeningTimeByGate(gateId);
     }
 
     @Override
@@ -45,4 +58,5 @@ public class StatisticsProvider implements AnalyticsProvider {
     public int todayActiveForfaits(){
         return getNbActiveForfaitsForDay(LocalDate.now());
     }
+
 }

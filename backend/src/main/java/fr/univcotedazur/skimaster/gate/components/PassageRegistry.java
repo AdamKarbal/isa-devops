@@ -20,7 +20,10 @@ public class PassageRegistry implements PassageFinder {
     }
 
     public List<Passage> findByDate(LocalDate localDate){
-        return passageRepository.findByDate(localDate);
+        return passageRepository.findByDateRange(
+                localDate.atStartOfDay(),
+                localDate.plusDays(1).atStartOfDay()
+        );
     }
 
     public List<Passage> findTodayPassages(){
