@@ -33,6 +33,7 @@ public class Customer {
     @OneToMany(cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "customer")
     private Set<Order> orders = new HashSet<>();
 
+
     @NotNull
     @Column(nullable = false)
     private boolean hasSuperCarte = false;

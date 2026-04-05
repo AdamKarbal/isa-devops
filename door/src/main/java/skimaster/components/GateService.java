@@ -1,4 +1,5 @@
 package skimaster.components;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -7,45 +8,63 @@ import skimaster.entities.Gate;
 import skimaster.entities.GateStatus;
 import skimaster.entities.Incident;
 import skimaster.entities.Passage;
+import java.util.List;
+import java.util.ArrayList;
 import skimaster.exceptions.AlreadyClosedGateException;
 import skimaster.exceptions.AlreadyOpenGateException;
 
-import java.time.Duration;
+import java.time.*;
+import java.util.ArrayList;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class GateService {
     private final Gate gate;
-    private final DisplayNotifierClient displayNotifierClient;
     private final List<LocalTime> openingTimes = new ArrayList<>();
     private final List<LocalTime> closingTimes = new ArrayList<>();
-
+    private static final Logger LOG = LoggerFactory.getLogger(GateService.class);
+    private List<Long> whitelist = new ArrayList<>();
     public GateService(@Value("${gate.id}") String gateId,
-                       @Value("${gate.alert-threshold}") int alertThreshold,
-                       DisplayNotifierClient displayNotifierClient) {
+                       @Value("${gate.alert-threshold}") int alertThreshold) {
         this.gate = new Gate(gateId, GateStatus.OPEN, alertThreshold, LocalTime.of(7,0),LocalTime.of(17,30));
-        this.displayNotifierClient = displayNotifierClient;
         openingTimes.add(this.gate.getStartTime());
         closingTimes.add(this.gate.getEndTime());
     }
+    public void updateWhitelist(List<Long> authorizedIds) {
 
-    public Optional<PassageResponseDTO> processPassage(@Valid PassageRequestDTO requestDTO){
-        boolean accepted = gate.getStatus() == GateStatus.OPEN && requestDTO.accepted();
-        if(!accepted){
+        this.whitelist = authorizedIds;
+        LOG.info("GATE DEBUG: Whitelist mise à jour. Nouveaux IDs autorisés: {}", this.whitelist);
+    }
+    public Optional<PassageResponseDTO> processPassage(@Valid PassageRequestDTO requestDTO) {
+        Long cardId = requestDTO.nfcCardId(); // Correction : on définit cardId ici
+        boolean isAuthorized = whitelist.contains(cardId);
+
+        // LOGS CRITIQUES POUR LE DEBUG
+        LOG.info("GATE DEBUG: Tentative de passage pour la carte ID: {}", cardId);
+        LOG.info("GATE DEBUG: Présent dans whitelist ? {}", isAuthorized);
+        LOG.info("GATE DEBUG: Liste complète en mémoire: {}", whitelist);
+        LOG.info("GATE DEBUG: Statut de la porte: {}", gate.getStatus());
+
+        boolean accepted = (gate.getStatus() == GateStatus.OPEN) && isAuthorized;
+
+        if (!accepted) {
+            LOG.warn("GATE DEBUG: Passage REFUSÉ pour {}", cardId);
             return Optional.empty();
         }
-        gate.registerPassage(new Passage(requestDTO.nfcCardId(),accepted, LocalDateTime.now()));
-        if (gate.getAlertThreshold() > 0 && gate.getCurrentPassages() >= gate.getAlertThreshold()) {
-            closeGate();
-            notifyThresholdReached();
-        }
-        return Optional.of(new PassageResponseDTO(accepted,gate.getStatus()));
+
+        LOG.info("GATE DEBUG: Passage ACCEPTÉ pour {}", cardId);
+        gate.registerPassage(new Passage(cardId, accepted, LocalDateTime.now()));
+        return Optional.of(new PassageResponseDTO(accepted, gate.getStatus()));
     }
 
     public void openGate(){
@@ -60,16 +79,8 @@ public class GateService {
         closingTimes.add(LocalTime.now());
     }
 
-    public GateStatusResponseDTO getStatus() {
+    public GateStatusResponseDTO getStatus(){
         return new GateStatusResponseDTO(gate.getStatus(), gate.getAlertThreshold(), gate.getCurrentPassages(), gate.getIncidents());
-    }
-
-    public void setAlertThreshold(int alertThreshold) {
-        gate.setAlertThreshold(alertThreshold);
-        if (alertThreshold > 0 && gate.getCurrentPassages() >= alertThreshold && gate.getStatus() == GateStatus.OPEN) {
-            closeGate();
-            notifyThresholdReached();
-        }
     }
 
     public List<PassageDTO> getPassagesById(Long nfcCardId){
@@ -96,6 +107,7 @@ public class GateService {
 
         List<Long> sumDuration = new ArrayList<>();
         int size = Math.min(openingTimes.size(), closingTimes.size());
+
         if (openingTimes.size()>closingTimes.size()){
             LocalTime lastOpening = openingTimes.getLast();
             sumDuration.add(Duration.between(lastOpening,Instant.now()).getSeconds());
@@ -109,6 +121,16 @@ public class GateService {
     }
 
 
+    public List<PassageDTO> getTodayPassages() {
+        List<PassageDTO> passages = gate.getPassages().stream()
+                .filter(Passage::isAccepted)
+                .map(p -> new PassageDTO(p.getNfcCardId(), p.getTimestamp(), gate.getGateId()))
+                .toList();
+        gate.getPassages().clear();
+        LOG.info("GATE: {} passages collected and cleared from local memory", passages.size());
+        return passages;
+    }
+
 //    public List<PassageDTO> getAllPassagesOfToday(){
 //        LocalDate today = LocalDate.now();
 //        return gate.getPassages().stream()
@@ -117,13 +139,4 @@ public class GateService {
 //                .map(p -> new PassageDTO(p.getNfcCardId(), p.getTimestamp()))
 //                .toList();
 //    }
-
-    private void notifyThresholdReached() {
-        displayNotifierClient.publishAlert(
-                "[ALERTE] Seuil de frequentation depasse sur " + gate.getGateId()
-                        + " : " + gate.getCurrentPassages()
-                        + " passages pour un seuil de " + gate.getAlertThreshold(),
-                gate.getGateId()
-        );
-    }
 }

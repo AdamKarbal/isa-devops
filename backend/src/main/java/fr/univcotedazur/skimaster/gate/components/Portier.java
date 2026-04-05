@@ -23,6 +23,15 @@ public class Portier implements ManualGateControl, PortierInformation {
         turnstileProxy.syncAllGates(cardIds);
     }
 
+    public List<Long> collectPassagesFromAllGates(){
+        return gateUrls.values().stream()
+                .flatMap(url -> turnstileProxy.getPassagesofToday(url).stream())
+                .map(fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO::forfeitId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+    }
+
     @Override
     public void closeGate(String code) {
         turnstileProxy.sendOrder(code, "/close");

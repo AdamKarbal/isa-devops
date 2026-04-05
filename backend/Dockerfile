@@ -16,5 +16,6 @@ RUN chown -R dockeruser:dockergroup /opt/app
 EXPOSE 8080
 # Starting the service (shell form of ENTRYPOINT used for substitution)
 RUN mkdir -p /opt/app/logs && chown -R dockeruser:dockergroup /opt/app/logs
+
 USER dockeruser
 ENTRYPOINT ["java", "-jar", "/opt/app/app.jar"]

@@ -6,6 +6,8 @@ gate:
   instances:
     "gate-1": "http://${DOOR_WITH_PORT:localhost:8082}"
     "gate-2": "http://${DOOR_2_WITH_PORT:localhost:8084}"
+    "gate-3": "http://${DOOR_3_WITH_PORT:localhost:8085}"
+    "gate-4": "http://${DOOR_4_WITH_PORT:localhost:8086}"
 
 display:
   instances:

@@ -1,5 +1,6 @@
 package fr.univcotedazur.skimaster.cli.commands;
 
+import fr.univcotedazur.skimaster.cli.model.PassageDTO;
 import fr.univcotedazur.skimaster.cli.model.PassageRequestDTO;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -14,10 +15,12 @@ public class GateSyncCommands {
 
     private final RestClient restClient; // Backend (8080)
     private final RestClient doorRestClient; // Door (8082)
+    private final RestClient.Builder restClientBuilder;
 
-    public GateSyncCommands(RestClient restClient, RestClient doorRestClient) {
+    public GateSyncCommands(RestClient restClient, RestClient doorRestClient, RestClient.Builder restClientBuilder) {
         this.restClient = restClient;
         this.doorRestClient = doorRestClient;
+        this.restClientBuilder = restClientBuilder;
     }
 
     @ShellMethod(value = "Push authorized badges to Gates", key = "sync-gates")
@@ -26,42 +29,46 @@ public class GateSyncCommands {
         return "SUCCESS: Authorized badges pushed.";
     }
 
-    @ShellMethod(value = "Simulate a physical passage at the door", key = "door-pass")
-    public String doorPass(Long cardId, boolean accepted) {
-        // On tape directement sur le service externe (autonomie)
-        try{
-            doorRestClient.post()
+    @ShellMethod(value = "Simulate passage at a specific gate", key = "door-pass")
+    public String doorPass(Long cardId, String gateServiceName) {
+        String targetUrl = "http://" + gateServiceName + ":8082";
+
+        try {
+            restClientBuilder.baseUrl(targetUrl).build()
+                    .post()
                     .uri("/gate/pass")
-                    .body(new PassageRequestDTO(accepted, cardId))
+                    .body(new PassageRequestDTO(true, cardId))
                     .retrieve()
                     .toBodilessEntity();
-            return "SUCCESS: Card " + cardId + " badged at the door.";
-        }
-        catch(ErrorResponseException e){
-            return e.getMessage();
+
+            return "SUCCESS: Card " + cardId + " badged at " + gateServiceName + " (" + targetUrl + ")";
+        } catch (Exception e) {
+            return "ERROR: Could not reach " + gateServiceName + ". " + e.getMessage();
         }
     }
 
-    @ShellMethod(key = "collect-passages", value = "Collect passages from door and push to backend")
+    @ShellMethod(key = "collect-passages", value = "Trigger backend to collect passages")
     public String collectPassages() {
         try {
-            Long[] idsArray = doorRestClient.get()
-                    .uri("/gate/passages")
+            Long[] idsArray = restClient.post()
+                    .uri("/gatesync/collect")
                     .retrieve()
                     .body(Long[].class);
             if (idsArray == null || idsArray.length == 0) {
-                return "SUCCESS: No new passages to collect at the door.";
+                return "COLLECT: No new passages found on any gate.";
             }
-            List<Long> collectedIds = Arrays.asList(idsArray);
-            restClient.post()
-                    .uri("/gatesync/collect")
-                    .body(collectedIds)
-                    .retrieve()
-                    .toBodilessEntity();
 
-            return "SUCCESS: Collected " + collectedIds.size() + " passage(s) from door and pushed to backend: " + collectedIds;
+            StringBuilder sb = new StringBuilder();
+            sb.append("COLLECTED PASSAGES FROM GATES: \n");
+            for (Long id : idsArray) {
+                sb.append(" - Customer ID: ").append(id).append("\n");
+            }
+            sb.append("Total: ").append(idsArray.length).append(" passage(s) sent to billing logic.");
+
+            return sb.toString();
         } catch (Exception e) {
-            return "ERROR: Communication failed. Check if Door and Backend are up. Details: " + e.getMessage();
+            return "ERROR during collection: " + e.getMessage();
         }
     }
+
 }

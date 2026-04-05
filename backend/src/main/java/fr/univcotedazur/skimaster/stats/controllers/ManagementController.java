@@ -30,34 +30,39 @@ public class ManagementController {
         this.analyticsProvider=analyticsProvider;
     }
 
-    @GetMapping("/today")
-    public List<Passage> getTodayPassages() {
-        return analyticsProvider.getDailyPassages();
+    @GetMapping("/today/{gateId}")
+    public List<Passage> getTodayPassages(@PathVariable String gateId) {
+        return analyticsProvider.getDailyPassagesByGate(gateId);
     }
 
-    @GetMapping("/day/{day}")
-    public List<Passage> getPassagesByDay(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day) {
-        return analyticsProvider.getPassagesByDay(day);
+    @GetMapping("/gates/{gateId}/passages/{day}")
+    public List<Passage> getPassagesByDay(@PathVariable String gateId,@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day) {
+        return analyticsProvider.getGatePassages(day,gateId);
     }
 
-    @GetMapping("/opening-time/{gateId}")
+    @GetMapping("/gates/{gateId}/opening-time")
     public String getOpeningTimeByGate(@PathVariable String gateId) {
         return analyticsProducer.aggregateOpeningTimeByGate(gateId);
     }
 
-    @GetMapping("/unique-passages")
+    @GetMapping("/passages/unique/today")
     public int getUniquePassages() {
         return analyticsProvider.getTotalUniqueNumberOfPassages();
     }
 
-    @GetMapping("/reports/daily")
-    public DailyReportDTO getDailyReport() {
-        return analyticsProducer.aggregateTodayStats();
+    @GetMapping("/gates/{gateId}/reports/daily")
+    public DailyReportDTO getDailyReport(@PathVariable String gateId) {
+        return analyticsProducer.aggregateTodayStats(gateId);
+    }
+
+    @GetMapping("/reports/daily/{day}/{gateId}")
+    public DailyReportDTO getDailyReportByDay(@PathVariable String gateId,@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day) {
+        return analyticsProducer.aggregateStatsByDay(day,gateId);
     }
 
     @GetMapping("/reports/daily/{day}")
-    public DailyReportDTO getDailyReportByDay(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day) {
-        return analyticsProducer.aggregateStatsByDay(day);
+    public DailyReportDTO getGlobalDailyReport(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day) {
+        return analyticsProducer.aggregateGlobalStats(day);
     }
 
 }

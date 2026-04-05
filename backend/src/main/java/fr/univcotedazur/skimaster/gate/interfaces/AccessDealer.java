@@ -4,8 +4,9 @@ import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundExceptio
 import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
 import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 
-public interface AccessDealer {
+import java.util.List;
 
-    AccessRequest processCurrentPassage(BeepContext beepContext) throws CustomerIdNotFoundException;
-    void computeWhiteList();
+public interface AccessDealer {
+    public void synchronizeExternalSystems();
+    public List<Long> handleIncomingData();
 }

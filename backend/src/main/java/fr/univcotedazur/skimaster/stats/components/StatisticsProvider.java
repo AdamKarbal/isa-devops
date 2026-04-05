@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 @Component
 public class StatisticsProvider implements AnalyticsProvider {
     private final ForfaitRegistry forfaitRegistry;
@@ -22,12 +24,20 @@ public class StatisticsProvider implements AnalyticsProvider {
         this.turnstileProxy = turnstileProxy;
     }
     @Override
-    public List<Passage> getDailyPassages() {
+    public List<Passage> getDailyPassagesByGate(String gateId) {
+        turnstileProxy.syncTodayPassages(gateId);
         return passageRegistry.findTodayPassages();
     }
 
     @Override
-    public List<Passage> getPassagesByDay(LocalDate day) {
+    public Set<String> getAllGateIds() {
+        return turnstileProxy.getAllGateIds();
+    }
+
+
+    @Override
+    public List<Passage> getGatePassages(LocalDate day,String gateId) {
+        turnstileProxy.syncTodayPassages(gateId);
         return passageRegistry.findByDate(day);
     }
 
@@ -49,4 +59,5 @@ public class StatisticsProvider implements AnalyticsProvider {
     public int todayActiveForfaits(){
         return getNbActiveForfaitsForDay(LocalDate.now());
     }
+
 }

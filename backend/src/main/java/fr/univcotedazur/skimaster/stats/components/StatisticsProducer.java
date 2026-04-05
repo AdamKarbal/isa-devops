@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class StatisticsProducer implements AnalyticsProducer {
@@ -17,28 +18,49 @@ public class StatisticsProducer implements AnalyticsProducer {
         this.analyticsProvider = statisticsProvider;
     }
 
-    public DailyReportDTO aggregateTodayStats() {
-        return aggregateStatsByDay(LocalDate.now());
+    public DailyReportDTO aggregateTodayStats(String gateId) {
+        return aggregateStatsByDay(LocalDate.now(),gateId);
     }
 
-    public DailyReportDTO aggregateStatsByDay(LocalDate day){
-        List<Passage> passages = analyticsProvider.getPassagesByDay(day);
-        int totalPassages = passages.size();
-        int uniqueSkiers = analyticsProvider.getTotalUniqueNumberOfPassages();
-        int activeForfaits = analyticsProvider.getNbActiveForfaitsForDay(day);
+    public DailyReportDTO aggregateGlobalStats(LocalDate day){
 
-        return new DailyReportDTO(day, totalPassages, uniqueSkiers, activeForfaits);
+        Set<String> allGateIds = analyticsProvider.getAllGateIds();
+
+        List<Passage> allPassages = allGateIds.stream().flatMap(id->analyticsProvider.getGatePassages(day,id).stream()).toList();
+        int totalPassages = allPassages.size();
+
+        int uniqueSkiers = (int) allPassages.stream()
+                .map(Passage::getCustomerId)
+                .distinct().count();
+
+         long totalSeconds = allGateIds.stream().mapToLong(analyticsProvider::getOpeningTimeByGate).filter(time -> time != -1L).sum();
+         String formattedTime = formatDuration(totalSeconds);
+        return new DailyReportDTO(day,totalPassages,uniqueSkiers,formattedTime);
+    }
+
+    public DailyReportDTO aggregateStatsByDay(LocalDate day,String gateId){
+        List<Passage> passages = analyticsProvider.getGatePassages(day,gateId);
+        int totalPassages = passages.size();
+        int uniqueSkiers = (int) passages.stream()
+                .map(Passage::getCustomerId)
+                .distinct()
+                .count();
+        String openingTime = aggregateOpeningTimeByGate(gateId);
+
+        return new DailyReportDTO(day, totalPassages, uniqueSkiers, openingTime);
     }
 
     public String aggregateOpeningTimeByGate(String gateId){
         long time = analyticsProvider.getOpeningTimeByGate(gateId);
-        Duration duration = Duration.ofSeconds(time);
+        return formatDuration(time);
 
-        long hours = duration.toHours();
-        long minutes = duration.minusHours(hours).toMinutes();
-        long seconds = duration.minusMinutes(minutes).toSeconds();
+    }
 
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-
+    private String formatDuration(long seconds) {
+        Duration duration = Duration.ofSeconds(seconds);
+        return String.format("%02d:%02d:%02d",
+                duration.toHours(),
+                duration.toMinutesPart(),
+                duration.toSecondsPart());
     }
 }

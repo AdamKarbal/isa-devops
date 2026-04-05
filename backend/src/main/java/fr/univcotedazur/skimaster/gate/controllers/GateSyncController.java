@@ -34,7 +34,9 @@ public class GateSyncController {
     }
 
     @PostMapping("/collect")
-    public void collectFromGates(@RequestBody List<Long> nfcCardIds) {
-        accessHandler.handleIncomingData(nfcCardIds);
+    public List<Long> collectFromGates() {
+         return accessHandler.handleIncomingData();
     }
+
+
 }

@@ -1,13 +1,14 @@
 package skimaster.controllers;
 
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import skimaster.components.GateService;
 import skimaster.dtos.*;
+import skimaster.dtos.GateSyncDTO;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,12 +52,6 @@ public class GateController {
         return gateService.getStatus();
     }
 
-    @PutMapping("/alert-threshold")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void setAlertThreshold(@RequestBody @Valid AlertThresholdRequestDTO request) {
-        gateService.setAlertThreshold(request.alertThreshold());
-    }
-
     @GetMapping("/passages/{cardId}")
     public List<PassageDTO> getPassages(@PathVariable("cardId") Long cardId) {
         return gateService.getPassagesById(cardId);
@@ -70,5 +65,15 @@ public class GateController {
     @GetMapping("/opening-time")
     public long getOpeningTime() {
         return gateService.getLastOpeningDuration();
+    }
+    @PostMapping("/sync")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void syncWhitelist(@RequestBody GateSyncDTO dto) {
+        gateService.updateWhitelist(dto.authorizedCardIds());
+    }
+
+    @GetMapping("/passages/today")
+    public List<PassageDTO> getPassagesOfToday() {
+        return gateService.getTodayPassages();
     }
 }

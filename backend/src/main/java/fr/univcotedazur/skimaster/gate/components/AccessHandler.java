@@ -1,11 +1,7 @@
 package fr.univcotedazur.skimaster.gate.components;
 
-import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.forfait.components.ForfaitRegistry;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
-import fr.univcotedazur.skimaster.gate.components.WhiteListCache;
-import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
-import fr.univcotedazur.skimaster.gate.dtos.BeepContext;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessDealer;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessTreatment;
 import org.springframework.stereotype.Component;
@@ -20,35 +16,26 @@ public class AccessHandler implements AccessDealer {
     private final AccessTreatment passService;
     private final ForfaitRegistry forfaitRegistry;
     private final WhiteListCache whiteListCache;
+    private final Portier portier;
 
-    public AccessHandler(AccessTreatment passService, ForfaitRegistry forfaitRegistry, WhiteListCache whiteListCache) {
+    public AccessHandler(AccessTreatment passService,
+                         ForfaitRegistry forfaitRegistry,
+                         WhiteListCache whiteListCache,
+                         Portier portier) {
         this.passService = passService;
         this.forfaitRegistry = forfaitRegistry;
         this.whiteListCache = whiteListCache;
-    }
-
-    // --- Logique issue du premier fichier (Gestion des passages unitaires) ---
-
-    @Override
-    public AccessRequest processCurrentPassage(BeepContext beepContext) throws CustomerIdNotFoundException {
-        return passService.validateAndRegisterPassage(beepContext);
+        this.portier = portier;
     }
 
     @Override
-    public void computeWhiteList() {
-        List<Forfait> forfaits = forfaitRegistry.findAllForfaits().stream()
-                .filter(forfait -> !forfait.getValidDate().isBefore(LocalDate.now()))
-                .collect(Collectors.toList());
-        whiteListCache.addForfeits(forfaits);
-    }
-
-    // --- Logique issue du second fichier (Synchronisation externe et collecte) ---
-
     public void synchronizeExternalSystems() {
         passService.pushAuthorizedBadges();
     }
-
-    public void handleIncomingData(List<Long> nfcCardIds) {
-        passService.processReceivedPassages(nfcCardIds);
+    @Override
+    public List<Long> handleIncomingData() { // Change void en List<Long>
+        List<Long> allNfcCardIds = portier.collectPassagesFromAllGates();
+        passService.processReceivedPassages(allNfcCardIds);
+        return allNfcCardIds; // Retourne la liste à la CLI
     }
 }
