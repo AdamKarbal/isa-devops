@@ -8,6 +8,7 @@ import fr.univcotedazur.skimaster.incident.interfaces.DisplayNotifier;
 import fr.univcotedazur.skimaster.incident.repositories.IncidentRepository;
 import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import jakarta.transaction.Transactional;
+import org.hibernate.validator.internal.constraintvalidators.bv.time.futureorpresent.FutureOrPresentValidatorForCalendar;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +20,13 @@ public class IncidentService {
     private final IncidentRepository repository;
     private final ManualGateControl manualGateControl;
     private final DisplayNotifier displayNotifier;
+    private final FutureOrPresentValidatorForCalendar futureOrPresentValidatorForCalendar;
 
-    public IncidentService(IncidentRepository repository, ManualGateControl manualGateControl, DisplayNotifier displayNotifier) {
+    public IncidentService(IncidentRepository repository, ManualGateControl manualGateControl, DisplayNotifier displayNotifier, FutureOrPresentValidatorForCalendar futureOrPresentValidatorForCalendar) {
         this.repository = repository;
         this.manualGateControl = manualGateControl;
         this.displayNotifier = displayNotifier;
+        this.futureOrPresentValidatorForCalendar = futureOrPresentValidatorForCalendar;
     }
 
     public Optional<Incident> findFirstByOrderByTimeDesc() {
@@ -55,6 +58,11 @@ public class IncidentService {
     }
 
     @Transactional
+    public boolean hasUnresolvedClosingIncidents(String code) {
+        return !repository.findByTargetCodeAndResolvedFalseAndClosesTrue(code).isEmpty();
+    }
+
+    @Transactional
     public List<Incident> findPendingIncidents(){
         return repository.findByResolvedFalse();
     }
@@ -62,11 +70,6 @@ public class IncidentService {
     @Transactional
     public boolean hasUnresolvedIncidents(String code) {
         return !repository.findByTargetCodeAndResolvedFalse(code).isEmpty();
-    }
-
-    @Transactional
-    public boolean hasUnresolvedClosingIncidents(String code) {
-        return !repository.findByTargetCodeAndResolvedFalseAndClosesTrue(code).isEmpty();
     }
 
     private String buildDisplayMessage(Incident incident) {

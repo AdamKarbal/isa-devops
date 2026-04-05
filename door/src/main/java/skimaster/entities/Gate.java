@@ -15,7 +15,7 @@ public class Gate {
     private final LocalTime startTime;
     private final LocalTime endTime;
 
-    public Gate(String gateId, GateStatus status, int alertThreshold,LocalTime startTime,LocalTime endTime) {
+    public Gate(String gateId, GateStatus status, int alertThreshold, LocalTime startTime,LocalTime endTime) {
         this.gateId = gateId;
         this.status = status;
         this.alertThreshold = alertThreshold;

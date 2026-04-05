@@ -1,5 +1,18 @@
 # Changelog
 
+# [2.5.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.4.0...v2.5.0) (2026-04-05)
+
+
+### Bug Fixes
+
+* **backend:** fixed PassService by matching with new Passage entity ([f1ba810](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/f1ba8105548137a51908177f7aa87dba4a88ae07))
+
+
+### Features
+
+* **cucumber:** cucumber stats done and Passage Entity changed ([a6fa839](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/a6fa839ab39380ac5ebe94a91fb1d824e0ede37f))
+* **cucumber:** cucumber stats done and Passage Entity changed ([d38b9e4](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/d38b9e4129551c7770496147ff9b4ea3b7225d0c))
+
 # [2.4.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.3.2...v2.4.0) (2026-04-05)
 
 

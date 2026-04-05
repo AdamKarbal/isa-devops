@@ -8,6 +8,8 @@ import fr.univcotedazur.skimaster.inbox.interfaces.MessageInput;
 import fr.univcotedazur.skimaster.incident.components.IncidentService;
 import fr.univcotedazur.skimaster.incident.entities.Incident;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 

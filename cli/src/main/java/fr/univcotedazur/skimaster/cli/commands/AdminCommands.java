@@ -1,6 +1,5 @@
 package fr.univcotedazur.skimaster.cli.commands;
 
-import fr.univcotedazur.skimaster.cli.CliContext;
 import fr.univcotedazur.skimaster.cli.model.*;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.shell.standard.ShellComponent;
@@ -17,17 +16,18 @@ public class AdminCommands {
 
     private final RestClient restClient;
 
-    public AdminCommands(RestClient restClient, CliContext cliContext) {
+    public AdminCommands(RestClient restClient) {
         this.restClient = restClient;
     }
 
-    @ShellMethod(value = "Fermer un portique (close-gate + code)", key = "close-gate")
-    public void closeGate(String code){
+    @ShellMethod(key = "close-gate", value = "Fermer un portique (close-gate CODE)")
+    public String closeGate(String code) {
         this.restClient.post()
                 .uri(BASE_URI + "/" + code + "/close")
                 .retrieve()
                 .toBodilessEntity();
-        System.out.println("Le portique a été fermé.");
+
+        return "Le portique a été fermé.";
     }
 
     @ShellMethod(key = "open-gate", value = "Ouvrir un portique (open-gate CODE)")
@@ -43,47 +43,46 @@ public class AdminCommands {
         }
     }
 
-    @ShellMethod(value = "Ouvrir tous les portiques", key = "open-all-gates")
-    public void openAllGate(){
+    @ShellMethod(key = "open-all-gates", value = "Ouvrir tous les portiques")
+    public String openAllGate() {
         this.restClient.post()
                 .uri(BASE_URI + "/openAll")
                 .retrieve()
                 .toBodilessEntity();
-        System.out.println("Tous les portiques ont été ouverts.");
+        return "Tous les portiques ont ete ouverts.";
     }
 
-    @ShellMethod(value = "Fermer tous les portiques", key = "close-all-gates")
-    public void closeAllGate(){
+    @ShellMethod(key = "close-all-gates", value = "Fermer tous les portiques")
+    public String closeAllGate() {
         this.restClient.post()
                 .uri(BASE_URI + "/closeAll")
                 .retrieve()
                 .toBodilessEntity();
-
-        System.out.println("Tous les portiques ont été fermés.");
+        return "Tous les portiques ont ete fermes.";
     }
 
-    @ShellMethod(value = "Résoudre un incident sur un portique (ex : resolve gate-1)", key = "resolve")
-    public void resolve(String code){
+    @ShellMethod(key = "resolve", value = "Resoudre un incident sur un portique (resolve GATE_CODE)")
+    public String resolve(String code) {
         this.restClient.post()
                 .uri(BASE_URI + "/resolve/" + code)
                 .retrieve()
                 .toBodilessEntity();
-
-        System.out.println("Problème résolu et portique réouvert.");
+        return "Probleme resolu et portique reouvert.";
     }
 
-    /*
-    //TODO: A compléter
-    @ShellMethod(key = "Consulter les statistiques globales de fréquentation en temps réel.", value = "monitor-all")
-    public void monitorAll(){
-        this.restClient.get()
-                .uri(BASE_URI + "/monitorAll")
+    @ShellMethod(key = "healthcheck", value = "Consulter les incidents en attente")
+    public String checkGates() {
+        List<String> incidentList = this.restClient.get()
+                .uri(BASE_URI + "/alerts")
                 .retrieve()
-                .body();
+                .body(new ParameterizedTypeReference<List<String>>() {});
 
+        if (incidentList == null || incidentList.isEmpty()) {
+            return "Aucune alerte en attente.";
+        }
 
+        return String.join("\n", incidentList);
     }
-     */
 
     @ShellMethod(key = "list-displays", value = "Lister les displays connus (par code de portique)")
     public String listDisplays() {
@@ -103,35 +102,6 @@ public class AdminCommands {
         return builder.toString();
     }
 
-    /*
-    //TODO: A compléter
-    @ShellMethod(key = "Consulter les statistiques de fréquentation d'un portique en temps réel. (Ex: monitor-gate code)", value = "monitor-gate")
-    public void monitor(String code){
-        this.restClient.get()
-                .uri(BASE_URI + "/monitor/" + code)
-                .retrieve()
-                .body();
-*/
-
-
-
-    @ShellMethod(key = "Consulter les incidents", value = "healthcheck")
-    public void checkGates(){
-        List<String> iList = this.restClient.get()
-                .uri(BASE_URI + "/alerts")
-                .retrieve()
-                .body(new ParameterizedTypeReference<List<String>>() {});
-
-        StringBuilder stringBuilder = new StringBuilder();
-        assert iList != null;
-        for(String s : iList){
-            stringBuilder.append(s);
-            stringBuilder.append("\n");
-        }
-
-        System.out.println(stringBuilder);
-    }
-
     @ShellMethod(key = "display-message", value = "Envoyer un message sur tous les display (display-message \"MESSAGE\")")
     public String sendDisplayMessage(String message) {
         this.restClient.post()
@@ -149,9 +119,9 @@ public class AdminCommands {
                 .body(new AdminDisplayMessageDTO(message, displayCode))
                 .retrieve()
                 .toBodilessEntity();
-        return "Message envoye au display " + displayCode + ".";
-    }
 
+        return "Message envoyé au display.";
+    }
 
     @ShellMethod(key = "display-clear", value = "Effacer les messages des displays")
     public String clearDisplay() {
@@ -230,21 +200,22 @@ public class AdminCommands {
         if (report == null) {
             return "Aucune statistique disponible.";
         }
-        return "Stats du " + report.date()
-                + ": totalPassages=" + report.totalPassages()
-                + ", uniqueSkiers=" + report.uniqueSkiers()
-                + ", activeForfaits=" + report.activeForfaits();
+
+        return "Date: " + report.date() + "\n" +
+                "Nombre total de passages: " + report.totalPassages() + "\n" +
+                "Nombre de skieurs total: " + report.uniqueSkiers() + "\n" +
+                "Nombre de forfaits actifs" + report.activeForfaits() + "\n";
     }
 
-    @ShellMethod(key = "monitor-gate", value = "Consulter les statistiques de frequentation d'un portique (monitor-gate CODE)")
-    public String monitor(String code) {
-        String openingTime = this.restClient.get()
-                .uri(STATS_BASE_URI + "/opening-time/" + code)
-                .retrieve()
-                .body(String.class);
+        @ShellMethod(key = "monitor-gate", value = "Consulter les statistiques de frequentation d'un portique (monitor-gate CODE)")
+        public String monitor(String code) {
+            String openingTime = this.restClient.get()
+                    .uri(STATS_BASE_URI + "/opening-time/" + code)
+                    .retrieve()
+                    .body(String.class);
 
-        return "Monitoring " + code + ": " + openingTime;
-    }
+            return "Monitoring " + code + ": " + openingTime;
+        }
 
     private static String formatDisplayAlerts(List<DisplayAlertDTO> alerts, String displayCode) {
         if (alerts == null || alerts.isEmpty()) {
@@ -265,5 +236,4 @@ public class AdminCommands {
         }
         return builder.toString();
     }
-
 }

@@ -3,6 +3,7 @@ package fr.univcotedazur.skimaster.gate.components;
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
 import fr.univcotedazur.skimaster.gate.dtos.AccessRequest;
+import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
 import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import fr.univcotedazur.skimaster.gate.interfaces.PortierInformation;
@@ -23,13 +24,13 @@ public class Portier implements ManualGateControl, PortierInformation {
         turnstileProxy.syncAllGates(cardIds);
     }
 
-    public List<Long> collectPassagesFromAllGates(){
-        return gateUrls.values().stream()
-                .flatMap(url -> turnstileProxy.getPassagesofToday(url).stream())
-                .map(fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO::forfeitId)
-                .filter(Objects::nonNull)
-                .distinct()
-                .toList();
+
+    public List<Passage> collectPassagesFromAllGates(){
+        return turnstileProxy.collectPassagesFromAllGates();
+    }
+
+    public GateStatusResponseDTO gateStatus(String code) {
+        return turnstileProxy.getGateStatus(code);
     }
 
     @Override
@@ -54,10 +55,6 @@ public class Portier implements ManualGateControl, PortierInformation {
 
     public long getOpeningTime(String code) {
         return turnstileProxy.syncOpeningTimeByGate(code);
-    }
-
-    public GateStatusResponseDTO gateStatus(String code) {
-        return turnstileProxy.getGateStatus(code);
     }
 
     public void setAlertThreshold(String code, int alertThreshold) {
