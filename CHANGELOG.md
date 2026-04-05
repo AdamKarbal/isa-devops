@@ -1,5 +1,17 @@
 # Changelog
 
+# [2.4.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.3.2...v2.4.0) (2026-04-05)
+
+
+### Bug Fixes
+
+* **backend:** fix unhealthy service and name imamge ([ff32978](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/ff32978e829b7b20eb80b9c6bb808ac51cdf9b2d))
+
+
+### Features
+
+* **backend:** adaptation a plusieurs portes, refactor name ([72fd4b3](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/72fd4b35afa8c5a4221f69948e5946ebb86099d5))
+
 ## [2.3.2](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.3.1...v2.3.2) (2026-03-30)
 
 
