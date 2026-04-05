@@ -90,7 +90,7 @@ public class TurnstileProxy {
                 List<Passage> passagesToSave = Arrays.stream(doorPassages)
                         .map(dto ->{
                                 System.out.println("DTO reçu -> ID: " + dto.nfcCardId() + " Date: " + dto.timestamp());
-                                return new Passage(dto.nfcCardId(), dto.timestamp());
+                                return new Passage(dto.nfcCardId(), dto.timestamp(),gateId);
                         }).toList();
 
                 // Note: You might want to check for duplicates before saving

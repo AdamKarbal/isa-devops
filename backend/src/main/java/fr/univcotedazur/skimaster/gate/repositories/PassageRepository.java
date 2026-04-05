@@ -15,8 +15,12 @@ public interface PassageRepository extends JpaRepository<Passage, Long> {
     @Query("SELECT p FROM Passage p WHERE p.customerId = ?1 ORDER BY p.occurrenceDate ASC")
     List<Passage> findByCustomerId(Long customerId);
 
-    @Query("SELECT p FROM Passage p WHERE p.occurrenceDate >= :startOfDay AND p.occurrenceDate < :endOfDay ORDER BY p.occurrenceDate ASC")
-    List<Passage> findByDateRange(@Param("startOfDay") LocalDateTime startOfDay, @Param("endOfDay") LocalDateTime endOfDay);
+    @Query("SELECT p FROM Passage p WHERE p.gatePassedBy = :gateId AND p.occurrenceDate >= :startOfDay AND p.occurrenceDate < :endOfDay ORDER BY p.occurrenceDate ASC")
+    List<Passage> findByGateIdAndDateRange(
+            @Param("gateId") String gateId,
+            @Param("startOfDay") LocalDateTime startOfDay,
+            @Param("endOfDay") LocalDateTime endOfDay
+    );
 }
 
 

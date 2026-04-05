@@ -17,11 +17,15 @@ public class Passage {
     @NotNull
     private LocalDateTime occurrenceDate;
 
+    @NotNull
+    private String gatePassedBy;
+
     public Passage() {}
 
-    public Passage(Long customerId, LocalDateTime occurrenceDate) {
+    public Passage(Long customerId, LocalDateTime occurrenceDate,String gatePassedBy) {
         this.customerId = customerId;
         this.occurrenceDate = occurrenceDate;
+        this.gatePassedBy = gatePassedBy;
     }
 
     public Long getCustomerId() { return customerId; }
