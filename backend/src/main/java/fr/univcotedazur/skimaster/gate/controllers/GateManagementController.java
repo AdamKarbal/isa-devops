@@ -1,6 +1,6 @@
 package fr.univcotedazur.skimaster.gate.controllers;
 
-import fr.univcotedazur.skimaster.gate.components.Portier;
+import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
 import fr.univcotedazur.skimaster.gate.dtos.GateAlertThresholdRequestDTO;
 import fr.univcotedazur.skimaster.gate.dtos.GateMonitoringStatusDTO;
@@ -22,16 +22,16 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class GateManagementController {
 
     public static final String BASE_URI = "/gates";
-    private final Portier portier;
+    private final TurnstileProxy turnstileProxy;
 
-    public GateManagementController(Portier portier) {
-        this.portier = portier;
+    public GateManagementController(TurnstileProxy turnstileProxy) {
+        this.turnstileProxy = turnstileProxy;
     }
 
     @GetMapping("/status")
     public ResponseEntity<List<GateMonitoringStatusDTO>> getAllStatuses() {
-        List<GateMonitoringStatusDTO> statuses = portier.getConfiguredGateCodes().stream()
-                .map(code -> toMonitoringStatus(portier.gateStatus(code), code))
+        List<GateMonitoringStatusDTO> statuses = turnstileProxy.getConfiguredGateCodes().stream()
+                .map(code -> toMonitoringStatus(turnstileProxy.getGateStatus(code), code))
                 .toList();
         return ResponseEntity.ok(statuses);
     }
@@ -39,8 +39,8 @@ public class GateManagementController {
     @PutMapping("/{gateCode}/alert-threshold")
     public ResponseEntity<GateMonitoringStatusDTO> setAlertThreshold(@PathVariable String gateCode,
                                                                      @Valid @RequestBody GateAlertThresholdRequestDTO request) {
-        portier.setAlertThreshold(gateCode, request.alertThreshold());
-        return ResponseEntity.ok(toMonitoringStatus(portier.gateStatus(gateCode), gateCode));
+        turnstileProxy.setAlertThreshold(gateCode, request.alertThreshold());
+        return ResponseEntity.ok(toMonitoringStatus(turnstileProxy.getGateStatus(gateCode), gateCode));
     }
 
     private static GateMonitoringStatusDTO toMonitoringStatus(GateStatusResponseDTO status, String fallbackGateCode) {
