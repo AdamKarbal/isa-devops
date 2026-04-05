@@ -8,6 +8,7 @@ import fr.univcotedazur.skimaster.inbox.interfaces.MessageInput;
 import fr.univcotedazur.skimaster.incident.components.IncidentService;
 import fr.univcotedazur.skimaster.incident.entities.Incident;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,11 @@ public class AdminService implements AdminOperations {
     @Override
     public void resolveIncidentsForGate(String code){
         this.incidentService.resolveIncidentsForGate(code);
-        this.setStatus(code, "OPEN");
+        try {
+            manualGateControl.openGate(code);
+        } catch (HttpClientErrorException.Conflict ignored) {
+            // portique déjà ouvert — la résolution réussit quand même
+        }
         displayAdminProxy.clearForGate(code);
         displayAdminProxy.sendMessage("[RESOLUTION] Portique " + code + " : incident resolu, portique de nouveau operationnel.", code);
     }

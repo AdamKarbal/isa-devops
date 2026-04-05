@@ -38,8 +38,8 @@ public class AdminCommands {
                     .retrieve()
                     .toBodilessEntity();
             return "Le portique a ete ouvert.";
-        } catch (org.springframework.web.client.HttpClientErrorException e) {
-            return "Impossible d'ouvrir le portique " + code + " : " + e.getResponseBodyAsString();
+        } catch (org.springframework.web.client.HttpClientErrorException.Conflict e) {
+            return "Le portique " + code + " est deja ouvert.";
         }
     }
 

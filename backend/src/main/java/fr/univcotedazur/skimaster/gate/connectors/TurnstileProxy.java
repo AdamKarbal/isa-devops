@@ -112,7 +112,11 @@ public class TurnstileProxy {
         gateUrls.values().forEach(url -> syncAuthorizedCards(url, cardIds));
     }
 
-    public void sendOrder(String baseUrl, String order) {
+    public void sendOrder(String code, String order) {
+        sendOrderToUrl(getUrl(code), order);
+    }
+
+    private void sendOrderToUrl(String baseUrl, String order) {
         restClientBuilder.baseUrl(baseUrl).build()
                 .post()
                 .uri("/gate" + order)
@@ -168,7 +172,7 @@ public class TurnstileProxy {
     }
 
     public void sendOrderAll(String order){
-        gateUrls.values().forEach(url -> sendOrder(url, order));
+        gateUrls.values().forEach(url -> sendOrderToUrl(url, order));
     }
 
     public void setAlertThreshold(String baseUrl, int alertThreshold) {

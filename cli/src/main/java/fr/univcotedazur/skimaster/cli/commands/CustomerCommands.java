@@ -32,14 +32,29 @@ public class CustomerCommands {
     }
 
     @ShellMethod(key = "register", value = "Register a customer in the CoD backend (register CUSTOMER_NAME CREDIT_CARD_NUMBER)")
-    public CliCustomer register(String name, String creditCard) {
-        CliCustomer res = restClient.post()
-                .uri(BASE_URI)
-                .body(new CliCustomer(name, creditCard))
-                .retrieve()
-                .body(CliCustomer.class);
-        cliContext.getCustomers().put(Objects.requireNonNull(res).getName(), res);
-        return res;
+    public String register(String name, String creditCard) {
+        try {
+            CliCustomer res = restClient.post()
+                    .uri(BASE_URI)
+                    .body(new CliCustomer(name, creditCard))
+                    .retrieve()
+                    .body(CliCustomer.class);
+            cliContext.getCustomers().put(Objects.requireNonNull(res).getName(), res);
+            return res.toString();
+        } catch (HttpClientErrorException.Conflict e) {
+            // Client already exists — load all customers into context
+            CliCustomer[] all = restClient.get().uri(BASE_URI).retrieve().body(CliCustomer[].class);
+            if (all != null) {
+                for (CliCustomer c : all) {
+                    cliContext.getCustomers().put(c.getName(), c);
+                }
+                CliCustomer existing = cliContext.getCustomers().get(name);
+                if (existing != null) {
+                    return "Client deja existant, charge depuis le serveur : " + existing;
+                }
+            }
+            return "Client deja existant (impossible de charger le profil).";
+        }
     }
 
     @ShellMethod(key = "customers", value = "List all customers (customers)")

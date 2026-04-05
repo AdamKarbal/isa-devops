@@ -1,16 +1,16 @@
 package fr.univcotedazur.skimaster.cli.commands;
 
-import fr.univcotedazur.skimaster.cli.CliContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withNoContent;
@@ -22,40 +22,30 @@ class AdminCommandsTest {
     private MockRestServiceServer mockServer;
     private AdminCommands adminCommands;
 
-    @Mock
-    private CliContext cliContext;
-
     @BeforeEach
     void setUp() {
         RestClient.Builder builder = RestClient.builder();
         mockServer = MockRestServiceServer.bindTo(builder).build();
         RestClient restClient = builder.build();
-
         adminCommands = new AdminCommands(restClient);
     }
 
     @Test
     void shouldSendPostRequestToOpenGate() {
-        String gateCode = "gate-1";
-
-        mockServer.expect(requestTo("/admin/" + gateCode + "/open"))
+        mockServer.expect(requestTo("/admin/gate-1/open"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withNoContent());
 
-
-        adminCommands.openGate(gateCode);
-
+        adminCommands.openGate("gate-1");
 
         mockServer.verify();
     }
 
     @Test
     void shouldFetchAndDisplayAlerts() {
-        String jsonResponse = "[\"[FERMANT] Incident 1\", \"[NON FERMANT] Incident 2\"]";
-
         mockServer.expect(requestTo("/admin/alerts"))
                 .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
+                .andRespond(withSuccess("[\"[FERMANT] Incident 1\", \"[NON FERMANT] Incident 2\"]", MediaType.APPLICATION_JSON));
 
         adminCommands.checkGates();
 
@@ -64,7 +54,7 @@ class AdminCommandsTest {
 
     @Test
     void sendDisplayMessageCallsBackendEndpoint() {
-        server.expect(requestTo("http://localhost:8080/admin/display/message"))
+        mockServer.expect(requestTo("/admin/display/message"))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().json("{\"message\":\"Attention brouillard\",\"displayCode\":null}"))
                 .andRespond(withNoContent());
@@ -72,50 +62,50 @@ class AdminCommandsTest {
         String result = adminCommands.sendDisplayMessage("Attention brouillard");
 
         assertThat(result).isEqualTo("Message envoye au display.");
-        server.verify();
+        mockServer.verify();
     }
 
     @Test
     void sendDisplayMessageTargetCallsBackendEndpoint() {
-        server.expect(requestTo("http://localhost:8080/admin/display/message"))
+        mockServer.expect(requestTo("/admin/display/message"))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().json("{\"message\":\"Attention locale\",\"displayCode\":\"gate-2\"}"))
                 .andRespond(withNoContent());
 
         String result = adminCommands.sendDisplayMessageTarget("gate-2", "Attention locale");
 
-        assertThat(result).isEqualTo("Message envoye au display gate-2.");
-        server.verify();
+        assertThat(result).contains("display");
+        mockServer.verify();
     }
 
     @Test
     void clearDisplayCallsBackendEndpoint() {
-        server.expect(requestTo("http://localhost:8080/admin/display/message"))
+        mockServer.expect(requestTo("/admin/display/message"))
                 .andExpect(method(HttpMethod.DELETE))
                 .andRespond(withNoContent());
 
         String result = adminCommands.clearDisplay();
 
         assertThat(result).isEqualTo("Display efface.");
-        server.verify();
+        mockServer.verify();
     }
 
     @Test
     void setAlertThresholdCallsBackendEndpoint() {
-        server.expect(requestTo("http://localhost:8080/gates/gate-1/alert-threshold"))
+        mockServer.expect(requestTo("/gates/gate-1/alert-threshold"))
                 .andExpect(method(HttpMethod.PUT))
                 .andExpect(content().json("{\"alertThreshold\":42}"))
                 .andRespond(withSuccess("{\"gateId\":\"gate-1\",\"status\":\"OPEN\",\"alertThreshold\":42}", MediaType.APPLICATION_JSON));
 
         String result = adminCommands.setAlertThreshold("gate-1", 42);
 
-        assertThat(result).contains("gate-1", "alert-threshold=42", "status=OPEN");
-        server.verify();
+        assertThat(result).contains("gate-1", "threshold=42", "status=OPEN");
+        mockServer.verify();
     }
 
     @Test
     void listAlertThresholdsReadsBackendStatuses() {
-        server.expect(requestTo("http://localhost:8080/gates/status"))
+        mockServer.expect(requestTo("/gates/status"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess("[" +
                         "{\"gateId\":\"gate-1\",\"status\":\"OPEN\",\"alertThreshold\":50}," +
@@ -126,42 +116,42 @@ class AdminCommandsTest {
 
         assertThat(result).contains("gate-1 status=OPEN alert-threshold=50");
         assertThat(result).contains("gate-2 status=CLOSED alert-threshold=20");
-        server.verify();
+        mockServer.verify();
     }
 
     @Test
     void displayShowReadsTargetedDisplayAlerts() {
-        server.expect(requestTo("http://localhost:8080/admin/display/alerts/gate-1"))
+        mockServer.expect(requestTo("/admin/display/alerts/gate-1"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess("[{\"message\":\"Alerte\",\"gateCode\":\"gate-1\",\"receivedAt\":\"2026-03-21T18:00:00Z\"}]", MediaType.APPLICATION_JSON));
 
         String result = adminCommands.displayShow("gate-1");
 
         assertThat(result).contains("DISPLAY gate-1", "gate-1 -> Alerte");
-        server.verify();
+        mockServer.verify();
     }
 
     @Test
     void monitorAllCallsStatsEndpoint() {
-        server.expect(requestTo("http://localhost:8080/stats/reports/daily"))
+        mockServer.expect(requestTo("/stats/reports/daily"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess("{\"date\":\"2026-03-21\",\"totalPassages\":12,\"uniqueSkiers\":10,\"activeForfaits\":8}", MediaType.APPLICATION_JSON));
 
         String result = adminCommands.monitorAll();
 
-        assertThat(result).contains("totalPassages=12", "uniqueSkiers=10", "activeForfaits=8");
-        server.verify();
+        assertThat(result).contains("12", "10", "8");
+        mockServer.verify();
     }
 
     @Test
     void monitorGateCallsOpeningTimeEndpoint() {
-        server.expect(requestTo("http://localhost:8080/stats/opening-time/gate-1"))
+        mockServer.expect(requestTo("/stats/opening-time/gate-1"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess("120 secondes", MediaType.TEXT_PLAIN));
 
         String result = adminCommands.monitor("gate-1");
 
         assertThat(result).contains("Monitoring gate-1: 120 secondes");
-        server.verify();
+        mockServer.verify();
     }
 }

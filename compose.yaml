@@ -176,7 +176,7 @@ services:
     ports:
       - "8083:8083"
     environment:
-      - DISPLAY_ID=display-A
+      - DISPLAY_ID=display-1
       - SERVER_PORT=8083
     healthcheck:
       test: "curl --silent --fail localhost:8083/display/alerts || exit 1"
@@ -186,16 +186,19 @@ services:
       start_period: 25s
 
   display-2:
-    image: skimaster-display:latest
+    image: team-k/skimaster-display:local
     container_name: display-2
+    build:
+      context: ./display
+      dockerfile: Dockerfile
     ports:
-      - "8085:8083"
+      - "8087:8083"
     environment:
-      - DISPLAY_ID=display-B
+      - DISPLAY_ID=display-2
       - SERVER_PORT=8083
     healthcheck:
       test: "curl --silent --fail localhost:8083/display/alerts || exit 1"
       interval: 5s
       timeout: 3s
-      retries: 3
-      start_period: 5s
+      retries: 5
+      start_period: 25s

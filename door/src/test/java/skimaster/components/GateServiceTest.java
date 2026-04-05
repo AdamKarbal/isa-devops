@@ -157,6 +157,37 @@ class GateServiceTest {
         assertEquals(3, gateService.getStatus().alertThreshold());
     }
 
+    @Test
+    void shouldAutoCloseImmediatelyWhenThresholdUpdatedBelowCurrentCount() {
+        // 2 passages en place, puis le seuil est abaissé à 2 → fermeture immédiate
+        passNTimes(2);
+        assertEquals(GateStatus.OPEN, gateService.getStatus().status());
+
+        gateService.updateAlertThreshold(2);
+
+        assertEquals(GateStatus.CLOSED, gateService.getStatus().status());
+    }
+
+    @Test
+    void shouldNotifyDisplayWhenThresholdUpdateTriggersAutoClose() {
+        passNTimes(2);
+        clearInvocations(displayNotifierClient);
+
+        gateService.updateAlertThreshold(2);
+
+        verify(displayNotifierClient).publishAlert(contains("Seuil d'affluence atteint"), eq("gate-test"));
+    }
+
+    @Test
+    void shouldNotAutoCloseWhenThresholdUpdatedAboveCurrentCount() {
+        passNTimes(2);
+
+        gateService.updateAlertThreshold(10);
+
+        assertEquals(GateStatus.OPEN, gateService.getStatus().status());
+        verify(displayNotifierClient, never()).publishAlert(anyString(), anyString());
+    }
+
     // --- Helpers ---
 
     private void passNTimes(int n) {
