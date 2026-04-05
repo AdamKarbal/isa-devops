@@ -13,7 +13,7 @@ import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
 @IncludeEngines("cucumber")
 @SelectPackages("features.stats")
 @ConfigurationParameter(key= PLUGIN_PROPERTY_NAME,value = "pretty")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME,value = "fr.univcotedazur.skimaster.cucumber.stats")
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME,value = "fr.univcotedazur.skimaster.cucumber")
 
 public class StatisticsCucumberRunnerIT {
 }

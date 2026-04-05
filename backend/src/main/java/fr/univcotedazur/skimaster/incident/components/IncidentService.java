@@ -1,12 +1,12 @@
 package fr.univcotedazur.skimaster.incident.components;
 
-import fr.univcotedazur.skimaster.incident.entities.Incident;
-import fr.univcotedazur.skimaster.incident.entities.IncidentType;
-import fr.univcotedazur.skimaster.incident.entities.IncidentTargetType;
+import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import fr.univcotedazur.skimaster.incident.dto.IncidentDTO;
+import fr.univcotedazur.skimaster.incident.entities.Incident;
+import fr.univcotedazur.skimaster.incident.entities.IncidentTargetType;
+import fr.univcotedazur.skimaster.incident.entities.IncidentType;
 import fr.univcotedazur.skimaster.incident.interfaces.DisplayNotifier;
 import fr.univcotedazur.skimaster.incident.repositories.IncidentRepository;
-import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -90,4 +90,5 @@ public class IncidentService {
         }
         return repository.findByTargetCodeAndResolvedFalse(targetCode).isEmpty();
     }
+
 }
