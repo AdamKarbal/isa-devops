@@ -83,12 +83,12 @@ public class IncidentService {
     }
 
     @Transactional
-    public Boolean resolveIncidentsForGate(String targetCode){
+    public void resolveIncidentsForGate(String targetCode){
         List<Incident> unresolved = repository.findByTargetCodeAndResolvedFalse(targetCode);
         for (Incident incident : unresolved) {
             incident.resolve();
         }
-        return repository.findByTargetCodeAndResolvedFalse(targetCode).isEmpty();
+        repository.findByTargetCodeAndResolvedFalse(targetCode);
     }
 
 }
