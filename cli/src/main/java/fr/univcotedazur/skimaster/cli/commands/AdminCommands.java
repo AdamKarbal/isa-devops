@@ -11,7 +11,7 @@ import java.util.List;
 @ShellComponent
 public class AdminCommands {
     private static final String BASE_URI = "/admin";
-    private static final String GATE_BASE_URI = "/gates";
+    private static final String GATE_BASE_URI = "/admin/gates";
     private static final String STATS_BASE_URI = "/stats";
 
     private final RestClient restClient;
@@ -38,8 +38,8 @@ public class AdminCommands {
                     .retrieve()
                     .toBodilessEntity();
             return "Le portique a ete ouvert.";
-        } catch (org.springframework.web.client.HttpClientErrorException e) {
-            return "Impossible d'ouvrir le portique " + code + " : " + e.getResponseBodyAsString();
+        } catch (org.springframework.web.client.HttpClientErrorException.Conflict e) {
+            return "Le portique " + code + " est deja ouvert.";
         }
     }
 

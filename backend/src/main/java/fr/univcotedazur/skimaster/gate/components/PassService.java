@@ -54,14 +54,18 @@ public class PassService implements AccessTreatment {
 
     @Override
     public void pushAuthorizedBadges() {
-        List<Long> authorizedIds = forfaitFinder.findAllForfaits().stream()
+        List<Long> authorizedNfcCards = forfaitFinder.findAllForfaits().stream()
                 .filter(f -> !f.getValidDate().isBefore(LocalDate.now()))
                 .map(Forfait::getCustomerId)
                 .distinct()
+                .map(customerId -> customerFinder.findById(customerId))
+                .filter(java.util.Optional::isPresent)
+                .map(java.util.Optional::get)
+                .map(customer -> Long.parseLong(customer.getCreditCard()))
                 .toList();
 
-        LOG.info("LOGIC: Pushing {} IDs to Portier for broadcast", authorizedIds.size());
-        turnstileProxy.syncAllGates(authorizedIds);
+        LOG.info("LOGIC: Pushing {} NFC card IDs to gates", authorizedNfcCards.size());
+        turnstileProxy.syncAllGates(authorizedNfcCards);
     }
 
     @Transactional

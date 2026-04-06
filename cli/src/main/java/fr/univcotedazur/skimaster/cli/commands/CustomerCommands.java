@@ -33,13 +33,24 @@ public class CustomerCommands {
 
     @ShellMethod(key = "register", value = "Register a customer in the CoD backend (register CUSTOMER_NAME CREDIT_CARD_NUMBER)")
     public CliCustomer register(String name, String creditCard) {
-        CliCustomer res = restClient.post()
-                .uri(BASE_URI)
-                .body(new CliCustomer(name, creditCard))
-                .retrieve()
-                .body(CliCustomer.class);
-        cliContext.getCustomers().put(Objects.requireNonNull(res).getName(), res);
-        return res;
+        try {
+            CliCustomer res = restClient.post()
+                    .uri(BASE_URI)
+                    .body(new CliCustomer(name, creditCard))
+                    .retrieve()
+                    .body(CliCustomer.class);
+            cliContext.getCustomers().put(Objects.requireNonNull(res).getName(), res);
+            return res;
+        } catch (HttpClientErrorException.Conflict e) {
+            // Client déjà existant — on charge tous les clients pour peupler le contexte
+            CliCustomer[] all = restClient.get().uri(BASE_URI).retrieve().body(CliCustomer[].class);
+            if (all != null) {
+                for (CliCustomer c : all) {
+                    cliContext.getCustomers().put(c.getName(), c);
+                }
+            }
+            return cliContext.getCustomers().get(name);
+        }
     }
 
     @ShellMethod(key = "customers", value = "List all customers (customers)")

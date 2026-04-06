@@ -21,26 +21,6 @@ public class GateCommands {
         this.restClient = restClient;
     }
 
-    @ShellMethod(value = "Open a gate", key = "open-gate")
-    public String openGate() {
-        restClient.post()
-                .uri(GATE_BASE_URI + "/open")
-                .retrieve()
-                .toBodilessEntity();
-
-        return "Le portique a ete ouvert avec succes.";
-    }
-
-    @ShellMethod(value = "Close a gate", key = "close-gate")
-    public String closeGate() {
-        restClient.post()
-                .uri(GATE_BASE_URI + "/close")
-                .retrieve()
-                .toBodilessEntity();
-
-        return "Le portique a ete ferme avec succes.";
-    }
-
     @ShellMethod(value = "Configurer la jauge d'alerte d'un portique (set-gate-threshold GATE_CODE THRESHOLD)", key = "set-gate-threshold")
     public String setGateThreshold(String gateCode, int threshold) {
         restClient.put()

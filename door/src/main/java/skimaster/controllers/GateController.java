@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import skimaster.components.GateService;
 import skimaster.dtos.*;
 import skimaster.dtos.GateSyncDTO;
+import skimaster.exceptions.AlreadyClosedGateException;
+import skimaster.exceptions.AlreadyOpenGateException;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -56,7 +58,7 @@ public class GateController {
     @PutMapping("/alert-threshold")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void setAlertThreshold(@RequestBody @Valid AlertThresholdRequestDTO request) {
-        gateService.setAlertThreshold(request.alertThreshold());
+        gateService.updateAlertThreshold(request.alertThreshold());
     }
 
     @GetMapping("/passages/{cardId}")
@@ -82,5 +84,17 @@ public class GateController {
     @GetMapping("/passages/today")
     public List<PassageDTO> getPassagesOfToday() {
         return gateService.getTodayPassages();
+    }
+
+    @ExceptionHandler(AlreadyOpenGateException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleAlreadyOpen(AlreadyOpenGateException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+    @ExceptionHandler(AlreadyClosedGateException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleAlreadyClosed(AlreadyClosedGateException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
     }
 }

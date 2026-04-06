@@ -45,11 +45,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.8.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -62,7 +66,7 @@
             <!-- maven-surefire-plugin is designed for running unit tests and if any of the tests fail then it will fail the build immediately.
                  maven-failsafe-plugin is designed for running integration tests, and decouples failing the build if there are test failures from actually running the tests.
               Look at https://maven.apache.org/surefire/maven-surefire-plugin/examples/inclusion-exclusion.html
-             and https://maven.apache.org/surefire/maven-failsafe-plugin/examples/inclusion-exclusion.html
+             and https://maven.apache.org/surefire/maven-failsafe-plugin/examples/inflation-exclusion.html
              for patterns of classes inclusion in tests and IT (Integration tests) -->
         </plugins>
     </build>
