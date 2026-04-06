@@ -7,8 +7,6 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.web.client.RestClient;
 
-import org.springframework.web.client.HttpClientErrorException;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -29,19 +27,14 @@ public class CatalogCommands {
 
     @ShellMethod("Create a forfait offer (add-offer AGE_CATEGORY PASS_TYPE PRICE)")
     public CliForfaitOffer addOffer(String ageCategory, String passType, double price) {
-        try {
-            CliForfaitOffer created = restClient.post()
-                    .uri(BASE_URI + "/offers")
-                    .body(new CliForfaitOffer(ageCategory, passType, price))
-                    .retrieve()
-                    .body(CliForfaitOffer.class);
-            CliForfaitOffer offer = Objects.requireNonNull(created);
-            cliContext.getOffers().put(offer.getId(), offer);
-            return offer;
-        } catch (HttpClientErrorException.Conflict e) {
-            System.out.println("Offre deja existante, ignoree.");
-            return null;
-        }
+        CliForfaitOffer created = restClient.post()
+                .uri(BASE_URI + "/offers")
+                .body(new CliForfaitOffer(ageCategory, passType, price))
+                .retrieve()
+                .body(CliForfaitOffer.class);
+        CliForfaitOffer offer = Objects.requireNonNull(created);
+        cliContext.getOffers().put(offer.getId(), offer);
+        return offer;
     }
 
     @ShellMethod("Create a product from a comma-separated list of offer ids (add-product OFFER_IDS_CSV REDUCTION)")

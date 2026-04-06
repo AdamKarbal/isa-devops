@@ -36,69 +36,41 @@ echo ===_E._SEUIL_A_3_PASSAGES_PAR_HEURE_POUR_GATE-1_===
 set-alert-threshold gate-1 3
 list-alert-thresholds
 
-echo ===_PARTIE_3B_:_VERIFICATION_ENVOI_AUTOMATIQUE_AUX_DISPLAYS_===
+echo ===_PARTIE_4_:_PANNEAUX_DYNAMIQUES_===
 
-echo ===_F._RESET_DISPLAYS_===
-display-clear
-display-show-all
-
-echo ===_G._FERMETURE_GATE_->MESSAGE_AUTOMATIQUE_ATTENDU_===
-close-gate gate-1
-display-show-all
-
-echo ===_H._RESET_AVANT_TEST_INCIDENT_===
-display-clear
-open-gate gate-1
-display-show-all
-
-echo ===_I._DECLENCHEMENT_INCIDENT_->MESSAGE_AUTOMATIQUE_ATTENDU_===
-report-problem EQUIPMENT_FAILURE PORTIQUE gate-1 "TEST_INCIDENT"
-display-show-all
-healthcheck
-
-echo ===_J._CLEANUP_INCIDENT_===
-resolve gate-1
-display-clear
-display-show-all
-
-echo ===_PARTIE_4_:_PANNEAUX_DYNAMIQUES_(SEQUENCE_CONTROLEE)_===
-
-echo ===_K._RESET_ET_VERIFICATION_ETAT_INITIAL_===
-display-clear
-display-show-all
-
-echo ===_L._MESSAGE_SUR_DISPLAY-1_ET_VERIFICATION_UNICITE_===
-display-message-target display-1 "MSG_1"
+echo ===_F._MESSAGE_UNIQUEMENT_SUR_DISPLAY-1_===
+display-message-target display-1 "Piste Bleue fermee - travaux en cours"
 display-show display-1
 display-show display-2
-
-echo ===_M._MESSAGE_SUR_DISPLAY-2_ET_VERIFICATION_DIFFERENCIATION_===
-display-message-target display-2 "MSG_2"
-display-show display-1
-display-show display-2
-
-echo ===_N._MESSAGE_GLOBAL_(BROADCAST)_===
-display-message "MSG_ALL"
 display-show-all
 
-echo ===_O._EFFACEMENT_GLOBAL_===
+echo ===_G._MESSAGE_UNIQUEMENT_SUR_DISPLAY-2_===
+display-message-target display-2 "Navette gratuite depuis parking P3 disponible"
+display-show display-1
+display-show display-2
+display-show-all
+
+echo ===_H._MESSAGE_GLOBAL_SUR_LES_DEUX_PANNEAUX_===
+display-message "Affluence elevee sur Piste Bleue - Itineraire conseille : Piste Verte"
+display-show display-1
+display-show display-2
+display-show-all
+
+echo ===_I._EFFACEMENT_DISPLAY-1_SEULEMENT_===
+list-displays
 display-clear
 display-show-all
 
 echo ===_PARTIE_5_:_FLUX_ET_FERMETURE_AUTOMATIQUE_AU_SEUIL_===
 
-echo ===_P._SYNCHRONISATION_DES_BADGES_AUTORISES_===
+echo ===_I._SYNCHRONISATION_DES_BADGES_AUTORISES_===
 sync-gates
 
-echo ===_Q._PASSAGE_1_:_ACCEPTE,_SEUIL_NON_ATTEINT_===
+echo ===_J._PASSAGE_1_:_ACCEPTE,_SEUIL_NON_ATTEINT_===
 door-pass 1238969831 door-1
 list-alert-thresholds
 
-echo ===_R._PASSAGE_2_:_ACCEPTE,_SEUIL_NON_ATTEINT_===
-door-pass 1238969831 door-1
-list-alert-thresholds
-
-echo ===_S._PASSAGE_3_:_SEUIL_ATTEINT_(3/HEURE)_->_FERMETURE_AUTOMATIQUE_===
+echo ===_K._PASSAGE_2_:_ACCEPTE,_SEUIL_NON_ATTEINT_===
 door-pass 1238969831 door-1
 list-alert-thresholds
 

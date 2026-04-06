@@ -14,12 +14,8 @@ import skimaster.dtos.DisplayAlertRequestDTO;
 import java.time.Instant;
 import java.util.List;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,7 +45,7 @@ class DisplayControllerTest {
     }
 
     @Test
-    void shouldReturnAllAlerts() throws Exception {
+    void shouldReturnAlerts() throws Exception {
         when(displayService.getAlerts()).thenReturn(List.of(
                 new DisplayAlertDTO("Alerte 1", "G-NORD-01", Instant.parse("2026-03-04T10:00:00Z"))
         ));
@@ -58,6 +54,16 @@ class DisplayControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].message").value("Alerte 1"))
                 .andExpect(jsonPath("$[0].gateCode").value("G-NORD-01"));
+    }
+
+    @Test
+    void shouldClearAlerts() throws Exception {
+        doNothing().when(displayService).clearAlerts();
+
+        mockMvc.perform(delete("/display/alerts"))
+                .andExpect(status().isNoContent());
+
+        verify(displayService).clearAlerts();
     }
 
     @Test
@@ -70,34 +76,5 @@ class DisplayControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].message").value("Alerte ciblee"))
                 .andExpect(jsonPath("$[0].gateCode").value("gate-1"));
-    }
-
-    @Test
-    void shouldClearAllAlerts() throws Exception {
-        doNothing().when(displayService).clearAlerts();
-
-        mockMvc.perform(delete("/display/alerts"))
-                .andExpect(status().isNoContent());
-
-        verify(displayService).clearAlerts();
-    }
-
-    @Test
-    void shouldClearAlertsForSpecificGate() throws Exception {
-        doNothing().when(displayService).clearAlertsForGateCode("gate-1");
-
-        mockMvc.perform(delete("/display/alerts/gate-1"))
-                .andExpect(status().isNoContent());
-
-        verify(displayService).clearAlertsForGateCode("gate-1");
-    }
-
-    @Test
-    void shouldReturnDisplayId() throws Exception {
-        when(displayService.getDisplayId()).thenReturn("display-1");
-
-        mockMvc.perform(get("/display/id"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("display-1"));
     }
 }

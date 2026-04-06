@@ -1,8 +1,10 @@
 package fr.univcotedazur.skimaster.cli.commands;
 
+import fr.univcotedazur.skimaster.cli.CliContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -27,25 +29,32 @@ class AdminCommandsTest {
         RestClient.Builder builder = RestClient.builder();
         mockServer = MockRestServiceServer.bindTo(builder).build();
         RestClient restClient = builder.build();
+
         adminCommands = new AdminCommands(restClient);
     }
 
     @Test
     void shouldSendPostRequestToOpenGate() {
-        mockServer.expect(requestTo("/admin/gate-1/open"))
+        String gateCode = "gate-1";
+
+        mockServer.expect(requestTo("/admin/" + gateCode + "/open"))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withNoContent());
 
-        adminCommands.openGate("gate-1");
+
+        adminCommands.openGate(gateCode);
+
 
         mockServer.verify();
     }
 
     @Test
     void shouldFetchAndDisplayAlerts() {
+        String jsonResponse = "[\"[FERMANT] Incident 1\", \"[NON FERMANT] Incident 2\"]";
+
         mockServer.expect(requestTo("/admin/alerts"))
                 .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess("[\"[FERMANT] Incident 1\", \"[NON FERMANT] Incident 2\"]", MediaType.APPLICATION_JSON));
+                .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
         adminCommands.checkGates();
 

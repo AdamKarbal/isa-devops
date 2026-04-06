@@ -1,4 +1,4 @@
-Feature: Signalement des incidents
+Feature: Résolution d'incidents par l'admin
   En tant qu'administrateur, je veux résoudre des incidents pour
   maintenir la station.
 
