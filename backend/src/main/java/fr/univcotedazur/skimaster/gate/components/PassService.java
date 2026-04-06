@@ -2,18 +2,17 @@ package fr.univcotedazur.skimaster.gate.components;
 
 import fr.univcotedazur.skimaster.cashier.interfaces.InvoiceCreator;
 import fr.univcotedazur.skimaster.cashier.interfaces.InvoiceFinder;
-import fr.univcotedazur.skimaster.cashier.entites.Invoice;
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
+import fr.univcotedazur.skimaster.forfait.entities.Forfait;
 import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
-import fr.univcotedazur.skimaster.order.entities.Order;
-import fr.univcotedazur.skimaster.order.repositories.OrderRepository;
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
 import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.gate.interfaces.AccessTreatment;
 import fr.univcotedazur.skimaster.gate.repositories.PassageRepository;
-import fr.univcotedazur.skimaster.forfait.entities.Forfait;
+import fr.univcotedazur.skimaster.order.entities.Order;
+import fr.univcotedazur.skimaster.order.repositories.OrderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,6 @@ public class PassService implements AccessTreatment {
     private static final Logger LOG = LoggerFactory.getLogger(PassService.class);
 
     private final FFinder forfaitFinder;
-    private final Portier portier;
     private final InvoiceFinder invoiceFinder;
     private final CustomerFinder customerFinder;
     private final InvoiceCreator invoiceCreator;
@@ -38,7 +36,7 @@ public class PassService implements AccessTreatment {
     private final PassageRepository passageRepository;
     private final TurnstileProxy turnstileProxy;
 
-    public PassService(FFinder forfaitFinder, Portier portier,
+    public PassService(FFinder forfaitFinder,
                        InvoiceFinder invoiceFinder,
                        CustomerFinder customerFinder,
                        InvoiceCreator invoiceCreator,
@@ -46,7 +44,6 @@ public class PassService implements AccessTreatment {
                        PassageRepository passageRepository,
                        TurnstileProxy turnstileProxy) {
         this.forfaitFinder = forfaitFinder;
-        this.portier = portier;
         this.invoiceFinder = invoiceFinder;
         this.customerFinder = customerFinder;
         this.invoiceCreator = invoiceCreator;
@@ -57,19 +54,23 @@ public class PassService implements AccessTreatment {
 
     @Override
     public void pushAuthorizedBadges() {
-        List<Long> authorizedIds = forfaitFinder.findAllForfaits().stream()
+        List<Long> authorizedNfcCards = forfaitFinder.findAllForfaits().stream()
                 .filter(f -> !f.getValidDate().isBefore(LocalDate.now()))
                 .map(Forfait::getCustomerId)
                 .distinct()
+                .map(customerId -> customerFinder.findById(customerId))
+                .filter(java.util.Optional::isPresent)
+                .map(java.util.Optional::get)
+                .map(customer -> Long.parseLong(customer.getCreditCard()))
                 .toList();
 
-        LOG.info("LOGIC: Pushing {} IDs to Portier for broadcast", authorizedIds.size());
-        portier.syncAllGates(authorizedIds);
+        LOG.info("LOGIC: Pushing {} NFC card IDs to gates", authorizedNfcCards.size());
+        turnstileProxy.syncAllGates(authorizedNfcCards);
     }
 
     @Transactional
     public void collectAndProcessAllPassages() {
-        List<Passage> allPassengers = portier.collectPassagesFromAllGates();
+        List<Passage> allPassengers = turnstileProxy.collectPassagesFromAllGates();
         LOG.info("LOGIC: Received {} total passages from Portier", allPassengers.size());
         processReceivedPassages(allPassengers);
     }

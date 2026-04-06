@@ -1,2 +1,5 @@
 server:
-  port: 8083
+  port: ${SERVER_PORT:8083}
+
+display:
+  id: ${DISPLAY_ID:display-default}

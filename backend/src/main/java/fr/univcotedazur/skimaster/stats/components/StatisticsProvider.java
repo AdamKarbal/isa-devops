@@ -2,6 +2,7 @@ package fr.univcotedazur.skimaster.stats.components;
 
 import fr.univcotedazur.skimaster.forfait.components.ForfaitRegistry;
 import fr.univcotedazur.skimaster.gate.components.PassageRegistry;
+import fr.univcotedazur.skimaster.gate.components.Portier;
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
 import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.stats.interfaces.AnalyticsProvider;

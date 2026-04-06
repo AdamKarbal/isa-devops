@@ -2,7 +2,6 @@ package fr.univcotedazur.skimaster.cucumber.stats;
 
 import fr.univcotedazur.skimaster.gate.connectors.TurnstileProxy;
 import fr.univcotedazur.skimaster.gate.entities.Passage;
-import fr.univcotedazur.skimaster.gate.exceptions.NoGateExistentException;
 import fr.univcotedazur.skimaster.gate.repositories.PassageRepository;
 import fr.univcotedazur.skimaster.stats.dtos.DailyReportDTO;
 import fr.univcotedazur.skimaster.stats.interfaces.AnalyticsProducer;

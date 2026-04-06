@@ -12,34 +12,40 @@ public class Incident {
     @Id
     @GeneratedValue
     private Long id;
+
     @NotNull
     private IncidentType type;
+
     @NotNull
     private IncidentTargetType targetType;
+
     private String targetCode;
+
     @NotNull
     private String description;
+
     @NotNull
     private LocalDateTime time;
 
-    public Incident(IncidentType type, IncidentTargetType targetType, String targetCode, String description, LocalDateTime time) {
+    private boolean resolved;
+
+    private Boolean closes;
+
+    public Incident(IncidentType type, IncidentTargetType targetType, String targetCode, String description, LocalDateTime time, Boolean closes) {
         this.type = type;
         this.targetType = targetType;
         this.targetCode = targetCode;
         this.description = description;
-        this.time = LocalDateTime.now();
+        this.time = time;
+        this.resolved = false;
+        this.closes = closes;
     }
 
-    public Incident(IncidentType type, String description) {
-        this(type, IncidentTargetType.PISTE, "UNKNOWN", description, LocalDateTime.now());
-    }
-
-    public Incident(IncidentType type, String description, LocalDateTime time) {
-        this(type, IncidentTargetType.PISTE, "UNKNOWN", description, time);
+    public Incident(IncidentType type, IncidentTargetType targetType, String targetCode, String description, Boolean closes) {
+        this(type, targetType, targetCode, description, LocalDateTime.now(), closes);
     }
 
     public Incident() {
-
     }
 
     public @NotNull IncidentType getType() {
@@ -67,16 +73,47 @@ public class Incident {
     }
 
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Incident)) return false;
 
         Incident incident = (Incident) o;
-        return time != null && Objects.equals(time, incident.time);
+
+        return type == incident.getType() &&
+                targetType == incident.getTargetType() &&
+                Objects.equals(targetCode, incident.getTargetCode()) &&
+                Objects.equals(time, incident.getTime());
     }
 
-    @Override public int hashCode(){
-        return Objects.hash(time);
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, targetType, targetCode, time);
+    }
+
+    public void resolve(){
+        this.resolved = true;
+    }
+
+    public boolean isResolved(){
+        return this.resolved;
+    }
+
+    public Boolean isClosing(){
+        return this.closes;
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        if(this.isClosing()) sb.append("[FERMANT]");
+        else sb.append("[NON FERMANT]");
+        sb.append("Incident à ")
+                .append(this.targetCode)
+                .append(" : ")
+                .append(this.type)
+                .append(" - ")
+                .append(this.description);
+        return sb.toString();
     }
 }

@@ -1,5 +1,6 @@
 package skimaster.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.ErrorResponseException;
@@ -7,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import skimaster.components.GateService;
 import skimaster.dtos.*;
 import skimaster.dtos.GateSyncDTO;
+import skimaster.exceptions.AlreadyClosedGateException;
+import skimaster.exceptions.AlreadyOpenGateException;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -52,6 +55,12 @@ public class GateController {
         return gateService.getStatus();
     }
 
+    @PutMapping("/alert-threshold")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void setAlertThreshold(@RequestBody @Valid AlertThresholdRequestDTO request) {
+        gateService.updateAlertThreshold(request.alertThreshold());
+    }
+
     @GetMapping("/passages/{cardId}")
     public List<PassageDTO> getPassages(@PathVariable("cardId") Long cardId) {
         return gateService.getPassagesById(cardId);
@@ -75,5 +84,17 @@ public class GateController {
     @GetMapping("/passages/today")
     public List<PassageDTO> getPassagesOfToday() {
         return gateService.getTodayPassages();
+    }
+
+    @ExceptionHandler(AlreadyOpenGateException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleAlreadyOpen(AlreadyOpenGateException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+    @ExceptionHandler(AlreadyClosedGateException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ProblemDetail handleAlreadyClosed(AlreadyClosedGateException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
     }
 }

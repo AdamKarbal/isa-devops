@@ -8,5 +8,7 @@ public record IncidentDTO(
         String description,
         LocalDateTime time,
         IncidentTargetType targetType,
-        String targetCode
+        String targetCode,
+        Boolean closes
 ) { }
+

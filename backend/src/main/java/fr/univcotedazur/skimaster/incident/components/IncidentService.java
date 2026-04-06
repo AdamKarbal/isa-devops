@@ -1,12 +1,12 @@
 package fr.univcotedazur.skimaster.incident.components;
 
-import fr.univcotedazur.skimaster.incident.entities.Incident;
-import fr.univcotedazur.skimaster.incident.entities.IncidentType;
-import fr.univcotedazur.skimaster.incident.entities.IncidentTargetType;
+import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import fr.univcotedazur.skimaster.incident.dto.IncidentDTO;
+import fr.univcotedazur.skimaster.incident.entities.Incident;
+import fr.univcotedazur.skimaster.incident.entities.IncidentTargetType;
+import fr.univcotedazur.skimaster.incident.entities.IncidentType;
 import fr.univcotedazur.skimaster.incident.interfaces.DisplayNotifier;
 import fr.univcotedazur.skimaster.incident.repositories.IncidentRepository;
-import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +19,13 @@ public class IncidentService {
     private final IncidentRepository repository;
     private final ManualGateControl manualGateControl;
     private final DisplayNotifier displayNotifier;
+    //private final FutureOrPresentValidatorForCalendar futureOrPresentValidatorForCalendar;
 
     public IncidentService(IncidentRepository repository, ManualGateControl manualGateControl, DisplayNotifier displayNotifier) {
         this.repository = repository;
         this.manualGateControl = manualGateControl;
         this.displayNotifier = displayNotifier;
+        //this.futureOrPresentValidatorForCalendar = futureOrPresentValidatorForCalendar;
     }
 
     public Optional<Incident> findFirstByOrderByTimeDesc() {
@@ -31,18 +33,13 @@ public class IncidentService {
     }
 
     @Transactional
-    public void saveIncident(Incident incident){
-        repository.save(incident);
-    }
-
-    @Transactional
     public void reportIncident(IncidentDTO dto) {
         IncidentTargetType targetType = dto.targetType() == null ? IncidentTargetType.PISTE : dto.targetType();
         String targetCode = (dto.targetCode() == null || dto.targetCode().isBlank()) ? "UNKNOWN" : dto.targetCode();
-        Incident incident = new Incident(dto.type(), targetType, targetCode, dto.description(), dto.time());
+        Incident incident = new Incident(dto.type(), targetType, targetCode, dto.description(), dto.time(), dto.closes());
         repository.save(incident);
 
-        if (targetType == IncidentTargetType.PORTIQUE && !"UNKNOWN".equals(targetCode)) {
+        if (targetType == IncidentTargetType.PORTIQUE && !"UNKNOWN".equals(targetCode) && Boolean.TRUE.equals(incident.isClosing())) {
             manualGateControl.closeGate(targetCode);
         }
 
@@ -59,6 +56,21 @@ public class IncidentService {
         return repository.findByType(type);
     }
 
+    @Transactional
+    public boolean hasUnresolvedClosingIncidents(String code) {
+        return !repository.findByTargetCodeAndResolvedFalseAndClosesTrue(code).isEmpty();
+    }
+
+    @Transactional
+    public List<Incident> findPendingIncidents(){
+        return repository.findByResolvedFalse();
+    }
+
+    @Transactional
+    public boolean hasUnresolvedIncidents(String code) {
+        return !repository.findByTargetCodeAndResolvedFalse(code).isEmpty();
+    }
+
     private String buildDisplayMessage(Incident incident) {
         return "[ALERTE] " + incident.getType() + " sur " + incident.getTargetType() + " " + incident.getTargetCode() + " : " + incident.getDescription();
     }
@@ -69,4 +81,14 @@ public class IncidentService {
         }
         return "AUCUNE";
     }
+
+    @Transactional
+    public void resolveIncidentsForGate(String targetCode){
+        List<Incident> unresolved = repository.findByTargetCodeAndResolvedFalse(targetCode);
+        for (Incident incident : unresolved) {
+            incident.resolve();
+        }
+        repository.findByTargetCodeAndResolvedFalse(targetCode);
+    }
+
 }

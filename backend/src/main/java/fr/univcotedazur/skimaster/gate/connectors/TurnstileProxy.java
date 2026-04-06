@@ -1,16 +1,17 @@
 package fr.univcotedazur.skimaster.gate.connectors;
 
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateAlertThresholdUpdateDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateSyncDTO;
 import fr.univcotedazur.skimaster.gate.connectors.externaldto.PassageDTO;
 import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.gate.exceptions.NoGateExistentException;
 import fr.univcotedazur.skimaster.gate.repositories.PassageRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.Arrays;
@@ -22,8 +23,8 @@ import java.util.Objects;
 public class TurnstileProxy {
 
     private final RestClient.Builder restClientBuilder;
-    private final PassageRepository passageRepository;
     private final Map<String, String> gateUrls;
+    private final PassageRepository passageRepository;
 
     public TurnstileProxy(RestClient.Builder builder, PassageRepository passageRepository, Environment environment) {
         this.restClientBuilder = builder;
@@ -47,6 +48,17 @@ public class TurnstileProxy {
         }
     }
 
+    public List<Passage> collectPassagesFromAllGates(){
+        return gateUrls.entrySet().stream()
+                .flatMap(entry -> {
+                    String gateId = entry.getKey();
+                    String url = entry.getValue();
+                    return getPassagesofToday(url).stream()
+                            .map(dto -> new Passage(dto.nfcCardId(), dto.timestamp(), gateId));
+                })
+                .toList();
+    }
+
     public List<PassageDTO> getPassagesofTodayForGate(String code) {
         String targetUrl = getUrl(code);
 
@@ -56,12 +68,6 @@ public class TurnstileProxy {
             System.out.println(e);
             return null;
         }
-    }
-
-    private String getUrl(String code){
-        String url = gateUrls.get(code);
-        if (url == null) throw new NoGateExistentException("Code de porte inconnu : " + code);
-        return url;
     }
 
     public java.util.Set<String> getAllGateIds() {
@@ -89,8 +95,8 @@ public class TurnstileProxy {
             if (doorPassages != null) {
                 List<Passage> passagesToSave = Arrays.stream(doorPassages)
                         .map(dto ->{
-                                System.out.println("DTO reçu -> ID: " + dto.nfcCardId() + " Date: " + dto.timestamp());
-                                return new Passage(dto.nfcCardId(), dto.timestamp(),gateId);
+                            System.out.println("DTO reçu -> ID: " + dto.nfcCardId() + " Date: " + dto.timestamp());
+                            return new Passage(dto.nfcCardId(), dto.timestamp(),gateId);
                         }).toList();
 
                 // Note: You might want to check for duplicates before saving
@@ -99,24 +105,19 @@ public class TurnstileProxy {
             }
         }catch(Exception e){
             System.out.println(e);
+        }
     }
-    }
+
 
     public void syncAllGates(List<Long> cardIds){
         gateUrls.values().forEach(url -> syncAuthorizedCards(url, cardIds));
     }
 
-    public List<PassageDTO> getPassagesofToday() {
-        try{
-            return Arrays.stream(Objects.requireNonNull(restClientBuilder.build().get().uri("/gate/passages/today").retrieve().body(PassageDTO[].class))).toList();
-        } catch (Exception e) {
-            System.out.println(e);
-            return null;
-        }
+    public void sendOrder(String code, String order) {
+        sendOrderToUrl(getUrl(code), order);
     }
 
-
-    public void sendOrder(String baseUrl, String order) {
+    private void sendOrderToUrl(String baseUrl, String order) {
         restClientBuilder.baseUrl(baseUrl).build()
                 .post()
                 .uri("/gate" + order)
@@ -124,8 +125,10 @@ public class TurnstileProxy {
                 .toBodilessEntity();
     }
 
-    public GateStatusResponseDTO getGateStatus(String baseUrl) {
-        return restClientBuilder.baseUrl(baseUrl).build()
+    public GateStatusResponseDTO getGateStatus(String code){
+        String targetUrl = getUrl(code);
+
+        return restClientBuilder.baseUrl(targetUrl).build()
                 .get()
                 .uri("/gate/status")
                 .retrieve()
@@ -154,5 +157,44 @@ public class TurnstileProxy {
         }
     }
 
+    public void updateAlertThreshold(String code, int alertThreshold) {
+        String targetUrl = getUrl(code);
+
+        restClientBuilder.baseUrl(targetUrl).build()
+                .put()
+                .uri("/gate/alert-threshold")
+                .body(new GateAlertThresholdUpdateDTO(alertThreshold))
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+    public List<String> getConfiguredGateCodes() {
+        return gateUrls.keySet().stream().sorted().toList();
+    }
+
+    public void sendOrderAll(String order){
+        gateUrls.values().forEach(url -> {
+            try {
+                sendOrderToUrl(url, order);
+            } catch (HttpClientErrorException.Conflict ignored) {
+                // Gate already in requested state, skip
+            }
+        });
+    }
+
+    public void setAlertThreshold(String baseUrl, int alertThreshold) {
+        restClientBuilder.baseUrl(baseUrl).build()
+                .put()
+                .uri("/gate/alert-threshold")
+                .body(new GateAlertThresholdUpdateDTO(alertThreshold))
+                .retrieve()
+                .toBodilessEntity();
+    }
+
+    private String getUrl(String code){
+        String url = gateUrls.get(code);
+        if (url == null) throw new NoGateExistentException("Code de porte inconnu : " + code);
+        return url;
+    }
 
 }
