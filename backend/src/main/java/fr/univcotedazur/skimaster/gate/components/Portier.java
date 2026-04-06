@@ -57,6 +57,7 @@ public class Portier implements ManualGateControl, PortierInformation {
         return turnstileProxy.syncOpeningTimeByGate(code);
     }
 
+    @Override
     public void setAlertThreshold(String code, int alertThreshold) {
         turnstileProxy.updateAlertThreshold(code, alertThreshold);
     }
