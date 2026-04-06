@@ -1,5 +1,53 @@
 # Changelog
 
+# [2.6.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.5.0...v2.6.0) (2026-04-06)
+
+
+### Bug Fixes
+
+* **back, display, cli:** correction de code défaillant à cause du rebase récent ([da2bd11](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/da2bd1169e61d86a75e76c8f5e8b86d7441c411b))
+* **back:** add missing override annotation ([dd1f987](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/dd1f987cf3269501fbcf633b46be2c2d60a7e301))
+* **back:** add missing override annotation ([26eb5fa](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/26eb5faf6c67f083a42ab82ea9955c8334a0f145))
+* **back:** added missing override ([4bbe7a1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/4bbe7a1edb3047cab7b9ae5dfbcf08491f1d4aa9))
+* **back:** added missing override ([b973431](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/b973431674ea4b3415cb86a18ad5bef49c2f1c63))
+
+
+### Features
+
+* ajout de plus de test dans demo.txt ([18a80c5](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/18a80c566dd7e665874bfebdf0f7c8f363a0b6cb))
+* ajout de plus de test dans demo.txt ([5e71c5d](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/5e71c5da7d3c6711d369389a5715c9594b8609de))
+* ajout denvoie de message au display, dun nouveau display, et gestion des messages ([e3d9d73](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/e3d9d73773e7f0ea2401e88e73f3a1538199a787))
+* ajout denvoie de message au display, dun nouveau display, et gestion des messages ([d654368](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/d6543684a577960dff77b63b2785559edf869951))
+* **back:** adaptation de code de passages aux services de gates ([9c8b621](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/9c8b621268e906e506e0ff440f445524b053eb10))
+* **back:** adaptation de code de passages aux services de gates ([1678afe](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/1678afe020ea3d19d2d40736a5df1eefaa47e7e1))
+* **back:** ajout de l'attribut fermant d'un incident ([cd443c5](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/cd443c5d4ca0e2a28807ffba1cf68b25a4b3f78d))
+* **back:** ajout de l'attribut fermant d'un incident ([f008fa9](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/f008fa93fcd65b717e6540d406c91b9108ae501e))
+* **back:** ajout test cucumber incidents ([fc5f52c](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/fc5f52c181910663841618212f0f940e12c51274))
+* **backend:** ajout de test IT scenario administrateur ([d744ab7](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/d744ab71dceebb1f37a6abbb2df780399196fe1d))
+* **backend:** ajout des commandes de l'admin pour surveiller les incident, les résoudre et réouvrir ([fe18f3b](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/fe18f3b8638f6e6e63c083986ca69114a50bb3d5))
+* **backend:** ajout des commandes de l'admin pour surveiller les incident, les résoudre et réouvrir ([e4a2682](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/e4a2682ee7b8d45ae63db4f7d95759981b4b0da7))
+* **backend:** ajout des commandes de l'admin pour surveiller les incident, les résoudre et réouvrir ([58350a7](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/58350a79fc14a141580ace48cefcb6561582b90a))
+* **backend:** ajout des commandes de l'admin pour surveiller les incident, les résoudre et réouvrir ([342d9dc](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/342d9dce201b6a551ac969e6891c71bdb2479821))
+* **back:** test d'intégration report -> resolve par admin -> réouverture ([6fee03e](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/6fee03efbeef2f51417a9c410b31b91fdc9c47a7))
+* **back:** test d'intégration report -> resolve par admin -> réouverture ([8f0da43](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/8f0da435c4eb6261e3a2d5716559f0f2d232426f))
+* branche ([6a056a5](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/6a056a5e0e1f2c33b35ca56d2ec864515670fd3b))
+* branche ([6d38e95](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/6d38e95c6c6d64346198f62a4bd78f65613d0549))
+* branche ([36c5903](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/36c5903297ead285b0b261beb800059ce9d4bc68))
+* **cli:** ajout de commandes cli admin pour visualiser les stats TR ([5e1affb](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/5e1affb7cda56a024304d53142536893478c0e03))
+* **cli:** ajout de commandes cli admin pour visualiser les stats TR ([af8c3f1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/af8c3f1dde2991016c3b49c4d695233e8135d324))
+* **cli:** demo_portique_admin, service banque commenté dans le DC ([c99639e](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/c99639ed329275712c45b7b7d535bee820044757))
+* **cli:** demo_portique_admin, service banque commenté dans le DC ([f34952e](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/f34952e011a4b10e5a3297f62dbf135ae9c3aa9f))
+* **cli:** dernier commit de la branche ([1a9c544](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/1a9c544aea75da2d9a9f66afffa6b20e85aeb951))
+* **door:** rebase du travail de feature/stat au niveau de GateService ([4ca3bce](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/4ca3bce2dfa29a653db1a96d58af44b8d07c4732))
+* **door:** rebase du travail de feature/stat au niveau de GateService ([b30be4b](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/b30be4b0dfa7f93e494932ddb6fa46165d1ee690))
+* fix des displays et ajout de test IT pour la gestion des displays par ladmin ([45c9ec7](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/45c9ec739248ba57065ff0a97f9d6c37e85f4d4d))
+* fixe des errerus pour la gestion des tresholds ([b152783](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/b1527830bf27878bc77f9227f8d6e02bfafaf875))
+* gestion des seuils d'alertes ([415710f](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/415710f0953f3e073b9e507de313d214b7568abc))
+* gestion des seuils d'alertes ([f88ed81](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/f88ed8159e50f271bddce8bd58a427eeb55748f9))
+* modification de alert treshold, maj toutes les heures ([1bf0174](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/1bf017411f313a2d9bc920a87f1041008df5f819))
+* sendDisplay message a tous le sdisplay ([87cfb65](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/87cfb65f59cf8a3a1e9f6fd48727132ad800a493))
+* sendDisplay message a tous le sdisplay ([fdda16f](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/fdda16febcd8e52a3df8452a423f6ec586da2222))
+
 # [2.5.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.4.0...v2.5.0) (2026-04-05)
 
 
