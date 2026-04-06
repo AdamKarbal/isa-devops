@@ -92,7 +92,7 @@ class AdminCommandsTest {
 
     @Test
     void setAlertThresholdCallsBackendEndpoint() {
-        mockServer.expect(requestTo("/gates/gate-1/alert-threshold"))
+        mockServer.expect(requestTo("/admin/gates/gate-1/alert-threshold"))
                 .andExpect(method(HttpMethod.PUT))
                 .andExpect(content().json("{\"alertThreshold\":42}"))
                 .andRespond(withSuccess("{\"gateId\":\"gate-1\",\"status\":\"OPEN\",\"alertThreshold\":42}", MediaType.APPLICATION_JSON));
@@ -105,7 +105,7 @@ class AdminCommandsTest {
 
     @Test
     void listAlertThresholdsReadsBackendStatuses() {
-        mockServer.expect(requestTo("/gates/status"))
+        mockServer.expect(requestTo("/admin/gates/status"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess("[" +
                         "{\"gateId\":\"gate-1\",\"status\":\"OPEN\",\"alertThreshold\":50}," +

@@ -3,6 +3,8 @@ package fr.univcotedazur.skimaster.admin.controllers;
 import fr.univcotedazur.skimaster.admin.components.AdminService;
 import fr.univcotedazur.skimaster.admin.dto.AdminDisplayMessageDTO;
 import fr.univcotedazur.skimaster.admin.dto.DisplayAlertDTO;
+import fr.univcotedazur.skimaster.gate.dtos.GateAlertThresholdRequestDTO;
+import fr.univcotedazur.skimaster.gate.dtos.GateMonitoringStatusDTO;
 import fr.univcotedazur.skimaster.incident.entities.Incident;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -105,6 +108,17 @@ public class AdminController {
     @GetMapping("/display/list")
     public List<String> listDisplays() {
         return this.adminService.getDisplayList();
+    }
+
+    @GetMapping("/gates/status")
+    public ResponseEntity<List<GateMonitoringStatusDTO>> getAllGateStatuses() {
+        return ResponseEntity.ok(this.adminService.getAllGateStatuses());
+    }
+
+    @PutMapping("/gates/{gateCode}/alert-threshold")
+    public ResponseEntity<GateMonitoringStatusDTO> setAlertThreshold(@PathVariable String gateCode,
+                                                                     @Valid @RequestBody GateAlertThresholdRequestDTO request) {
+        return ResponseEntity.ok(this.adminService.updateAlertThreshold(gateCode, request.alertThreshold()));
     }
 
     @ExceptionHandler(HttpClientErrorException.class)

@@ -3,6 +3,8 @@ package fr.univcotedazur.skimaster.admin.components;
 import fr.univcotedazur.skimaster.admin.exceptions.StillUnresolvedIncident;
 import fr.univcotedazur.skimaster.admin.interfaces.AdminOperations;
 import fr.univcotedazur.skimaster.admin.dto.DisplayAlertDTO;
+import fr.univcotedazur.skimaster.gate.connectors.externaldto.GateStatusResponseDTO;
+import fr.univcotedazur.skimaster.gate.dtos.GateMonitoringStatusDTO;
 import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import fr.univcotedazur.skimaster.inbox.interfaces.MessageInput;
 import fr.univcotedazur.skimaster.incident.components.IncidentService;
@@ -10,7 +12,6 @@ import fr.univcotedazur.skimaster.incident.entities.Incident;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -84,6 +85,22 @@ public class AdminService implements AdminOperations {
 
     public List<String> getDisplayList() {
         return displayAdminProxy.getDisplayList();
+    }
+
+    public List<GateMonitoringStatusDTO> getAllGateStatuses() {
+        return manualGateControl.getConfiguredGateCodes().stream()
+                .map(code -> toMonitoringStatus(manualGateControl.gateStatus(code), code))
+                .toList();
+    }
+
+    public GateMonitoringStatusDTO updateAlertThreshold(String code, int alertThreshold) {
+        manualGateControl.setAlertThreshold(code, alertThreshold);
+        return toMonitoringStatus(manualGateControl.gateStatus(code), code);
+    }
+
+    private static GateMonitoringStatusDTO toMonitoringStatus(GateStatusResponseDTO status, String fallbackCode) {
+        String gateId = (status.gateId() == null || status.gateId().isBlank()) ? fallbackCode : status.gateId();
+        return new GateMonitoringStatusDTO(gateId, status.status(), status.alertThreshold());
     }
 
     @Override

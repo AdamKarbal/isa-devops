@@ -11,7 +11,7 @@ import java.util.List;
 @ShellComponent
 public class AdminCommands {
     private static final String BASE_URI = "/admin";
-    private static final String GATE_BASE_URI = "/gates";
+    private static final String GATE_BASE_URI = "/admin/gates";
     private static final String STATS_BASE_URI = "/stats";
 
     private final RestClient restClient;
