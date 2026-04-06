@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.Arrays;
@@ -172,7 +173,13 @@ public class TurnstileProxy {
     }
 
     public void sendOrderAll(String order){
-        gateUrls.values().forEach(url -> sendOrderToUrl(url, order));
+        gateUrls.values().forEach(url -> {
+            try {
+                sendOrderToUrl(url, order);
+            } catch (HttpClientErrorException.Conflict ignored) {
+                // Gate already in requested state, skip
+            }
+        });
     }
 
     public void setAlertThreshold(String baseUrl, int alertThreshold) {

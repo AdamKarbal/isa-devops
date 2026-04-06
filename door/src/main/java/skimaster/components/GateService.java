@@ -85,7 +85,6 @@ public class GateService {
         if (gate.getStatus() == GateStatus.CLOSED) throw new AlreadyClosedGateException("Portique déjà fermé.");
         gate.setStatus(GateStatus.CLOSED);
         closingTimes.add(LocalTime.now());
-        displayNotifierClient.publishAlert("Portique " + gate.getGateId() + " ferme", gate.getGateId());
     }
 
     public void updateAlertThreshold(int alertThreshold) {

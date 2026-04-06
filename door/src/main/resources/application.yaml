@@ -8,3 +8,5 @@ gate:
 display:
   host:
     baseurl: http://${DISPLAY_WITH_PORT:localhost:8083}
+  host2:
+    baseurl: http://${DISPLAY_2_WITH_PORT:localhost:8087}

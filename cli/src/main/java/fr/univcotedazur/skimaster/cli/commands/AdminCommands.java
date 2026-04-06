@@ -22,12 +22,15 @@ public class AdminCommands {
 
     @ShellMethod(key = "close-gate", value = "Fermer un portique (close-gate CODE)")
     public String closeGate(String code) {
-        this.restClient.post()
-                .uri(BASE_URI + "/" + code + "/close")
-                .retrieve()
-                .toBodilessEntity();
-
-        return "Le portique a été fermé.";
+        try {
+            this.restClient.post()
+                    .uri(BASE_URI + "/" + code + "/close")
+                    .retrieve()
+                    .toBodilessEntity();
+            return "Le portique a été fermé.";
+        } catch (org.springframework.web.client.HttpClientErrorException.Conflict e) {
+            return "Le portique " + code + " est deja ferme.";
+        }
     }
 
     @ShellMethod(key = "open-gate", value = "Ouvrir un portique (open-gate CODE)")

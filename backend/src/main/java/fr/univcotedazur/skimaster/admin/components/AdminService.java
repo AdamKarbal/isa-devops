@@ -43,6 +43,7 @@ public class AdminService implements AdminOperations {
             manualGateControl.openGate(code);
         } else if (Objects.equals(status, "CLOSE")) {
             manualGateControl.closeGate(code);
+            displayAdminProxy.sendMessage("Portique " + code + " ferme", code);
         }
     }
 
@@ -83,7 +84,7 @@ public class AdminService implements AdminOperations {
     }
 
     public List<String> getDisplayList() {
-        return displayAdminProxy.getDisplayList();
+        return displayAdminProxy.getConfiguredDisplayCodes();
     }
 
     public List<GateMonitoringStatusDTO> getAllGateStatuses() {
@@ -104,8 +105,11 @@ public class AdminService implements AdminOperations {
 
     @Override
     public void resolveIncidentsForGate(String code){
+        boolean hadClosingIncident = this.incidentService.hasUnresolvedClosingIncidents(code);
         this.incidentService.resolveIncidentsForGate(code);
-        this.setStatus(code, "OPEN");
+        if (hadClosingIncident) {
+            this.setStatus(code, "OPEN");
+        }
         displayAdminProxy.clearForGate(code);
         displayAdminProxy.sendMessage("[RESOLUTION] Portique " + code + " : incident resolu, portique de nouveau operationnel.", code);
     }

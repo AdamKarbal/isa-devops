@@ -72,16 +72,14 @@ public class DisplayAdminProxy {
     }
 
     public List<DisplayAlertDTO> getAlerts(String displayCode) {
-        List<DisplayAlertDTO> all = new ArrayList<>();
-        displayUrls.values().forEach(url -> {
-            List<DisplayAlertDTO> alerts = restClientBuilder.baseUrl(url).build()
-                    .get()
-                    .uri("/display/alerts/{displayCode}", displayCode)
-                    .retrieve()
-                    .body(new ParameterizedTypeReference<List<DisplayAlertDTO>>() {});
-            if (alerts != null) all.addAll(alerts);
-        });
-        return all;
+        String url = displayUrls.get(displayCode);
+        if (url == null) return List.of();
+        List<DisplayAlertDTO> alerts = restClientBuilder.baseUrl(url).build()
+                .get()
+                .uri("/display/alerts")
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<DisplayAlertDTO>>() {});
+        return alerts != null ? alerts : List.of();
     }
 
     public List<String> getDisplayList() {
