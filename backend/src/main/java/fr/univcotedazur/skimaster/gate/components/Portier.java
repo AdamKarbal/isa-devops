@@ -29,6 +29,7 @@ public class Portier implements ManualGateControl, PortierInformation {
         return turnstileProxy.collectPassagesFromAllGates();
     }
 
+    @Override
     public GateStatusResponseDTO gateStatus(String code) {
         return turnstileProxy.getGateStatus(code);
     }
