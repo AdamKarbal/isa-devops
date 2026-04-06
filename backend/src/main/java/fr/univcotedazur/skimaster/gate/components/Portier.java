@@ -61,6 +61,7 @@ public class Portier implements ManualGateControl, PortierInformation {
         turnstileProxy.updateAlertThreshold(code, alertThreshold);
     }
 
+    @Override
     public List<String> getConfiguredGateCodes() {
         return turnstileProxy.getConfiguredGateCodes();
     }
