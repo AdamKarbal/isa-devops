@@ -17,7 +17,7 @@ public class GateCommands {
 
     private final RestClient restClient;
 
-    public GateCommands(RestClient restClient, CliContext cliContext) {
+    public GateCommands(RestClient restClient) {
         this.restClient = restClient;
     }
 
