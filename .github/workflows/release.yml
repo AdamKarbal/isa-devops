@@ -6,7 +6,7 @@ on:
       - prod
     types: [closed]
 
-jobs:
+jobs: acacaugdiuz
   release:
     if: github.event.pull_request.merged == true
     runs-on: self-hosted
