@@ -130,9 +130,6 @@ services:
   door-2:
     image: team-k/skimaster-door:local
     container_name: door-2
-    build:
-      context: ./door
-      dockerfile: Dockerfile
     ports:
       - "8084:8082"
     healthcheck:
@@ -154,9 +151,6 @@ services:
   door-3:
     image: team-k/skimaster-door:local
     container_name: door-3
-    build:
-      context: ./door
-      dockerfile: Dockerfile
     ports:
       - "8085:8082"
     healthcheck:
@@ -175,9 +169,6 @@ services:
 
   door-4:
     image: team-k/skimaster-door:local
-    build:
-      context: ./door
-      dockerfile: Dockerfile
     container_name: door-4
     ports:
       - "8086:8082"
@@ -216,9 +207,6 @@ services:
   display-2:
     image: team-k/skimaster-display:local
     container_name: display-2
-    build:
-      context: ./display
-      dockerfile: Dockerfile
     ports:
       - "8087:8083"
     environment:
