@@ -10,3 +10,8 @@ display:
     baseurl: http://${DISPLAY_WITH_PORT:localhost:8083}
   host2:
     baseurl: http://${DISPLAY_2_WITH_PORT:localhost:8087}
+
+logging:
+  level:
+    root: WARN
+    skimaster: INFO

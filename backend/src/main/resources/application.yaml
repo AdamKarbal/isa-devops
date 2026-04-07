@@ -39,6 +39,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-    show-sql: true
+    show-sql: false
     generate-ddl: true
     open-in-view: false
+
+logging:
+  level:
+    root: INFO
+    org.hibernate: WARN        # On ne veut que les alertes critiques de Hibernate
+    org.hibernate.SQL: OFF     # On éteint les logs SQL
+    fr.univcotedazur.skimaster: INFO
