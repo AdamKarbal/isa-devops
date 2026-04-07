@@ -12,7 +12,7 @@ list-alert-thresholds
 healthcheck
 list-displays
 
-echo ===_PARTIE_2_:_FERMETURES_PARTIELLES_ET_TOTALES_(MANUELLES)_===
+echo ===_PARTIE_2_:_FERMETURES_PARTIELLES_ET_TOTALES_MANUELLES_===
 
 echo ===_A._FERMETURE_PARTIELLE_:_UN_SEUL_PORTIQUE_===
 close-gate gate-1
@@ -30,7 +30,7 @@ echo ===_D._REOUVERTURE_GLOBALE_===
 open-all-gates
 list-alert-thresholds
 
-echo ===_PARTIE_3_:_CONFIGURATION_DE_LA_JAUGE_(MAX_PASSAGES_PAR_HEURE)_===
+echo ===_PARTIE_3_:_CONFIGURATION_DE_LA_JAUGE_MAX_PASSAGES_===
 
 echo ===_E._SEUIL_A_3_PASSAGES_PAR_HEURE_POUR_GATE-1_===
 set-alert-threshold gate-1 3
@@ -66,16 +66,16 @@ echo ===_PARTIE_5_:_FLUX_ET_FERMETURE_AUTOMATIQUE_AU_SEUIL_===
 echo ===_I._SYNCHRONISATION_DES_BADGES_AUTORISES_===
 sync-gates
 
-echo ===_J._PASSAGE_1_:_ACCEPTE,_SEUIL_NON_ATTEINT_===
-door-pass 1238969831 door-1
+echo ===_J._PASSAGE_1_:_ACCEPTE_SEUIL_NON_ATTEINT_===
+door-pass 1 door-1
 list-alert-thresholds
 
-echo ===_K._PASSAGE_2_:_ACCEPTE,_SEUIL_NON_ATTEINT_===
-door-pass 1238969831 door-1
+echo ===_K._PASSAGE_2_:_ACCEPTE_SEUIL_NON_ATTEINT_===
+door-pass 1 door-1
 list-alert-thresholds
 
-echo ===_T._PASSAGE_4_:NON_ACCEPTE,_SEUIL_ATTEINT_===
-door-pass 1238969831 door-1
+echo ===_T._PASSAGE_4_:NON_ACCEPTE_SEUIL_ATTEINT_===
+door-pass 1 door-1
 list-alert-thresholds
 
 echo ===_U._VERIFICATION_DISPLAY_:_ALERTE_SEUIL_DEPASSE_===
@@ -88,7 +88,7 @@ list-alert-thresholds
 echo ===_PARTIE_6_:_INCIDENT_ET_RESOLUTION_===
 
 echo ===_W._SIGNALEMENT_INCIDENT_NON_FERMANT_:_PAS_DE_FERMETURE_DE_PORTE_===
-report-problem EQUIPMENT_FAILURE PORTIQUE gate-1 "Anomalie mineure detectee"
+report-problem EQUIPMENT_FAILURE PORTIQUE gate-1 "Anomalie mineure detectee" false
 healthcheck
 incidents-history
 
