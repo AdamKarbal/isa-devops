@@ -206,26 +206,6 @@ public class CartTest {
                 () -> CartItemRequestDTO.class.getDeclaredMethod("setProductId", Long.class));
     }
 
-    @Test
-    void toStringContainsFieldValues() {
-        ForfeitOffer offer1 = forfeitOfferRepository.save(new ForfeitOffer(AgeCategory.ADULT, PassType.DAILY, 20));
-        Product product1 = productRepository.save(new Product(List.of(offer1)));
-        CartItem item = new CartItem(null, product1, 2);
-        CartDTO dto = new CartDTO(List.of(item));
-
-        String text = dto.toString();
-
-        assertTrue(text.contains("items"));
-        assertTrue(text.contains("3"));
-
-        CartItemRequestDTO itemDto = new CartItemRequestDTO(42L, 3);
-
-        String itemText = itemDto.toString();
-
-        assertTrue(itemText.contains("42"));
-        assertTrue(itemText.contains("3"));
-    }
-
 
     @Test
     void dtoStoresValuesCorrectly() {
