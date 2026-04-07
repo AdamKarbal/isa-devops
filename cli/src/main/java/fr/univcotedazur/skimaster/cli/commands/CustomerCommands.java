@@ -109,7 +109,7 @@ public class CustomerCommands {
         }
     }
 
-    @ShellMethod(key = "orders", value = "List orders for a customer (orders CUSTOMER_ID)")
+    @ShellMethod(key = "customer-orders", value = "List orders for a customer (customer-orders CUSTOMER_ID)")
     public String orders(@ShellOption long customerId) {
         try {
             CliOrderCreated[] orders = restClient.get()

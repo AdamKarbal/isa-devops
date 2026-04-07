@@ -48,13 +48,20 @@ public class CartHandler implements CartProcessor, CartModifier {
 
     public Order validate(Long customerId) throws CustomerIdNotFoundException, EmptyCartException {
         Customer customer = customerFinder.retrieveCustomer(customerId);
+        LOG.info("[CART-SERVICE][CartHandler] Validation du panier pour le customer: {} (ID: {})", customer.getName(), customerId);
+
         if(customer.getCart().isEmpty()){
+            LOG.warn("[CART-SERVICE][CartHandler] Validation rater : le panier est vide {}", customer.getName());
             throw new EmptyCartException(customer.getName());
         }
+
+        double price = computeCartPrice(customer.getCart());
+        LOG.info("[CART-SERVICE][CartHandler] Panier valider prix total : {}€.envoie a l'orderer.", price);
         return orderCreator.createOrder(customer);
     }
 
     public void addItem(Long customerId,Long productId,int quantity) throws CustomerIdNotFoundException {
+        LOG.info("[CART-SERVICE][CartHandler] Ajout du produit {} (Qty: {}) au panier du {} customer", productId, quantity, customerId);
         if(quantity<0) throw new IllegalArgumentException("Quantity should be positive");
         Customer current = customerFinder.retrieveCustomer(customerId);
         Cart cart = current.getCart();

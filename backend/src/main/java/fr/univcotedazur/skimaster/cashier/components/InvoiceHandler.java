@@ -45,21 +45,26 @@ public class InvoiceHandler implements InvoiceCreator, InvoiceFinder {
     @Override
     @Transactional
     public Invoice processOrderPayment(Order order) {
+        LOG.info("[CASHIER-SERVICE][InvoiceHandler] Paiemenet en cours pour l'id: {} (Prix: {}€)", order.getOrderId(), order.getPrice());
         try {
             order = loadOrderWithItems(order);
             String receiptId = paymentService.payOrderFromCart(order.getCustomer(), order.getPrice());
-            LOG.info("Paiement accepté. Reçu banque : {}", receiptId);
+
+            LOG.info("[CASHIER-SERVICE][InvoiceHandler] Payment reussis: {}. Mise à jour de l'order en payer.", receiptId);
             order.setPaymentReceiptId(receiptId);
             order.setStatus(OrderStatus.PAID);
             orderRepository.save(order);
+
+            LOG.info("[CASHIER-SERVICE][InvoiceHandler] Création des forfaits pour le customer : {}", order.getCustomer().getId());
             createForfaitsFromPaidOrder(order);
+
             Invoice newInvoice = new Invoice(order.getOrderId(), order.getPrice(), receiptId);
             invoiceRepository.save(newInvoice);
-            LOG.info("Facture générée : ID {}", newInvoice.getId());
+            LOG.info("[CASHIER-SERVICE][InvoiceHandler] Facture créer avec l'id : {}", newInvoice.getId());
             return newInvoice;
 
         } catch (PaymentException e) {
-            LOG.error("Échec du paiement pour le client {} : {}", order.getCustomer().getName(), e.getMessage());
+            LOG.error("[CASHIER-SERVICE][InvoiceHandler] Paiement raté pour le customer {}: {}", order.getCustomer().getName(), e.getMessage());
             order.setStatus(OrderStatus.PAYMENT_FAILED);
             orderRepository.save(order);
             return null;

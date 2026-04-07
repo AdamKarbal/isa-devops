@@ -32,13 +32,13 @@ class DisplayServiceTest {
 
     @Test
     void shouldClearStoredAlerts() {
-        DisplayService service = new DisplayService();
-
+        DisplayService service = new DisplayService("test-display-id");
         service.pushAlert(new DisplayAlertRequestDTO("Message admin", "ADMIN"));
         service.clearAlerts();
 
         assertEquals(0, service.getAlerts().size());
     }
+
 
     @Test
     void shouldReturnAlertsForSpecificGateCode() {

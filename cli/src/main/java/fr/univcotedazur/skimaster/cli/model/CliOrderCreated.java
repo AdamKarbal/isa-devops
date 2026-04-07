@@ -1,10 +1,12 @@
 package fr.univcotedazur.skimaster.cli.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Set;
 
 public class CliOrderCreated {
-    @JsonAlias({"orderId", "id"})
+    @JsonProperty("orderId") // Force Jackson à lire le champ "orderId" envoyé par le backend
     private Long orderId;
     private Set<CliProduct> items;
     private double price;

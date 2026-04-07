@@ -58,10 +58,6 @@ public class PassService implements AccessTreatment {
                 .filter(f -> !f.getValidDate().isBefore(LocalDate.now()))
                 .map(Forfait::getCustomerId)
                 .distinct()
-                .map(customerId -> customerFinder.findById(customerId))
-                .filter(java.util.Optional::isPresent)
-                .map(java.util.Optional::get)
-                .map(customer -> Long.parseLong(customer.getCreditCard()))
                 .toList();
 
         LOG.info("LOGIC: Pushing {} NFC card IDs to gates", authorizedNfcCards.size());
@@ -70,8 +66,9 @@ public class PassService implements AccessTreatment {
 
     @Transactional
     public void collectAndProcessAllPassages() {
+        LOG.info("[GATE-SYNC][PassService] Recuperation de tous les passages de toutes les portes depuis le turnstileproxy...");
         List<Passage> allPassengers = turnstileProxy.collectPassagesFromAllGates();
-        LOG.info("LOGIC: Received {} total passages from Portier", allPassengers.size());
+        LOG.info("[GATE-SYNC][PassService] Recue {} passages.", allPassengers.size());
         processReceivedPassages(allPassengers);
     }
 
@@ -86,11 +83,14 @@ public class PassService implements AccessTreatment {
     }
 
     private void processIncomingPassage(Passage passage) {
+        LOG.info("[BUSINESS-LOGIC][PassService] Traitement du passe pour le customer d'id : {} via Gate: {}", passage.getCustomerId(), passage.getGatePassedBy());
         LocalDateTime now = LocalDateTime.now();
+        LOG.info("[BASE-DE-DONNEES][Passage] Archivage du passage : Client {} via Portail {}", passage.getCustomerId(), passage.getGatePassedBy());
         passageRepository.save(new Passage(passage.getCustomerId(), now,passage.getGatePassedBy()));
         try {
             Customer customer = customerFinder.retrieveCustomer(passage.getCustomerId());
             if (customer.isHasSuperCarte()) {
+                LOG.info("[SUPERCARTE] Customer {} a une supercarte verification du dernier passage", customer.getName());
                 LocalDateTime oneHourAgo = now.minusHours(1);
                 boolean hasInvoiceRecently = invoiceFinder.findInvoicesByCustomerId(customer.getId()).stream()
                         .filter(inv -> inv.getAmount() == 15.0)
@@ -98,11 +98,10 @@ public class PassService implements AccessTreatment {
                 boolean hasOrderRecently = orderRepository.existsRecentOrderForSuperCarte(customer.getId(), 15.0);
 
                 if (!hasInvoiceRecently && !hasOrderRecently) {
+                    LOG.info("[SUPERCARTE][BILLING] Pas de facture trouvé dans la derniere heure {}. Création d'une nouvelle facture et facturation.", customer.getName());
                     handleSuperCarteBilling(customer);
-                    LOG.info("SUPERCARTE: Facturation déclenchée pour {}", customer.getName());
                 } else {
-                    LOG.info("SUPERCARTE: Passage déjà traité ou facturé pour {}", customer.getName());
-                }
+                    LOG.info("[SUPERCARTE][IDEMPOTENCE] {} Déjà payer dans la derniere heure.", customer.getName());                }
             }
         } catch (CustomerIdNotFoundException e) {
             LOG.error("Client inconnu : {}", passage.getCustomerId());

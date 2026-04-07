@@ -20,6 +20,10 @@ services:
       - DOOR_4_WITH_PORT=door-4:8082
       - DISPLAY_WITH_PORT=display-service:8083
       - DISPLAY_2_WITH_PORT=display-2:8083
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
     restart: always
     depends_on:
       postgres:
@@ -56,7 +60,7 @@ services:
       timeout: 3s
       retries: 3
       start_period: 5s
-
+    command: ["postgres", "-c", "log_statement=none", "-c", "log_min_messages=warning"]
   # A simple java CLI
   tcf-cli:
     image: team-k/tcf-spring-cli:local
@@ -118,6 +122,10 @@ services:
       - SERVER_PORT=8082
       - DISPLAY_WITH_PORT=display-service:8083
       - DISPLAY_2_WITH_PORT=display-2:8083
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
 
   door-2:
     image: team-k/skimaster-door:local
@@ -138,6 +146,10 @@ services:
       - SERVER_PORT=8082
       - DISPLAY_WITH_PORT=display-service:8083
       - DISPLAY_2_WITH_PORT=display-2:8083
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
 
   door-3:
     image: skimaster-door:latest
@@ -153,6 +165,10 @@ services:
     environment:
       - GATE_ID=gate-3
       - SERVER_PORT=8082
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
 
   door-4:
     image: skimaster-door:latest
@@ -168,6 +184,10 @@ services:
     environment:
       - GATE_ID=gate-4
       - SERVER_PORT=8082
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
 
   display-service:
     image: team-k/skimaster-display:local
