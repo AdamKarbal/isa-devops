@@ -1,5 +1,18 @@
 # Changelog
 
+# [2.7.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.6.0...v2.7.0) (2026-04-07)
+
+
+### Bug Fixes
+
+* **cli:** fix demo, fix build, fix test ([10223b7](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/10223b70d37b61098a5a513b8e59ce2d0b171d24))
+
+
+### Features
+
+* **backend:** ajout des logs pour les scenarios ([eb2cb5f](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/eb2cb5ff9956d1aa9c86209aa053bbca728b3e54))
+* **backend:** suppresion logs sql... ([2707901](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/2707901a64be98915589bbcf853b9549d70ec4ae))
+
 # [2.6.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.5.0...v2.6.0) (2026-04-06)
 
 
