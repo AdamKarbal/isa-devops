@@ -1,5 +1,17 @@
 # Changelog
 
+# [2.8.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.7.0...v2.8.0) (2026-04-07)
+
+
+### Bug Fixes
+
+* **cucumber:** removing defective test for maven tests to pass ([7bbb34b](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/7bbb34b233e62face626b383b0f9ff0bf998199d))
+
+
+### Features
+
+* **cucumber:** error scenarios ([ab7cc61](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/ab7cc61df4aea58e2764d029641b5e19be5fd555))
+
 # [2.7.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.6.0...v2.7.0) (2026-04-07)
 
 
