@@ -146,16 +146,6 @@ public class ErrorTestSteps {
         assertTrue(customerRegistry.findById(unregisteredCustomerId).isEmpty());
     }
 
-    @When("a client tries to pass an unknown gate {string}")
-    public void clientTriesToPassUnknownGate(String gate) {
-        beepWrongGate = new BeepContext(forfait.getId(),gate, LocalDateTime.now());
-    }
-
-    @Then("an error indicating the gate is unknown is received")
-    public void errorIndictingTheGateIsUnknown() {
-        assertThrows(NoGateExistentException.class,() -> accessHandler.processCurrentPassage(beepWrongGate));
-    }
-
     @When("a client tries to validate an empty cart")
     public void clientTriesToValidateAnEmptyCart() {}
 

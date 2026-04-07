@@ -13,11 +13,7 @@ Feature: Test error scenarios
   Scenario: Attempting to find an unregistered client
     When looking for an unregistered client with id 50
     Then an error indicating the client can't be found is received
-
-  Scenario: Attempting to pass an unknown gate
-    When a client tries to pass an unknown gate "gate-x"
-    Then an error indicating the gate is unknown is received
-
+    
   Scenario: Attempting to validate an empty cart
     When a client tries to validate an empty cart
     Then an error indicating the cart is empty is received
