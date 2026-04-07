@@ -6,6 +6,9 @@ import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundExceptio
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerRegistration;
 import fr.univcotedazur.skimaster.customer.repositories.CustomerRepository;
+import fr.univcotedazur.skimaster.forfait.components.ForfaitRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +17,7 @@ import java.util.Optional;
 
 @Service
 public class CustomerRegistry implements CustomerRegistration, CustomerFinder {
-
+    private static final Logger LOG = LoggerFactory.getLogger(CustomerRegistry.class);
     private final CustomerRepository customerRepository;
 
     public CustomerRegistry(CustomerRepository customerRepository) {
@@ -27,7 +30,10 @@ public class CustomerRegistry implements CustomerRegistration, CustomerFinder {
             throws AlreadyExistingCustomerException {
         if (findByName(name).isPresent())
             throw new AlreadyExistingCustomerException(name);
+        LOG.info("[BASE-DE-DONNEES][Client] Tentative d'enregistrement du client : {}", name);
         Customer newcustomer = new Customer(name, creditCard);
+        Customer saved = customerRepository.save(newcustomer);
+        LOG.info("[BASE-DE-DONNEES][Client] Client persisté avec l'ID généré : {}", saved.getId());
         return customerRepository.save(newcustomer);
     }
 

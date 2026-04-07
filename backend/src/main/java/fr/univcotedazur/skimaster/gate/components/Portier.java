@@ -7,12 +7,15 @@ import fr.univcotedazur.skimaster.gate.entities.Passage;
 import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
 import fr.univcotedazur.skimaster.gate.interfaces.ManualGateControl;
 import fr.univcotedazur.skimaster.gate.interfaces.PortierInformation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 public class Portier implements ManualGateControl, PortierInformation {
+    private static final Logger LOG = LoggerFactory.getLogger(Portier.class);
 
     private final TurnstileProxy turnstileProxy;
 
@@ -21,12 +24,16 @@ public class Portier implements ManualGateControl, PortierInformation {
     }
 
     public void syncAllGates(List<Long> cardIds) {
+        LOG.info("[Portier] Diffusion de la mise à jour aux portails ({} IDs en Whitelist)", cardIds.size());
         turnstileProxy.syncAllGates(cardIds);
     }
 
 
     public List<Passage> collectPassagesFromAllGates(){
-        return turnstileProxy.collectPassagesFromAllGates();
+        LOG.info("[PORTIER] Interrogation de tous les portails pour collecter les passages du jour...");
+        List<Passage> totalPassages = turnstileProxy.collectPassagesFromAllGates();
+        LOG.info("[PORTIER] Collecte globale terminée. Passages récupérés : {}", totalPassages.size());
+        return totalPassages;
     }
 
     @Override

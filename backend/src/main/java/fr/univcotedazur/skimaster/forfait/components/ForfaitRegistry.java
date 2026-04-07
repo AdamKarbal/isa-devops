@@ -10,7 +10,10 @@ import fr.univcotedazur.skimaster.forfait.interfaces.FFinder;
 import fr.univcotedazur.skimaster.forfait.interfaces.FRegister;
 import fr.univcotedazur.skimaster.forfait.repositories.ForfaitRepository;
 import fr.univcotedazur.skimaster.gate.components.BeepStrategy;
+import fr.univcotedazur.skimaster.gate.components.PassService;
 import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,7 @@ import java.util.List;
 
 @Service
 public class ForfaitRegistry implements FRegister, FFinder {
+    private static final Logger LOG = LoggerFactory.getLogger(ForfaitRegistry.class);
     private final ForfaitRepository repository;
     private final BeepStrategy beepStrategy;
 
@@ -33,6 +37,7 @@ public class ForfaitRegistry implements FRegister, FFinder {
         forfait.setCustomerId(userId);
         BeepSignal temp = beepStrategy.processBeepInformation(forfait.getAgeCategory());
         forfait.setBeep(temp);
+        LOG.info("[BASE-DE-DONNEES][Forfait] Enregistrement d'un forfait unique pour le client ID: {}", userId);
         this.repository.save(forfait);
     }
 
@@ -49,7 +54,9 @@ public class ForfaitRegistry implements FRegister, FFinder {
 
     @Transactional
     public void saveAll(List<Forfait> forfaits){
+        LOG.info("[BASE-DE-DONNEES][Forfait] Sauvegarde de {} nouveau(x) forfait(s)...", forfaits.size());
         repository.saveAll(forfaits);
+        LOG.info("[BASE-DE-DONNEES][Forfait] Persistance réussie.");
     }
 
     @Override
