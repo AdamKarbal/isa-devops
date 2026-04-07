@@ -2,4 +2,4 @@
 
 echo "Compiling the TCF Spring BACKEND within a multi-stage docker build"
 
-docker build --build-arg JAR_FILE=skimaster-0.0.1-SNAPSHOT.jar -t team-k/tcf-spring-backend:local .
+docker build --build-arg JAR_FILE=skimaster-0.0.1-SNAPSHOT.jar -t ismakhil/tcf-spring-backend:local .
