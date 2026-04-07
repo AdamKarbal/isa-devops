@@ -24,7 +24,7 @@ done
 
 echo "Running script /opt/app/demos/demo.txt in CLI through socat..."
 cat <<'EOF' | timeout 300s socat - "EXEC:docker attach cli,pty,rawer,echo=0,setsid,sigint,sane" | tee "${LOG_FILE}"
-script /opt/app/demos/demo.txt
+script /opt/app/demo.txt
 exit
 EOF
 
