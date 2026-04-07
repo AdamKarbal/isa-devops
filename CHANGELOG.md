@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.8.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.8.0...v2.8.1) (2026-04-07)
+
+
+### Features
+
+* **doc:** ajout des slides de présentation ([4a9f8b2](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/4a9f8b2baf72179346cad8287359431c4d4339dd))
+
+
+### Reverts
+
+* Revert "feat(cucumber): error scenarios" ([71ec670](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/71ec67018556b42ac15885916ec05c263ead34ff))
+
 # [2.8.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.7.0...v2.8.0) (2026-04-07)
 
 
