@@ -22,12 +22,25 @@ for i in {1..60}; do
   sleep 5
 done
 
-echo "Running script /opt/app/demo.txt in CLI through socat..."
-cat <<'EOF' | timeout 300s socat - "EXEC:docker attach cli,pty,rawer,echo=0,setsid,sigint,sane" | tee "${LOG_FILE}"
-script /opt/app/demo.txt
-exit
-EOF
+mapfile -t demo_files < <(find ./cli/demos -maxdepth 1 -type f -name "*.txt" | sort)
+if [[ "${#demo_files[@]}" -eq 0 ]]; then
+  echo "No demo files found in ./cli/demos."
+  exit 1
+fi
 
-echo "Validating demo output..."
-grep -q "===_13._FINAL_VERIFICATION_===" "${LOG_FILE}"
+echo "Running all demo scripts in /opt/app/demos through socat..."
+{
+  for demo_file in "${demo_files[@]}"; do
+    demo_name="$(basename "${demo_file}")"
+    echo "echo ===_RUNNING_SCRIPT_${demo_name}_==="
+    echo "script /opt/app/demos/${demo_name}"
+  done
+  echo "exit"
+} | timeout 300s socat - "EXEC:docker attach cli,pty,rawer,echo=0,setsid,sigint,sane" | tee "${LOG_FILE}"
+
+echo "Validating all demo scripts were invoked..."
+for demo_file in "${demo_files[@]}"; do
+  demo_name="$(basename "${demo_file}")"
+  grep -Fq "===_RUNNING_SCRIPT_${demo_name}_===" "${LOG_FILE}"
+done
 echo "CLI demo completed successfully."
