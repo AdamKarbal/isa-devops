@@ -152,8 +152,11 @@ services:
       - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
 
   door-3:
-    image: skimaster-door:latest
+    image: team-k/skimaster-door:local
     container_name: door-3
+    build:
+      context: ./door
+      dockerfile: Dockerfile
     ports:
       - "8085:8082"
     healthcheck:
@@ -171,7 +174,10 @@ services:
       - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
 
   door-4:
-    image: skimaster-door:latest
+    image: team-k/skimaster-door:local
+    build:
+      context: ./door
+      dockerfile: Dockerfile
     container_name: door-4
     ports:
       - "8086:8082"
