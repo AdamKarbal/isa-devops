@@ -9,7 +9,7 @@ class ForfaitOfferTest {
 
     @Test
     void constructorAndGetters() {
-        ForfaitOffer offer = new ForfaitOffer(AgeCategory.ADULT, PassType.FULL, 42.5);
+        ForfeitOffer offer = new ForfeitOffer(AgeCategory.ADULT, PassType.FULL, 42.5);
 
         assertEquals(AgeCategory.ADULT, offer.getAgeCategory());
         assertEquals(PassType.FULL, offer.getPassType());
@@ -18,9 +18,9 @@ class ForfaitOfferTest {
 
     @Test
     void equalsAndHashCode() {
-        ForfaitOffer offer = new ForfaitOffer(AgeCategory.CHILD, PassType.HALFADAY, 18.0);
-        ForfaitOffer sameId = new ForfaitOffer(AgeCategory.ADULT, PassType.SEASONAL, 120.0);
-        ForfaitOffer differentId = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 60.0);
+        ForfeitOffer offer = new ForfeitOffer(AgeCategory.CHILD, PassType.HALFADAY, 18.0);
+        ForfeitOffer sameId = new ForfeitOffer(AgeCategory.ADULT, PassType.SEASONAL, 120.0);
+        ForfeitOffer differentId = new ForfeitOffer(AgeCategory.ADULT, PassType.WEEKLY, 60.0);
 
         ReflectionTestUtils.setField(offer, "id", 1L);
         ReflectionTestUtils.setField(sameId, "id", 1L);
@@ -36,8 +36,8 @@ class ForfaitOfferTest {
 
     @Test
     void equalsWithNullIds_returnsFalse() {
-        ForfaitOffer first = new ForfaitOffer(AgeCategory.ADULT, PassType.FULL, 20.0);
-        ForfaitOffer second = new ForfaitOffer(AgeCategory.ADULT, PassType.FULL, 20.0);
+        ForfeitOffer first = new ForfeitOffer(AgeCategory.ADULT, PassType.FULL, 20.0);
+        ForfeitOffer second = new ForfeitOffer(AgeCategory.ADULT, PassType.FULL, 20.0);
 
         assertNotEquals(first, second);
     }

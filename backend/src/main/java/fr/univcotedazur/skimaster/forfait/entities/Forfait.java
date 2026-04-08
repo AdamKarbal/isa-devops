@@ -1,6 +1,7 @@
 package fr.univcotedazur.skimaster.forfait.entities;
 
 import fr.univcotedazur.skimaster.customer.entities.Customer;
+import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -23,21 +24,32 @@ public class Forfait {
     @Column(name = "customer_id", nullable = false)
     private Long customerId;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "offer_id", nullable = false)
-    private ForfaitOffer offer;
+    @Column (name = "beeper")
+    private BeepSignal beep;
 
-    public Forfait(Long customerId, LocalDate vDate, ForfaitOffer offer) {
+    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "offer_id", nullable = false)
+    private ForfeitOffer offer;
+
+    public Forfait(Long customerId, LocalDate vDate, ForfeitOffer offer) {
         this.customerId = customerId;
         this.validDate = vDate;
         this.offer = offer;
+        this.beep=BeepSignal.ACCESS_DENIED;
     }
 
-    public Forfait(Customer customer, LocalDate vDate, ForfaitOffer offer) {
+    public Forfait(Customer customer, LocalDate vDate, ForfeitOffer offer) {
         this(customer.getId(), vDate, offer);
     }
 
+    public BeepSignal getBeep(){
+        return this.beep;
+    }
+
+    public void setBeep(BeepSignal beep){
+        this.beep=beep;
+    }
     public Forfait() {}
 
     public Long getCustomerId() {
@@ -82,8 +94,6 @@ public class Forfait {
         if (o == null || getClass() != o.getClass()) return false;
 
         Forfait forfait = (Forfait) o;
-        System.out.println(this.id);
-        System.out.println(forfait.id);
         return id != null && Objects.equals(id, forfait.id);
     }
 

@@ -25,7 +25,7 @@ public class OrderCommands {
         this.cliContext = cliContext;
     }
 
-    @ShellMethod("List all orders")
+    @ShellMethod(value = "List all orders", key = "all-orders") // <- Ajout de la key
     public String orders() {
         try {
             List<CliOrder> orders = restClient.get()

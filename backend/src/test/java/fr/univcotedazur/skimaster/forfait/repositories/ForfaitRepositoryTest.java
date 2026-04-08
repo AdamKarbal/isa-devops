@@ -2,7 +2,7 @@ package fr.univcotedazur.skimaster.forfait.repositories;
 
 import fr.univcotedazur.skimaster.forfait.entities.AgeCategory;
 import fr.univcotedazur.skimaster.forfait.entities.Forfait;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.forfait.entities.PassType;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
@@ -21,16 +21,16 @@ public class ForfaitRepositoryTest {
     private ForfaitRepository forfaitRepository;
 
     @Autowired
-    private ForfaitOfferRepository forfaitOfferRepository;
+    private ForfeitOfferRepository forfaitOfferRepository;
 
     private final Long userId = 1L;
-    private ForfaitOffer savedOffer;
+    private ForfeitOffer savedOffer;
     private Forfait forfait;
 
     @BeforeEach
     void setUp() {
         // Sauvegarde de l'offre d'abord pour éviter l'erreur TransientPropertyValueException
-        ForfaitOffer offer = new ForfaitOffer(AgeCategory.ADULT, PassType.WEEKLY, 70.0);
+        ForfeitOffer offer = new ForfeitOffer(AgeCategory.ADULT, PassType.WEEKLY, 70.0);
         savedOffer = forfaitOfferRepository.save(offer);
 
         // Création du forfait avec l'offre persistée
@@ -68,7 +68,7 @@ public class ForfaitRepositoryTest {
 
     @Test
     void testNullAgeCategory() {
-        ForfaitOffer invalidOffer = new ForfaitOffer(null, PassType.WEEKLY, 70.0);
+        ForfeitOffer invalidOffer = new ForfeitOffer(null, PassType.WEEKLY, 70.0);
         Assertions.assertThrows(ConstraintViolationException.class, () ->
                 forfaitOfferRepository.saveAndFlush(invalidOffer)
         );
@@ -76,7 +76,7 @@ public class ForfaitRepositoryTest {
 
     @Test
     void testNullPassType() {
-        ForfaitOffer invalidOffer = new ForfaitOffer(AgeCategory.ADULT, null, 70.0);
+        ForfeitOffer invalidOffer = new ForfeitOffer(AgeCategory.ADULT, null, 70.0);
         Assertions.assertThrows(ConstraintViolationException.class, () ->
                 forfaitOfferRepository.saveAndFlush(invalidOffer)
         );

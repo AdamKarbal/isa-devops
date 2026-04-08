@@ -41,7 +41,8 @@ public class OrderController {
                 .map(o -> new OrderCreatedDTO(
                         o.getOrderId(),
                         o.getItems(),
-                        o.getPrice()))
+                        o.getPrice(),
+                        o.getStatus()))
                 .toList());
     }
 

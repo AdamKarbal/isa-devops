@@ -1,6 +1,17 @@
 server:
-  port: 8082
+  port: ${SERVER_PORT:8082}
 
 gate:
-  id: gate-1
+  id: ${GATE_ID:gate-1}
   alert-threshold: 50
+
+display:
+  host:
+    baseurl: http://${DISPLAY_WITH_PORT:localhost:8083}
+  host2:
+    baseurl: http://${DISPLAY_2_WITH_PORT:localhost:8087}
+
+logging:
+  level:
+    root: WARN
+    skimaster: INFO

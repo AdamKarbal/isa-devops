@@ -7,7 +7,7 @@ import fr.univcotedazur.skimaster.cart.repositories.ProductRepository;
 import fr.univcotedazur.skimaster.customer.entities.Customer;
 import fr.univcotedazur.skimaster.customer.exceptions.CustomerIdNotFoundException;
 import fr.univcotedazur.skimaster.customer.interfaces.CustomerFinder;
-import fr.univcotedazur.skimaster.forfait.entities.ForfaitOffer;
+import fr.univcotedazur.skimaster.forfait.entities.ForfeitOffer;
 import fr.univcotedazur.skimaster.order.components.Orderer;
 import fr.univcotedazur.skimaster.order.entities.Order;
 import fr.univcotedazur.skimaster.cart.entities.Product;
@@ -33,7 +33,7 @@ public class CartHandler implements CartProcessor, CartModifier {
     }
     private double priceProduct(Product product) {
         double itemsPrice = product.getItems().stream()
-                .mapToDouble(ForfaitOffer::getPrice)
+                .mapToDouble(ForfeitOffer::getPrice)
                 .sum();
         return itemsPrice * (1 - (product.getReduction() / 100.0));
     }
@@ -48,13 +48,20 @@ public class CartHandler implements CartProcessor, CartModifier {
 
     public Order validate(Long customerId) throws CustomerIdNotFoundException, EmptyCartException {
         Customer customer = customerFinder.retrieveCustomer(customerId);
+        LOG.info("[CART-SERVICE][CartHandler] Validation du panier pour le customer: {} (ID: {})", customer.getName(), customerId);
+
         if(customer.getCart().isEmpty()){
+            LOG.warn("[CART-SERVICE][CartHandler] Validation rater : le panier est vide {}", customer.getName());
             throw new EmptyCartException(customer.getName());
         }
+
+        double price = computeCartPrice(customer.getCart());
+        LOG.info("[CART-SERVICE][CartHandler] Panier valider prix total : {}€.envoie a l'orderer.", price);
         return orderCreator.createOrder(customer);
     }
 
     public void addItem(Long customerId,Long productId,int quantity) throws CustomerIdNotFoundException {
+        LOG.info("[CART-SERVICE][CartHandler] Ajout du produit {} (Qty: {}) au panier du {} customer", productId, quantity, customerId);
         if(quantity<0) throw new IllegalArgumentException("Quantity should be positive");
         Customer current = customerFinder.retrieveCustomer(customerId);
         Cart cart = current.getCart();

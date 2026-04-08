@@ -1,5 +1,7 @@
 package fr.univcotedazur.skimaster.forfait.dto;
 
+import fr.univcotedazur.skimaster.gate.enums.BeepSignal;
+
 import java.time.LocalDate;
 
 public record ForfaitDTO(
@@ -7,5 +9,6 @@ public record ForfaitDTO(
         Long customerId,
         String passType,
         String ageCategory,
-        LocalDate validDate
+        LocalDate validDate,
+        BeepSignal beep
 ) {}

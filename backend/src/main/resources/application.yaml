@@ -2,9 +2,17 @@ bank:
   host:
     baseurl: http://${BANK_WITH_PORT:localhost:9090}
 
-door:
-  host:
-    baseurl: http://${DOOR_WITH_PORT:localhost:8082}
+gate:
+  instances:
+    "gate-1": "http://${DOOR_WITH_PORT:localhost:8082}"
+    "gate-2": "http://${DOOR_2_WITH_PORT:localhost:8084}"
+    "gate-3": "http://${DOOR_3_WITH_PORT:localhost:8085}"
+    "gate-4": "http://${DOOR_4_WITH_PORT:localhost:8086}"
+
+display:
+  instances:
+    "display-1": "http://${DISPLAY_WITH_PORT:localhost:8083}"
+    "display-2": "http://${DISPLAY_2_WITH_PORT:localhost:8085}"
 
 # Property to set the visible level on all logs (OFF will turn off all of them)
 # logging:
@@ -23,7 +31,7 @@ spring:
     username: postgresuser
     # POSTGRES_PASSWORD
     password: postgrespass
-    url: jdbc:postgresql://${POSTGRES_HOST}/tcf-db
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost:5432}/tcf-db
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -31,6 +39,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-    show-sql: true
+    show-sql: false
     generate-ddl: true
     open-in-view: false
+
+logging:
+  level:
+    root: INFO
+    org.hibernate: WARN        # On ne veut que les alertes critiques de Hibernate
+    org.hibernate.SQL: OFF     # On éteint les logs SQL
+    fr.univcotedazur.skimaster: INFO

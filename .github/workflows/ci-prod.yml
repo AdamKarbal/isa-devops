@@ -21,6 +21,10 @@ jobs:
           ./mvnw clean verify
         working-directory: backend
 
+      - name: Cleanup docker compose
+        if: always()
+        run: docker compose down -v --remove-orphans
+
 
 
 

@@ -1,5 +1,7 @@
 package skimaster.entities;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,16 +9,18 @@ public class Gate {
 
     private final String gateId;
     private GateStatus status;
-    private final int alertThreshold;
-    private int currentPassages;
+    private int alertThreshold;
     private final List<Passage> passages;
     private final List<Incident> incidents;
+    private final LocalTime startTime;
+    private final LocalTime endTime;
 
-    public Gate(String gateId, GateStatus status, int alertThreshold) {
+    public Gate(String gateId, GateStatus status, int alertThreshold, LocalTime startTime, LocalTime endTime) {
         this.gateId = gateId;
         this.status = status;
         this.alertThreshold = alertThreshold;
-        this.currentPassages = 0;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.passages = new ArrayList<>();
         this.incidents = new ArrayList<>();
     }
@@ -37,8 +41,24 @@ public class Gate {
         return alertThreshold;
     }
 
+    public void setAlertThreshold(int alertThreshold) {
+        this.alertThreshold = alertThreshold;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
     public int getCurrentPassages() {
-        return currentPassages;
+        LocalDateTime oneHourAgo = LocalDateTime.now().minusHours(1);
+        return (int) passages.stream()
+                .filter(Passage::isAccepted)
+                .filter(p -> p.getTimestamp().isAfter(oneHourAgo))
+                .count();
     }
 
     public List<Passage> getPassages() {
@@ -51,8 +71,8 @@ public class Gate {
 
     public void registerPassage(Passage passage) {
         passages.add(passage);
-        if (passage.isAccepted()) {
-            currentPassages++;
+        if (passage.isAccepted() && alertThreshold > 0 && getCurrentPassages() >= alertThreshold) {
+            this.status = GateStatus.CLOSED;
         }
     }
 

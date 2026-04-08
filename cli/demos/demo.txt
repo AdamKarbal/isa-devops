@@ -1,0 +1,104 @@
+echo ===_PARTIE_1_:_INITIALISATION_ET_PAIEMENT_CLASSIQUE_===
+
+echo ===_0.a_INITIALIZATION_:_Customers_===
+register Julien3 1238969831
+register Tatie3 1234567890
+update-customers
+
+echo ===_0.b_INITIALIZATION_:_Catalog_===
+add-offer ADULT DAILY 10.0
+add-product 1 1
+
+echo ===_0.c_INITIALIZATION_:_Creating_Orders_via_Cart_===
+add-to-cart Julien3 1 1
+validate Julien3
+add-to-cart Tatie3 1 1
+validate Tatie3
+
+echo ===_1._Verification_of_existing_Customers_===
+customers
+
+echo ===_2._Checking_existing_Orders_===
+all-orders
+
+echo ===_3._SUCCESSFUL_SCENARIO:_Paying_a_valid_order_===
+pay-order 1
+
+echo ===_4._Checking_the_Order_status_after_payment_===
+all-orders
+
+echo ===_5._ERROR_SCENARIO:_Paying_again_===
+pay-order 1
+
+echo ===_6._ERROR_SCENARIO:_Bank_Denies_Payment_===
+pay-order 2
+
+echo ===_7._Final_check_of_all_orders_===
+all-orders
+
+echo ===_PARTIE_2_:_PASSAGE_ET_SMART_GATE_===
+
+echo ===_8._CUSTOMERS_SETUP_===
+register SuperJulien 1238969831
+set-supercarte SuperJulien true
+add-to-cart SuperJulien 1 1
+validate SuperJulien
+pay-order 3
+update-customers
+register Intrus 0000000000
+update-customers
+
+echo ===_9._AUTONOMY:_PUSH_WHITELIST_TO_GATE_===
+sync-gates
+
+echo ===_10._SIMULATION:_SUCCESSFUL_PASSAGE_===
+door-pass 3 door-1
+
+echo ===_10.a_COLLECT_AND_BILLING_===
+collect-passages
+update-customers
+echo ===_CHECK_ORDER_CREATED_FOR_ID_3_===
+customer-orders 3
+
+echo ===_11._SIMULATION:_SECOND_PASSAGE_IDEMPOTENCY_===
+door-pass 3 door-1
+collect-passages
+update-customers
+echo ===_CHECK_NO_NEW_ORDER_CREATED_ (Idempotence 1h) ===
+customer-orders 3
+
+echo ===_12._SIMULATION:_FORBIDDEN_PASSAGE_===
+door-pass 4 door-1
+collect-passages
+update-customers
+echo ===_CHECK_NO_ORDER_FOR_INTRUS_===
+customer-orders 4
+
+echo ===_13._FINAL_VERIFICATION_PARTIE_2_===
+echo Verification que seul SuperJulien a été facturé une seule fois pour ses passages sur door-1
+all-orders
+
+echo ===_PARTIE_3_:_MULTI_GATES_SCENARIO_===
+
+set-supercarte Julien3 true
+
+echo ===_14._PASSAGES_SUR_DIFFERENTES_PORTES_===
+door-pass 3 door-2
+door-pass 1 door-3
+
+echo ===_15._COLLECTE_GLOBALE_===
+collect-passages
+update-customers
+
+echo ===_16._VERIFICATION_DES_ORDRES_AGREGES_===
+customer-orders 3
+customer-orders 1
+
+echo ===_17._SECOND_PASSAGE_MULTI_PORTE_IDEMPOTENCE_===
+door-pass 3 door-4
+collect-passages
+update-customers
+
+echo ===_FINAL_CHECK_===
+echo On vérifie que SuperJulien (ID 3) n'a toujours qu'un seul ordre de 15 euros malgré ses passages sur door-1, door-2 et door-4
+customer-orders 3

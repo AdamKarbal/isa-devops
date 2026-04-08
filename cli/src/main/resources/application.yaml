@@ -11,3 +11,7 @@ server:
 tcf:
   host:
     baseurl: http://${SERVER_WITH_PORT:localhost:8080}
+
+door:
+  host:
+    baseurl: http://${DOOR_WITH_PORT:door-1:8082}

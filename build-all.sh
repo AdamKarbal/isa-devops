@@ -13,8 +13,9 @@ build_dir "backend"
 
 build_dir "cli"
 
-build_dir "bank"
+#build_dir "bank"
 
 build_dir "door"
+build_dir "display"
 
 echo "** Done all"

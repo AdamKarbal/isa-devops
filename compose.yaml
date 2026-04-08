@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
       args:
         JAR_FILE: skimaster-0.0.1-SNAPSHOT.jar
-    image: tcf-spring-backend:local
+    image: team-k/tcf-spring-backend:local
     container_name: backend3
     ports:
       - "8080:8080"
@@ -14,12 +14,27 @@ services:
       - BANK_WITH_PORT=bank-system:9090
       - POSTGRES_HOST=postgres:5432
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,mappings
-      - DOOR_WITH_PORT=door-service:8082
+      - DOOR_WITH_PORT=door-1:8082
+      - DOOR_2_WITH_PORT=door-2:8082
+      - DOOR_3_WITH_PORT=door-3:8082
+      - DOOR_4_WITH_PORT=door-4:8082
+      - DISPLAY_WITH_PORT=display-service:8083
+      - DISPLAY_2_WITH_PORT=display-2:8083
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
     restart: always
     depends_on:
       postgres:
         condition: service_healthy
-      door-service:
+      door-1:
+        condition: service_healthy
+      door-2:
+        condition: service_healthy
+      display-service:
+        condition: service_healthy
+      display-2:
         condition: service_healthy
       bank-system:
         condition: service_healthy
@@ -33,7 +48,7 @@ services:
   # the postgres DB to be connected to the backend (watch out: no volume specified, everything can be lost)
   postgres:
     image: postgres:18.1
-    container_name: db
+    container_name: db2
     environment:
       - POSTGRES_PASSWORD=postgrespass
       - POSTGRES_USER=postgresuser
@@ -45,18 +60,24 @@ services:
       timeout: 3s
       retries: 3
       start_period: 5s
-
+    command: ["postgres", "-c", "log_statement=none", "-c", "log_min_messages=warning"]
   # A simple java CLI
   tcf-cli:
-    image: pcollet/tcf-spring-cli
+    image: team-k/tcf-spring-cli:local
     container_name: cli
+    build:
+      context: ./cli
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: cli-0.0.1-SNAPSHOT.jar
     environment:
       - SERVER_WITH_PORT=tcf-server:8080
+      - DOOR_WITH_PORT=door-1:8082
     depends_on:
       tcf-server:
         condition: service_healthy
     volumes:
-      - ./cli/demo.txt:/opt/app/demo.txt
+      - ./cli/demos:/opt/app/demos
     stdin_open: true
     tty: true
     healthcheck:
@@ -68,8 +89,11 @@ services:
 
   # An external bank service in NestJs
   bank-system:
-    image: pcollet/tcf-bank-service
-    container_name: bank
+    image: team-k/skimaster-bank:local
+    build:
+      context: ./bank
+      dockerfile: Dockerfile
+    container_name: bank2
     ports:
       - "9090:9090"
     healthcheck:
@@ -79,15 +103,124 @@ services:
       retries: 3
       start_period: 5s
 
-  door-service:
-    image: skimaster-door:latest
-    container_name: door
+  door-1:
+    image: team-k/skimaster-door:local
+    container_name: door-1
+    build :
+      context : ./door
+      dockerfile: Dockerfile
     ports:
       - "8082:8082"
     healthcheck:
-      test: "curl --silent --fail localhost:8082/actuator/health | grep UP || exit 1"
+      test: "curl --silent --fail localhost:8082/gate/status || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 25s
+    environment:
+      - GATE_ID=gate-1
+      - SERVER_PORT=8082
+      - DISPLAY_WITH_PORT=display-service:8083
+      - DISPLAY_2_WITH_PORT=display-2:8083
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
+
+  door-2:
+    image: team-k/skimaster-door:local
+    container_name: door-2
+    build:
+      context: ./door
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8082"
+    healthcheck:
+      test: "curl --silent --fail localhost:8082/gate/status || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 25s
+    environment:
+      - GATE_ID=gate-2
+      - SERVER_PORT=8082
+      - DISPLAY_WITH_PORT=display-service:8083
+      - DISPLAY_2_WITH_PORT=display-2:8083
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
+
+  door-3:
+    image: skimaster-door:latest
+    container_name: door-3
+    ports:
+      - "8085:8082"
+    healthcheck:
+      test: "curl --silent --fail localhost:8082/gate/status || exit 1"
       interval: 5s
       timeout: 3s
       retries: 3
       start_period: 5s
+    environment:
+      - GATE_ID=gate-3
+      - SERVER_PORT=8082
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
 
+  door-4:
+    image: skimaster-door:latest
+    container_name: door-4
+    ports:
+      - "8086:8082"
+    healthcheck:
+      test: "curl --silent --fail localhost:8082/gate/status || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    environment:
+      - GATE_ID=gate-4
+      - SERVER_PORT=8082
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
+
+  display-service:
+    image: team-k/skimaster-display:local
+    container_name: display
+    build:
+      context: ./display
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      - DISPLAY_ID=display-1
+      - SERVER_PORT=8083
+    healthcheck:
+      test: "curl --silent --fail localhost:8083/display/alerts || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 25s
+
+  display-2:
+    image: team-k/skimaster-display:local
+    container_name: display-2
+    build:
+      context: ./display
+      dockerfile: Dockerfile
+    ports:
+      - "8087:8083"
+    environment:
+      - DISPLAY_ID=display-2
+      - SERVER_PORT=8083
+    healthcheck:
+      test: "curl --silent --fail localhost:8083/display/alerts || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 25s

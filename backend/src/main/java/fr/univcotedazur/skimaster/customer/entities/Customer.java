@@ -5,6 +5,7 @@ import fr.univcotedazur.skimaster.cart.entities.Cart;
 import fr.univcotedazur.skimaster.order.entities.Order;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.aspectj.weaver.ast.Or;
 
@@ -31,6 +32,19 @@ public class Customer {
 
     @OneToMany(cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "customer")
     private Set<Order> orders = new HashSet<>();
+
+
+    @NotNull
+    @Column(nullable = false)
+    private boolean hasSuperCarte = false;
+
+    public boolean isHasSuperCarte() {
+        return hasSuperCarte;
+    }
+
+    public void setHasSuperCarte(boolean hasSuperCarte) {
+        this.hasSuperCarte = hasSuperCarte;
+    }
 
     public Customer() {
     }
@@ -85,12 +99,13 @@ public class Customer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Customer customer)) return false;
-        return Objects.equals(name, customer.name) && Objects.equals(creditCard, customer.creditCard);
+        return hasSuperCarte == customer.hasSuperCarte &&
+                Objects.equals(name, customer.name) &&
+                Objects.equals(creditCard, customer.creditCard);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, creditCard);
+        return Objects.hash(name, creditCard, hasSuperCarte);
     }
-
 }
