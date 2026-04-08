@@ -1,0 +1,203 @@
+services:
+  # The Cookie Factory backend in SpringBoot
+  tcf-server:
+    image: ismakhil/tcf-spring-backend:latest
+    container_name: backend3
+    ports:
+      - "8080:8080"
+    environment:
+      - BANK_WITH_PORT=bank-system:9090
+      - POSTGRES_HOST=postgres:5432
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,mappings
+      - DOOR_WITH_PORT=door-1:8082
+      - DOOR_2_WITH_PORT=door-2:8082
+      - DOOR_3_WITH_PORT=door-3:8082
+      - DOOR_4_WITH_PORT=door-4:8082
+      - DISPLAY_WITH_PORT=display-service:8083
+      - DISPLAY_2_WITH_PORT=display-2:8083
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=ERROR
+      - LOGGING_LEVEL_ORG_HIBERNATE=ERROR
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK=ERROR
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      door-1:
+        condition: service_healthy
+      door-2:
+        condition: service_healthy
+      display-service:
+        condition: service_healthy
+      display-2:
+        condition: service_healthy
+      bank-system:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --silent --fail localhost:8080/actuator/health | grep UP || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  # the postgres DB to be connected to the backend (watch out: no volume specified, everything can be lost)
+  postgres:
+    image: postgres:18.1
+    container_name: db2
+    environment:
+      - POSTGRES_PASSWORD=postgrespass
+      - POSTGRES_USER=postgresuser
+      - POSTGRES_DB=tcf-db
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d tcf-db -U $$POSTGRES_USER" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    command: ["postgres", "-c", "log_statement=none", "-c", "log_min_messages=warning"]
+
+  # A simple java CLI
+  tcf-cli:
+    image: ismakhil/tcf-spring-cli:latest
+    container_name: cli
+    environment:
+      - SERVER_WITH_PORT=tcf-server:8080
+      - DOOR_WITH_PORT=door-1:8082
+    depends_on:
+      tcf-server:
+        condition: service_healthy
+    volumes:
+      - ./cli/demos:/opt/app/demos
+    stdin_open: true
+    tty: true
+    healthcheck:
+      test: "curl --silent --fail localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # An external bank service in NestJs
+  bank-system:
+    image: ismakhil/skimaster-bank:latest
+    container_name: bank2
+    ports:
+      - "9090:9090"
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node" , "healthcheck.js" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  door-1:
+    image: ismakhil/skimaster-door:latest
+    container_name: door-1
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: "curl --silent --fail localhost:8082/gate/status || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 25s
+    environment:
+      - GATE_ID=gate-1
+      - SERVER_PORT=8082
+      - DISPLAY_WITH_PORT=display-service:8083
+      - DISPLAY_2_WITH_PORT=display-2:8083
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
+
+  door-2:
+    image: ismakhil/skimaster-door:latest
+    container_name: door-2
+    ports:
+      - "8084:8082"
+    healthcheck:
+      test: "curl --silent --fail localhost:8082/gate/status || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 25s
+    environment:
+      - GATE_ID=gate-2
+      - SERVER_PORT=8082
+      - DISPLAY_WITH_PORT=display-service:8083
+      - DISPLAY_2_WITH_PORT=display-2:8083
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
+
+  door-3:
+    image: ismakhil/skimaster-door:latest
+    container_name: door-3
+    ports:
+      - "8085:8082"
+    healthcheck:
+      test: "curl --silent --fail localhost:8082/gate/status || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    environment:
+      - GATE_ID=gate-3
+      - SERVER_PORT=8082
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
+
+  door-4:
+    image: ismakhil/skimaster-door:latest
+    container_name: door-4
+    ports:
+      - "8086:8082"
+    healthcheck:
+      test: "curl --silent --fail localhost:8082/gate/status || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    environment:
+      - GATE_ID=gate-4
+      - SERVER_PORT=8082
+      - SPRING_MAIN_BANNER-MODE=off
+      - LOGGING_LEVEL_ROOT=WARN
+      - LOGGING_LEVEL_ORG_HIBERNATE=WARN
+      - LOGGING_LEVEL_FR_UNIVCOTEDAZUR=INFO
+
+  display-service:
+    image: ismakhil/skimaster-display:latest
+    container_name: display
+    ports:
+      - "8083:8083"
+    environment:
+      - DISPLAY_ID=display-1
+      - SERVER_PORT=8083
+    healthcheck:
+      test: "curl --silent --fail localhost:8083/display/alerts || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 25s
+
+  display-2:
+    image: ismakhil/skimaster-display:latest
+    container_name: display-2
+    ports:
+      - "8087:8083"
+    environment:
+      - DISPLAY_ID=display-2
+      - SERVER_PORT=8083
+    healthcheck:
+      test: "curl --silent --fail localhost:8083/display/alerts || exit 1"
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 25s
