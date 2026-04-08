@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.2](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.8.1...v2.8.2) (2026-04-08)
+
+
+### Bug Fixes
+
+* **cd:** removed socat on prod ([2559ee4](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/2559ee499c50a907f232adb587f119e21fd3fb6a))
+
 ## [2.8.1](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.8.0...v2.8.1) (2026-04-07)
 
 
