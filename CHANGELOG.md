@@ -1,6 +1,18 @@
 # Changelog
 
-# [3.0.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.8.2...v3.0.0) (2026-04-08)
+# [2.9.0](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.8.3...v2.9.0) (2026-04-08)
+
+
+### Features
+
+* **gate:** ajout des logs gate et enlever certains logs ([f667f36](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/f667f368b1d0bd487f28efce26cf492b95c1fc32))
+
+## [2.8.3](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.8.2...v2.8.3) (2026-04-08)
+
+
+### Features
+
+* **cd:** docker compose specially for prod ([a8a4dec](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/commit/a8a4dec983905cfb531bd3e6de98557ed5bfb9cf))
 
 ## [2.8.2](https://github.com/pns-isa-devops/isa-devops-25-26-isa-25-26-team-k/compare/v2.8.1...v2.8.2) (2026-04-08)
 
