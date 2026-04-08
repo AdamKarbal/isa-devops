@@ -77,12 +77,14 @@ public class GateService {
 
     public void openGate() {
         if (gate.getStatus() == GateStatus.OPEN) throw new AlreadyOpenGateException("Portique déjà ouvert.");
+        LOG.info("GATE: ouverture de la porte : {}", gate);
         gate.setStatus(GateStatus.OPEN);
         openingTimes.add(LocalTime.now());
     }
 
     public void closeGate() {
         if (gate.getStatus() == GateStatus.CLOSED) throw new AlreadyClosedGateException("Portique déjà fermé.");
+        LOG.info("GATE: fermeture de la porte : {}", gate);
         gate.setStatus(GateStatus.CLOSED);
         closingTimes.add(LocalTime.now());
     }
@@ -92,6 +94,7 @@ public class GateService {
         if (alertThreshold > 0
                 && gate.getCurrentPassages() >= alertThreshold
                 && gate.getStatus() == GateStatus.OPEN) {
+            LOG.info("GATE: Modification du treshold : {}", gate);
             gate.setStatus(GateStatus.CLOSED);
             closingTimes.add(LocalTime.now());
             notifyThresholdReached();
@@ -112,6 +115,7 @@ public class GateService {
     public IncidentDTO addIncident(@Valid IncidentRequestDTO incidentRequestDTO) {
         closeGate();
         Incident incident = new Incident(incidentRequestDTO.incidentType(), incidentRequestDTO.description(), Instant.now());
+        LOG.info("GATE: ouverture de la porte : {} et type d'incident : {}", gate, incident);
         gate.registerIncident(incident);
         return new IncidentDTO(incident.getType(), incidentRequestDTO.description(), incident.getTimestamp());
     }
@@ -152,6 +156,7 @@ public class GateService {
     }
 
     private void notifyThresholdReached() {
+        LOG.info("GATE: envoie de la notification treshold atteint de la porte : {}", gate);
         displayNotifierClient.publishAlert(
                 "Seuil d'affluence atteint (" + gate.getAlertThreshold()
                         + " passages/heure) - portique " + gate.getGateId() + " ferme automatiquement",
