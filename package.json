@@ -1,6 +1,6 @@
 {
   "name": "skimaster",
-  "version": "2.8.3",
+  "version": "2.9.0",
   "scripts": {
     "release": "release-it",
     "prepare": "husky"
