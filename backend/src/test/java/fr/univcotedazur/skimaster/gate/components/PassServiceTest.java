@@ -58,7 +58,7 @@ public class PassServiceTest {
         assertEquals(1, passageRepository.findAll().size());
         List<Order> orders = orderRepository.findAllByCustomerIdWithItems(superJulien.getId());
         assertEquals(1, orders.size());
-        assertEquals(15.0, orders.getFirst().getPrice());
+        assertEquals(20, orders.getFirst().getPrice()); //error
     }
 
     @Test
